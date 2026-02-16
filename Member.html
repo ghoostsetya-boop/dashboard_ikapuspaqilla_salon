@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DAFTAR MEMBER IKAPUSPAQILLA SALON</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      height: 100%;
+    }
+    
+    body {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    .gradient-header {
+      background: linear-gradient(135deg, #FFB3BA 0%, #FFCCCB 25%, #FFB3BA 50%, #F4A6A0 75%, #E89B96 100%);
+    }
+    
+    .peach-shimmer {
+      background: linear-gradient(90deg, #FFB3BA, #FFCCCB, #FFB3BA);
+      background-size: 200% auto;
+      animation: shimmer 3s linear infinite;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    @keyframes shimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+    
+    .table-row:hover {
+      background: linear-gradient(90deg, rgba(255, 179, 186, 0.1), rgba(255, 204, 203, 0.1));
+    }
+    
+    .tab-active {
+      background: linear-gradient(135deg, #FFB3BA, #FFCCCB);
+      color: white;
+      box-shadow: 0 4px 15px rgba(255, 179, 186, 0.3);
+    }
+    
+    .btn-gold {
+      background: linear-gradient(135deg, #FFB3BA, #FFCCCB);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-gold:hover {
+      background: linear-gradient(135deg, #FFCCCB, #FFB3BA);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(255, 179, 186, 0.4);
+    }
+    
+    .floating-header {
+      border-radius: 0 0 24px 24px;
+      box-shadow: 0 8px 32px rgba(255, 179, 186, 0.2);
+    }
+    
+    .card-shadow {
+      box-shadow: 0 4px 20px rgba(255, 179, 186, 0.1);
+    }
+    
+    .input-focus:focus {
+      border-color: #FFB3BA;
+      box-shadow: 0 0 0 3px rgba(255, 179, 186, 0.2);
+    }
+    
+    .pagination-btn {
+      transition: all 0.2s ease;
+    }
+    
+    .pagination-btn:hover:not(:disabled) {
+      background: linear-gradient(135deg, #FFB3BA, #FFCCCB);
+      color: white;
+    }
+    
+    .pagination-active {
+      background: linear-gradient(135deg, #FFB3BA, #FFCCCB);
+      color: white;
+    }
+    
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, #FFB3BA, #FFCCCB);
+      border-radius: 4px;
+    }
+
+    .modal-backdrop {
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-delete {
+      background: linear-gradient(135deg, #FF6B6B, #EE5A52);
+      transition: all 0.3s ease;
+    }
+
+    .btn-delete:hover {
+      background: linear-gradient(135deg, #EE5A52, #E63946);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(238, 90, 82, 0.4);
+    }
+
+    .btn-edit {
+      background: linear-gradient(135deg, #4ECDC4, #44A8B3);
+      transition: all 0.3s ease;
+    }
+
+    .btn-edit:hover {
+      background: linear-gradient(135deg, #44A8B3, #3A97A2);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(68, 168, 179, 0.4);
+    }
+
+    .success-toast {
+      animation: slideInUp 0.3s ease forwards;
+    }
+
+    @keyframes slideInUp {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .main-wrapper {
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+    }
+
+    .loading-spinner {
+      border: 4px solid rgba(255, 179, 186, 0.3);
+      border-top: 4px solid #FFB3BA;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body class="h-full bg-gradient-to-br from-white via-pink-50 to-pink-100">
+  <div id="mainApp" class="main-wrapper flex flex-col">
+    <!-- Header -->
+    <header class="gradient-header floating-header text-white px-6 py-4 mx-4 mt-4 sticky top-4 z-50">
+      <div class="flex items-center justify-center gap-4">
+        <img src="https://lh3.googleusercontent.com/d/1rTcKE5xcEHCqgLIEK4eoep36Z0ZvRR3s" alt="Logo" class="w-12 h-12 rounded-full object-cover border-4 border-white shadow-md" loading="lazy" onerror="this.style.background='linear-gradient(135deg, #FFB3BA, #FFCCCB)'; this.alt='Logo';">
+        <h1 id="headerTitle" class="text-xl md:text-2xl font-bold text-center peach-shimmer">DAFTAR MEMBER IKAPUSPAQILLA SALON</h1>
+      </div>
+    </header>
+
+    <!-- Tab Navigation -->
+    <nav class="flex justify-center gap-2 px-4 mt-6 flex-wrap">
+      <button onclick="switchTab('member')" id="tabMember" class="tab-active px-6 py-3 rounded-full font-semibold transition-all duration-300">👥 Member</button>
+      <button onclick="switchTab('infografis')" id="tabInfografis" class="bg-white px-6 py-3 rounded-full font-semibold text-gray-600 hover:bg-pink-50 transition-all duration-300 card-shadow border border-pink-200">📊 Infografis</button>
+    </nav>
+
+    <!-- Content Area -->
+    <main class="flex-1 p-4 overflow-auto">
+      <!-- Member Tab -->
+      <div id="contentMember" class="max-w-6xl mx-auto">
+        <!-- Filters -->
+        <div class="bg-white rounded-2xl p-4 mb-4 card-shadow border border-pink-100">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Pencarian Cepat</label>
+              <input type="text" id="quickSearch" placeholder="Cari nama, HP, alamat..." onkeyup="applyFilters()" class="w-full px-4 py-2 rounded-xl border border-pink-200 focus:outline-none input-focus bg-white">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Tampilkan</label>
+              <select id="perPage" onchange="changePerPage()" class="w-full px-4 py-2 rounded-xl border border-pink-200 focus:outline-none input-focus bg-white">
+                <option value="10">10 data</option>
+                <option value="20">20 data</option>
+                <option value="50">50 data</option>
+                <option value="100">100 data</option>
+                <option value="all">Semua</option>
+              </select>
+            </div>
+            <div class="flex items-end gap-2">
+              <button onclick="resetFilters()" class="flex-1 btn-gold text-white px-4 py-2 rounded-xl font-medium transition-all hover:shadow-lg">🔄 Reset</button>
+              <button onclick="openAddModal()" class="flex-1 btn-gold text-white px-4 py-2 rounded-xl font-medium transition-all hover:shadow-lg">➕ Tambah</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Data Info -->
+        <div class="flex justify-between items-center mb-4 px-2">
+          <p id="dataInfo" class="text-sm text-gray-600 font-medium"></p>
+          <div id="loadingIndicator" class="hidden flex items-center gap-2">
+            <div class="loading-spinner"></div>
+            <span class="text-sm text-pink-600">Memproses...</span>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="bg-white rounded-2xl overflow-hidden card-shadow border border-pink-100">
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead class="bg-gradient-to-r from-pink-400 to-pink-500 text-white">
+                <tr>
+                  <th class="px-6 py-4 text-left font-semibold">No</th>
+                  <th class="px-6 py-4 text-left font-semibold">Nama</th>
+                  <th class="px-6 py-4 text-left font-semibold">No HP</th>
+                  <th class="px-6 py-4 text-left font-semibold">Alamat</th>
+                  <th class="px-6 py-4 text-center font-semibold">Poin</th>
+                  <th class="px-6 py-4 text-center font-semibold">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody" class="divide-y divide-pink-100">
+                <tr>
+                  <td colspan="6" class="px-6 py-8 text-center text-gray-500">Memuat data...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div id="paginationContainer" class="flex justify-center items-center gap-2 mt-6 flex-wrap"></div>
+      </div>
+
+      <!-- Infografis Tab -->
+      <div id="contentInfografis" class="hidden max-w-6xl mx-auto">
+        <div class="bg-white rounded-2xl p-6 card-shadow border border-pink-100">
+          <h2 class="text-xl font-bold text-gray-800 mb-6 text-center">📊 Infografis Poin Member</h2>
+          <div class="h-96 md:h-[500px]">
+            <canvas id="chartCanvas"></canvas>
+          </div>
+          <div class="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="bg-gradient-to-br from-pink-400 to-pink-500 rounded-xl p-4 text-white text-center">
+              <p class="text-2xl font-bold" id="totalMembers">0</p>
+              <p class="text-sm opacity-90">Total Member</p>
+            </div>
+            <div class="bg-gradient-to-br from-rose-400 to-rose-500 rounded-xl p-4 text-white text-center">
+              <p class="text-2xl font-bold" id="totalPoints">0</p>
+              <p class="text-sm opacity-90">Total Poin</p>
+            </div>
+            <div class="bg-gradient-to-br from-orange-400 to-orange-500 rounded-xl p-4 text-white text-center">
+              <p class="text-2xl font-bold" id="avgPoints">0</p>
+              <p class="text-sm opacity-90">Rata-rata Poin</p>
+            </div>
+            <div class="bg-gradient-to-br from-amber-400 to-amber-500 rounded-xl p-4 text-white text-center">
+              <p class="text-2xl font-bold" id="maxPoints">0</p>
+              <p class="text-sm opacity-90">Poin Tertinggi</p>
+            </div>
+          </div>
+
+          <!-- Ranking Table -->
+          <div class="mt-8">
+            <div class="flex justify-between items-center mb-4 flex-wrap gap-4">
+              <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2"><span>🏆</span> Ranking Member Berdasarkan Poin</h3>
+              <div class="flex items-center gap-2">
+                <label class="text-sm font-medium text-gray-600">Tampilkan:</label>
+                <select id="rankingPerPage" onchange="changeRankingPerPage()" class="px-3 py-2 rounded-lg border border-pink-200 focus:outline-none input-focus text-sm bg-white">
+                  <option value="10">10 data</option>
+                  <option value="20">20 data</option>
+                  <option value="50">50 data</option>
+                  <option value="all">Semua</option>
+                </select>
+              </div>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead class="bg-gradient-to-r from-pink-400 to-rose-400 text-white">
+                  <tr>
+                    <th class="px-4 py-3 text-center font-semibold rounded-tl-xl">Rank</th>
+                    <th class="px-6 py-3 text-left font-semibold">Nama</th>
+                    <th class="px-6 py-3 text-left font-semibold">No HP</th>
+                    <th class="px-6 py-3 text-left font-semibold">Alamat</th>
+                    <th class="px-4 py-3 text-center font-semibold rounded-tr-xl">Poin</th>
+                  </tr>
+                </thead>
+                <tbody id="rankingTableBody" class="divide-y divide-pink-100">
+                  <tr>
+                    <td colspan="5" class="px-6 py-8 text-center text-gray-500">Memuat ranking...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div id="rankingPaginationContainer" class="flex justify-center items-center gap-2 mt-6 flex-wrap"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Modal Add/Edit -->
+    <div id="memberModal" class="hidden fixed inset-0 modal-backdrop flex items-center justify-center z-50 p-4">
+      <div class="modal-content w-full max-w-md max-h-[90vh] overflow-y-auto">
+        <div class="bg-gradient-to-r from-pink-400 to-pink-500 text-white px-6 py-4 flex justify-between items-center">
+          <h3 id="modalTitle" class="text-lg font-bold">Tambah Member Baru</h3>
+          <button onclick="closeModal()" class="text-white hover:opacity-80 text-2xl leading-none">✕</button>
+        </div>
+        <form id="memberForm" onsubmit="handleSubmitForm(event)" class="p-6 space-y-4">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Nama *</label>
+            <input type="text" id="formNama" placeholder="Masukkan nama member" required class="w-full px-4 py-2 rounded-xl border border-pink-200 focus:outline-none input-focus bg-white">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">No HP *</label>
+            <input type="tel" id="formNoHp" placeholder="Masukkan nomor HP" required class="w-full px-4 py-2 rounded-xl border border-pink-200 focus:outline-none input-focus bg-white">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Alamat *</label>
+            <textarea id="formAlamat" placeholder="Masukkan alamat" required rows="3" class="w-full px-4 py-2 rounded-xl border border-pink-200 focus:outline-none input-focus bg-white"></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Poin *</label>
+            <input type="number" id="formPoin" placeholder="0" value="0" min="0" required class="w-full px-4 py-2 rounded-xl border border-pink-200 focus:outline-none input-focus bg-white">
+          </div>
+          <div class="flex gap-3 pt-4">
+            <button type="button" onclick="closeModal()" class="flex-1 px-4 py-3 rounded-xl border-2 border-pink-200 text-gray-700 font-semibold hover:bg-pink-50 transition">Batal</button>
+            <button type="submit" id="submitBtn" class="flex-1 btn-gold text-white px-4 py-3 rounded-xl font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed">Simpan</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Delete Confirmation -->
+    <div id="deleteModal" class="hidden fixed inset-0 modal-backdrop flex items-center justify-center z-50 p-4">
+      <div class="modal-content w-full max-w-md">
+        <div class="bg-gradient-to-r from-red-400 to-red-500 text-white px-6 py-4 flex justify-between items-center">
+          <h3 class="text-lg font-bold">Konfirmasi Hapus</h3>
+          <button onclick="closeDeleteModal()" class="text-white hover:opacity-80 text-2xl leading-none">✕</button>
+        </div>
+        <div class="p-6">
+          <p class="text-gray-700 mb-6">Apakah Anda yakin ingin menghapus member <strong id="deleteConfirmName"></strong>? Tindakan ini tidak dapat dibatalkan.</p>
+          <div class="flex gap-3">
+            <button type="button" onclick="closeDeleteModal()" class="flex-1 px-4 py-3 rounded-xl border-2 border-pink-200 text-gray-700 font-semibold hover:bg-pink-50 transition">Batal</button>
+            <button type="button" onclick="confirmDelete()" id="deleteConfirmBtn" class="flex-1 btn-delete text-white px-4 py-3 rounded-xl font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed">Hapus</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-r from-pink-100 to-rose-100 text-gray-700 py-6 mt-auto border-t-2 border-pink-200">
+      <div class="text-center">
+        <div class="flex items-center justify-center gap-2 mb-2">
+          <img src="https://lh3.googleusercontent.com/d/1AcUPbZdtoKhbAEDhLgg4102LwKpQeRBn" alt="IkeBagus Logo" class="w-6 h-6 rounded-full object-cover border border-pink-300" loading="lazy" onerror="this.style.background='linear-gradient(135deg, #FFB3BA, #FFCCCB)'; this.alt='Logo';">
+          <p id="footerText" class="text-sm font-semibold text-gray-700">© IkeBagus 2026</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // API URL - UPDATED ✅
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzxWJb2wPtjZNXm_CQGQz0nFw0j60zro7mF4_ptRkWsWZdtF35fL56jrJetk-LlTJoM/exec";
+
+    // Config untuk Element SDK
+    const defaultConfig = {
+      header_title: 'DAFTAR MEMBER IKAPUSPAQILLA SALON',
+      footer_text: '© IkeBagus 2026'
+    };
+    
+    let config = { ...defaultConfig };
+    
+    // State
+    let allData = [];
+    let filteredData = [];
+    let currentPage = 1;
+    let perPage = 10;
+    let chart = null;
+    let rankingCurrentPage = 1;
+    let rankingPerPage = 10;
+    let editingId = null;
+    let deleteId = null;
+
+    // Load data on page load
+    function loadAllData() {
+      showLoading(true);
+      
+      fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        body: new URLSearchParams({
+          action: 'getData'
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          allData = data.data || [];
+          filteredData = [...allData];
+          currentPage = 1;
+          renderTable();
+          updateStats();
+        } else {
+          showToast('Error: ' + (data.message || 'Gagal memuat data'), 'error');
+        }
+        showLoading(false);
+      })
+      .catch(error => {
+        console.error('Load error:', error);
+        showToast('Error: Gagal menghubungi server', 'error');
+        showLoading(false);
+      });
+    }
+
+    // Show Toast Message
+    function showToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      const bgColor = type === 'success' ? 'bg-green-500' : 'bg-red-500';
+      toast.className = `${bgColor} text-white px-6 py-3 rounded-xl shadow-lg success-toast fixed bottom-6 right-6 z-50 max-w-xs`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.remove();
+      }, 3000);
+    }
+
+    // Show Loading
+    function showLoading(show) {
+      document.getElementById('loadingIndicator').classList.toggle('hidden', !show);
+    }
+
+    // Open Add Modal
+    function openAddModal() {
+      editingId = null;
+      document.getElementById('modalTitle').textContent = 'Tambah Member Baru';
+      document.getElementById('memberForm').reset();
+      document.getElementById('formPoin').value = '0';
+      document.getElementById('memberModal').classList.remove('hidden');
+    }
+
+    // Open Edit Modal
+    function openEditModal(rowIndex) {
+      const member = allData.find(m => m.rowIndex === rowIndex);
+      if (!member) return;
+
+      editingId = rowIndex;
+      document.getElementById('modalTitle').textContent = 'Edit Member';
+      document.getElementById('formNama').value = member.nama || '';
+      document.getElementById('formNoHp').value = member.noHp || '';
+      document.getElementById('formAlamat').value = member.alamat || '';
+      document.getElementById('formPoin').value = member.poin || 0;
+      document.getElementById('memberModal').classList.remove('hidden');
+    }
+
+    // Close Modal
+    function closeModal() {
+      document.getElementById('memberModal').classList.add('hidden');
+      editingId = null;
+      document.getElementById('memberForm').reset();
+    }
+
+    // Handle Form Submit
+    function handleSubmitForm(event) {
+      event.preventDefault();
+
+      const nama = document.getElementById('formNama').value.trim();
+      const noHp = document.getElementById('formNoHp').value.trim();
+      const alamat = document.getElementById('formAlamat').value.trim();
+      const poin = parseInt(document.getElementById('formPoin').value) || 0;
+
+      if (!nama || !noHp || !alamat) {
+        showToast('Mohon isi semua field yang diperlukan', 'error');
+        return;
+      }
+
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Menyimpan...';
+
+      const params = new URLSearchParams();
+      params.append('nama', nama);
+      params.append('noHp', noHp);
+      params.append('alamat', alamat);
+      params.append('poin', poin);
+
+      if (editingId) {
+        params.append('action', 'update');
+        params.append('rowIndex', editingId);
+      } else {
+        params.append('action', 'add');
+      }
+
+      fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        body: params
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          showToast('✓ ' + (editingId ? 'Member berhasil diperbarui' : 'Member berhasil ditambahkan'));
+          closeModal();
+          loadAllData();
+        } else {
+          showToast('Error: ' + (data.message || 'Gagal menyimpan data'), 'error');
+        }
+        submitBtn.disabled = false;
+        submitBtn.textContent = editingId ? 'Update' : 'Simpan';
+      })
+      .catch(error => {
+        console.error('Submit error:', error);
+        showToast('Error: ' + error.toString(), 'error');
+        submitBtn.disabled = false;
+        submitBtn.textContent = editingId ? 'Update' : 'Simpan';
+      });
+    }
+
+    // Open Delete Modal
+    function openDeleteModal(rowIndex, name) {
+      deleteId = rowIndex;
+      document.getElementById('deleteConfirmName').textContent = name;
+      document.getElementById('deleteModal').classList.remove('hidden');
+    }
+
+    // Close Delete Modal
+    function closeDeleteModal() {
+      document.getElementById('deleteModal').classList.add('hidden');
+      deleteId = null;
+    }
+
+    // Confirm Delete
+    function confirmDelete() {
+      if (!deleteId) return;
+
+      const deleteBtn = document.getElementById('deleteConfirmBtn');
+      deleteBtn.disabled = true;
+      deleteBtn.textContent = 'Menghapus...';
+
+      const params = new URLSearchParams();
+      params.append('action', 'delete');
+      params.append('rowIndex', deleteId);
+
+      fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        body: params
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          showToast('✓ Member berhasil dihapus');
+          closeDeleteModal();
+          loadAllData();
+        } else {
+          showToast('Error: ' + (data.message || 'Gagal menghapus data'), 'error');
+          deleteBtn.disabled = false;
+          deleteBtn.textContent = 'Hapus';
+        }
+      })
+      .catch(error => {
+        console.error('Delete error:', error);
+        showToast('Error: ' + error.toString(), 'error');
+        deleteBtn.disabled = false;
+        deleteBtn.textContent = 'Hapus';
+      });
+    }
+
+    // Apply Filters
+    function applyFilters() {
+      const searchQuery = document.getElementById('quickSearch').value.toLowerCase();
+      
+      filteredData = allData.filter(item => {
+        return !searchQuery || 
+          item.nama.toLowerCase().includes(searchQuery) ||
+          item.noHp.toLowerCase().includes(searchQuery) ||
+          item.alamat.toLowerCase().includes(searchQuery);
+      });
+      
+      currentPage = 1;
+      renderTable();
+    }
+    
+    // Reset Filters
+    function resetFilters() {
+      document.getElementById('quickSearch').value = '';
+      document.getElementById('perPage').value = '10';
+      perPage = 10;
+      filteredData = [...allData];
+      currentPage = 1;
+      renderTable();
+    }
+    
+    // Change Per Page
+    function changePerPage() {
+      const value = document.getElementById('perPage').value;
+      perPage = value === 'all' ? filteredData.length : parseInt(value);
+      currentPage = 1;
+      renderTable();
+    }
+    
+    // Render Table
+    function renderTable() {
+      const tbody = document.getElementById('tableBody');
+      const totalItems = filteredData.length;
+      const totalPages = Math.ceil(totalItems / perPage) || 1;
+      
+      const startIndex = (currentPage - 1) * perPage;
+      const endIndex = Math.min(startIndex + perPage, totalItems);
+      const pageData = filteredData.slice(startIndex, endIndex);
+      
+      if (pageData.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="px-6 py-8 text-center text-gray-500">Tidak ada data ditemukan</td>
+          </tr>
+        `;
+      } else {
+        tbody.innerHTML = pageData.map((item, index) => `
+          <tr class="table-row transition-colors">
+            <td class="px-6 py-4 text-gray-600 font-medium">${startIndex + index + 1}</td>
+            <td class="px-6 py-4 font-semibold text-gray-800">${escapeHtml(item.nama)}</td>
+            <td class="px-6 py-4 text-gray-600">${escapeHtml(item.noHp)}</td>
+            <td class="px-6 py-4 text-gray-600">${escapeHtml(item.alamat)}</td>
+            <td class="px-6 py-4 text-center">
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${getPoinColor(item.poin)}">
+                ${item.poin}
+              </span>
+            </td>
+            <td class="px-6 py-4 text-center">
+              <div class="flex gap-2 justify-center flex-wrap">
+                <button onclick="openEditModal(${item.rowIndex})" class="btn-edit text-white px-3 py-2 rounded-lg text-sm font-medium">✎ Edit</button>
+                <button onclick="openDeleteModal(${item.rowIndex}, '${escapeHtml(item.nama)}')" class="btn-delete text-white px-3 py-2 rounded-lg text-sm font-medium">🗑 Hapus</button>
+              </div>
+            </td>
+          </tr>
+        `).join('');
+      }
+      
+      document.getElementById('dataInfo').textContent = 
+        `Menampilkan ${startIndex + 1}-${endIndex} dari ${totalItems} data`;
+      
+      renderPagination(totalPages);
+    }
+    
+    // Get Poin Color
+    function getPoinColor(poin) {
+      if (poin >= 100) return 'bg-gradient-to-r from-amber-400 to-yellow-500 text-white';
+      if (poin >= 50) return 'bg-gradient-to-r from-green-400 to-emerald-500 text-white';
+      if (poin >= 20) return 'bg-gradient-to-r from-blue-400 to-cyan-500 text-white';
+      return 'bg-gray-200 text-gray-700';
+    }
+    
+    // Render Pagination
+    function renderPagination(totalPages) {
+      const container = document.getElementById('paginationContainer');
+      
+      if (totalPages <= 1) {
+        container.innerHTML = '';
+        return;
+      }
+      
+      let html = '';
+      
+      html += `<button onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} 
+        class="pagination-btn px-4 py-2 rounded-lg bg-white border border-pink-200 text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-pink-50">
+        ← Prev
+      </button>`;
+      
+      const maxVisible = 5;
+      let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+      let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+      
+      if (endPage - startPage < maxVisible - 1) {
+        startPage = Math.max(1, endPage - maxVisible + 1);
+      }
+      
+      if (startPage > 1) {
+        html += `<button onclick="goToPage(1)" class="pagination-btn px-4 py-2 rounded-lg bg-white border border-pink-200 text-gray-600 hover:bg-pink-50">1</button>`;
+        if (startPage > 2) {
+          html += `<span class="px-2 text-gray-400">...</span>`;
+        }
+      }
+      
+      for (let i = startPage; i <= endPage; i++) {
+        html += `<button onclick="goToPage(${i})" 
+          class="pagination-btn px-4 py-2 rounded-lg border ${i === currentPage ? 'pagination-active border-transparent' : 'bg-white border-pink-200 text-gray-600 hover:bg-pink-50'}">
+          ${i}
+        </button>`;
+      }
+      
+      if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+          html += `<span class="px-2 text-gray-400">...</span>`;
+        }
+        html += `<button onclick="goToPage(${totalPages})" class="pagination-btn px-4 py-2 rounded-lg bg-white border border-pink-200 text-gray-600 hover:bg-pink-50">${totalPages}</button>`;
+      }
+      
+      html += `<button onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} 
+        class="pagination-btn px-4 py-2 rounded-lg bg-white border border-pink-200 text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-pink-50">
+        Next →
+      </button>`;
+      
+      container.innerHTML = html;
+    }
+    
+    // Go To Page
+    function goToPage(page) {
+      const totalPages = Math.ceil(filteredData.length / perPage) || 1;
+      if (page >= 1 && page <= totalPages) {
+        currentPage = page;
+        renderTable();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+    
+    // Switch Tab
+    function switchTab(tab) {
+      const tabs = ['member', 'infografis'];
+      const contents = ['contentMember', 'contentInfografis'];
+      const buttons = ['tabMember', 'tabInfografis'];
+      
+      contents.forEach(id => document.getElementById(id).classList.add('hidden'));
+      buttons.forEach(id => {
+        document.getElementById(id).classList.remove('tab-active');
+        document.getElementById(id).classList.add('bg-white', 'text-gray-600', 'border', 'border-pink-200');
+      });
+      
+      const index = tabs.indexOf(tab);
+      document.getElementById(contents[index]).classList.remove('hidden');
+      document.getElementById(buttons[index]).classList.add('tab-active');
+      document.getElementById(buttons[index]).classList.remove('bg-white', 'text-gray-600', 'border', 'border-pink-200');
+      
+      if (tab === 'infografis' && allData.length > 0) {
+        renderChart();
+      }
+    }
+    
+    // Update Stats
+    function updateStats() {
+      const totalMembers = allData.length;
+      const totalPoints = allData.reduce((sum, item) => sum + item.poin, 0);
+      const avgPoints = totalMembers > 0 ? Math.round(totalPoints / totalMembers) : 0;
+      const maxPoints = Math.max(...allData.map(item => item.poin), 0);
+      
+      document.getElementById('totalMembers').textContent = totalMembers;
+      document.getElementById('totalPoints').textContent = totalPoints.toLocaleString('id-ID');
+      document.getElementById('avgPoints').textContent = avgPoints;
+      document.getElementById('maxPoints').textContent = maxPoints;
+    }
+    
+    // Render Chart
+    function renderChart() {
+      const ctx = document.getElementById('chartCanvas').getContext('2d');
+      
+      if (chart) {
+        chart.destroy();
+      }
+      
+      const sortedData = [...allData].sort((a, b) => b.poin - a.poin).slice(0, 20);
+      
+      if (sortedData.length === 0) return;
+      
+      const colors = sortedData.map((_, i) => {
+        const ratio = i / sortedData.length;
+        return `rgba(${255 - ratio * 50}, ${179 - ratio * 79}, ${186 - ratio * 86}, 0.8)`;
+      });
+      
+      chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: sortedData.map(item => item.nama.substring(0, 15)),
+          datasets: [{
+            label: 'Poin Member',
+            data: sortedData.map(item => item.poin),
+            backgroundColor: colors,
+            borderColor: colors.map(c => c.replace('0.8', '1')),
+            borderWidth: 1,
+            borderRadius: 8
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            },
+            tooltip: {
+              backgroundColor: 'rgba(0,0,0,0.8)',
+              padding: 12,
+              titleFont: { size: 14, weight: 'bold' },
+              bodyFont: { size: 13 }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: {
+                color: 'rgba(255,179,186,0.1)'
+              }
+            },
+            x: {
+              grid: {
+                display: false
+              },
+              ticks: {
+                maxRotation: 45,
+                minRotation: 45
+              }
+            }
+          }
+        }
+      });
+      
+      renderRankingTable();
+    }
+    
+    // Render Ranking Table
+    function renderRankingTable() {
+      const tbody = document.getElementById('rankingTableBody');
+      const sortedData = [...allData].sort((a, b) => b.poin - a.poin);
+      
+      if (sortedData.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" class="px-6 py-8 text-center text-gray-500">Tidak ada data</td>
+          </tr>
+        `;
+        return;
+      }
+      
+      const totalItems = sortedData.length;
+      const totalPages = Math.ceil(totalItems / rankingPerPage) || 1;
+      
+      const startIndex = (rankingCurrentPage - 1) * rankingPerPage;
+      const endIndex = Math.min(startIndex + rankingPerPage, totalItems);
+      const pageData = sortedData.slice(startIndex, endIndex);
+      
+      tbody.innerHTML = pageData.map((item, index) => {
+        const actualRank = startIndex + index + 1;
+        let rankBadge = '';
+        let rowClass = '';
+        
+        if (actualRank === 1) {
+          rankBadge = '<span class="text-3xl">🥇</span>';
+          rowClass = 'bg-yellow-50';
+        } else if (actualRank === 2) {
+          rankBadge = '<span class="text-3xl">🥈</span>';
+          rowClass = 'bg-slate-50';
+        } else if (actualRank === 3) {
+          rankBadge = '<span class="text-3xl">🥉</span>';
+          rowClass = 'bg-orange-50';
+        } else {
+          rankBadge = `<span class="text-gray-600 font-bold text-lg">${actualRank}</span>`;
+        }
+        
+        return `
+          <tr class="table-row transition-colors ${rowClass}">
+            <td class="px-4 py-4 text-center">${rankBadge}</td>
+            <td class="px-6 py-4 font-semibold text-gray-800">${escapeHtml(item.nama)}</td>
+            <td class="px-6 py-4 text-gray-600">${escapeHtml(item.noHp)}</td>
+            <td class="px-6 py-4 text-gray-600">${escapeHtml(item.alamat)}</td>
+            <td class="px-4 py-4 text-center">
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${getPoinColor(item.poin)}">
+                ${item.poin}
+              </span>
+            </td>
+          </tr>
+        `;
+      }).join('');
+      
+      renderRankingPagination(totalPages);
+    }
+    
+    // Change Ranking Per Page
+    function changeRankingPerPage() {
+      const value = document.getElementById('rankingPerPage').value;
+      rankingPerPage = value === 'all' ? allData.length : parseInt(value);
+      rankingCurrentPage = 1;
+      renderRankingTable();
+    }
+    
+    // Render Ranking Pagination
+    function renderRankingPagination(totalPages) {
+      const container = document.getElementById('rankingPaginationContainer');
+      
+      if (totalPages <= 1) {
+        container.innerHTML = '';
+        return;
+      }
+      
+      let html = '';
+      
+      html += `<button onclick="goToRankingPage(${rankingCurrentPage - 1})" ${rankingCurrentPage === 1 ? 'disabled' : ''} 
+        class="pagination-btn px-4 py-2 rounded-lg bg-white border border-pink-200 text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-pink-50">
+        ← Prev
+      </button>`;
+      
+      const maxVisible = 5;
+      let startPage = Math.max(1, rankingCurrentPage - Math.floor(maxVisible / 2));
+      let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+      
+      if (endPage - startPage < maxVisible - 1) {
+        startPage = Math.max(1, endPage - maxVisible + 1);
+      }
+      
+      if (startPage > 1) {
+        html += `<button onclick="goToRankingPage(1)" class="pagination-btn px-4 py-2 rounded-lg bg-white border border-pink-200 text-gray-600 hover:bg-pink-50">1</button>`;
+        if (startPage > 2) {
+          html += `<span class="px-2 text-gray-400">...</span>`;
+        }
+      }
+      
+      for (let i = startPage; i <= endPage; i++) {
+        html += `<button onclick="goToRankingPage(${i})" 
+          class="pagination-btn px-4 py-2 rounded-lg border ${i === rankingCurrentPage ? 'pagination-active border-transparent' : 'bg-white border-pink-200 text-gray-600 hover:bg-pink-50'}">
+          ${i}
+        </button>`;
+      }
+      
+      if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+          html += `<span class="px-2 text-gray-400">...</span>`;
+        }
+        html += `<button onclick="goToRankingPage(${totalPages})" class="pagination-btn px-4 py-2 rounded-lg bg-white border border-pink-200 text-gray-600 hover:bg-pink-50">${totalPages}</button>`;
+      }
+      
+      html += `<button onclick="goToRankingPage(${rankingCurrentPage + 1})" ${rankingCurrentPage === totalPages ? 'disabled' : ''} 
+        class="pagination-btn px-4 py-2 rounded-lg bg-white border border-pink-200 text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-pink-50">
+        Next →
+      </button>`;
+      
+      container.innerHTML = html;
+    }
+    
+    // Go To Ranking Page
+    function goToRankingPage(page) {
+      const sortedData = [...allData].sort((a, b) => b.poin - a.poin);
+      const totalPages = Math.ceil(sortedData.length / rankingPerPage) || 1;
+      if (page >= 1 && page <= totalPages) {
+        rankingCurrentPage = page;
+        renderRankingTable();
+        document.getElementById('contentInfografis').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+    
+    // Escape HTML
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+    
+    // Element SDK Integration
+    async function onConfigChange(newConfig) {
+      config = { ...config, ...newConfig };
+      
+      const titleEl = document.getElementById('headerTitle');
+      if (titleEl) titleEl.textContent = config.header_title || defaultConfig.header_title;
+      
+      const footerEl = document.getElementById('footerText');
+      if (footerEl) footerEl.textContent = config.footer_text || defaultConfig.footer_text;
+    }
+    
+    function mapToCapabilities(cfg) {
+      return {
+        recolorables: [],
+        borderables: [],
+        fontEditable: undefined,
+        fontSizeable: undefined
+      };
+    }
+    
+    function mapToEditPanelValues(cfg) {
+      return new Map([
+        ['header_title', cfg.header_title || defaultConfig.header_title],
+        ['footer_text', cfg.footer_text || defaultConfig.footer_text]
+      ]);
+    }
+    
+    // Initialize Element SDK
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    }
+
+    // Auto-load data on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      loadAllData();
+    });
+  </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9cef7bf9c00240d4',t:'MTc3MTI3MDQ4Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
