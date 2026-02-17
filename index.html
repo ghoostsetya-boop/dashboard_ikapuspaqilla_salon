@@ -5,12 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Management Keuangan Salon</title>
     <style>
+        /* --- CSS VARIABLES & RESET --- */
         :root {
-            --primary-color: #FFDAB9; /* Pink Peach */
-            --secondary-color: #FFC0CB; /* Pink */
-            --dark-color: #5D4037;
-            --text-color: #333;
-            --bg-color: #FFF5F0;
+            --primary-peach: #FFDAB9;
+            --soft-pink: #FFC0CB;
+            --dark-peach: #e9c4a6;
+            --text-dark: #5D4037;
+            --white: #ffffff;
+            --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             --transition: all 0.3s ease;
         }
 
@@ -18,45 +20,57 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: var(--font-family);
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            background-color: #fff5f2;
+            color: var(--text-dark);
             overflow-x: hidden;
         }
 
-        /* --- Animasi --- */
-        @keyframes fadeIn {
+        /* --- ANIMATIONS --- */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes floatLogo {
-            0% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-10px) rotate(5deg); }
-            100% { transform: translateY(0px) rotate(0deg); }
+        @keyframes pulseLogo {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
 
-        /* --- Halaman Login --- */
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* --- LOGIN PAGE STYLE --- */
         #login-page {
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: linear-gradient(135deg, #FFF5F0 0%, #FFDAB9 100%);
+            background: linear-gradient(135deg, var(--primary-peach) 0%, var(--soft-pink) 100%);
+            padding: 20px;
         }
 
-        .login-container {
+        .login-card {
             background: rgba(255, 255, 255, 0.9);
             padding: 40px;
-            border-radius: 25px;
+            border-radius: 30px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             text-align: center;
-            width: 90%;
+            width: 100%;
             max-width: 400px;
-            animation: fadeIn 1s ease-out;
+            animation: fadeInDown 0.8s ease;
+            backdrop-filter: blur(10px);
         }
 
         .login-logo {
@@ -64,74 +78,71 @@
             height: 100px;
             border-radius: 50%;
             margin-bottom: 20px;
-            border: 4px solid var(--secondary-color);
-            animation: floatLogo 3s infinite ease-in-out;
+            animation: pulseLogo 3s infinite;
+            object-fit: cover;
+            border: 4px solid var(--white);
         }
 
-        .login-container h2 {
-            margin-bottom: 10px;
-            color: var(--dark-color);
-            font-size: 1.5rem;
-        }
-
-        .login-container p {
-            margin-bottom: 30px;
-            color: #666;
-            font-size: 0.9rem;
+        .login-card h2 {
+            margin-bottom: 25px;
+            font-size: 22px;
+            color: var(--text-dark);
         }
 
         .input-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             text-align: left;
         }
 
         .input-group input {
             width: 100%;
-            padding: 12px;
+            padding: 15px;
             border: 2px solid #eee;
-            border-radius: 10px;
+            border-radius: 15px;
             outline: none;
             transition: var(--transition);
         }
 
         .input-group input:focus {
-            border-color: var(--secondary-color);
+            border-color: var(--soft-pink);
         }
 
         .login-btn {
             width: 100%;
-            padding: 12px;
+            padding: 15px;
             border: none;
-            border-radius: 10px;
-            background-color: var(--secondary-color);
-            color: white;
+            border-radius: 15px;
+            background-color: var(--text-dark);
+            color: var(--white);
+            font-size: 16px;
             font-weight: bold;
             cursor: pointer;
             transition: var(--transition);
-            margin-top: 10px;
         }
 
         .login-btn:hover {
-            background-color: #FF9AA2;
-            transform: scale(1.02);
+            background-color: #4e342e;
+            transform: translateY(-2px);
         }
 
-        /* --- Main Dashboard --- */
+        /* --- DASHBOARD STYLE --- */
         #dashboard-page {
-            display: none;
+            display: none; /* Hidden by default */
             min-height: 100vh;
+            display: flex;
             flex-direction: column;
         }
 
-        /* Header Floating */
+        /* Header */
         header {
+            background-color: var(--primary-peach);
+            padding: 15px 30px;
             position: fixed;
             top: 20px;
             left: 50%;
             transform: translateX(-50%);
             width: 95%;
-            background: rgba(255, 218, 185, 0.95);
-            padding: 15px 30px;
+            max-width: 1200px;
             border-radius: 50px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             display: flex;
@@ -139,151 +150,141 @@
             justify-content: flex-start;
             gap: 20px;
             z-index: 1000;
-            backdrop-filter: blur(5px);
-            animation: fadeIn 0.5s ease-out;
+            animation: fadeInDown 0.8s ease;
         }
 
         .header-logo {
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            border: 2px solid white;
+            object-fit: cover;
         }
 
         header h1 {
-            font-size: 1.2rem;
-            color: var(--dark-color);
+            font-size: 20px;
+            color: var(--text-dark);
         }
 
-        /* Layout Utama */
+        /* Main Container */
         .main-container {
             display: flex;
             margin-top: 100px; /* Space for fixed header */
             flex: 1;
         }
 
-        /* Sidebar Tipis */
-        nav {
-            width: 60px;
-            background: white;
+        /* Sidebar */
+        .sidebar {
+            width: 70px;
+            background: var(--white);
             padding: 20px 10px;
             transition: var(--transition);
             display: flex;
             flex-direction: column;
             gap: 15px;
+            align-items: center;
             border-radius: 0 20px 20px 0;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
-            position: sticky;
-            top: 100px;
-            height: calc(100vh - 120px);
+            box-shadow: 5px 0 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
         }
 
-        nav:hover {
-            width: 200px;
+        .sidebar:hover {
+            width: 250px;
+            align-items: flex-start;
         }
 
-        .nav-item {
+        .menu-item {
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            background-color: #fceae5;
             display: flex;
             align-items: center;
-            gap: 10px;
-            color: var(--dark-color);
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text-dark);
             text-decoration: none;
-            padding: 10px;
-            border-radius: 10px;
-            transition: var(--transition);
-            white-space: nowrap;
             overflow: hidden;
+            white-space: nowrap;
         }
 
-        .nav-item:hover {
-            background-color: var(--primary-color);
+        .menu-item:hover {
+            background-color: var(--soft-pink);
+            width: 100%;
         }
 
-        .nav-item span {
-            opacity: 0;
-            transition: var(--transition);
-        }
-
-        nav:hover .nav-item span {
-            opacity: 1;
-        }
-
-        .icon {
-            font-size: 1.2rem;
-            min-width: 30px;
+        .menu-icon {
+            font-size: 20px;
+            min-width: 50px;
             text-align: center;
         }
 
-        /* Iframe Area */
+        .menu-text {
+            display: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .sidebar:hover .menu-text {
+            display: inline;
+            animation: fadeInDown 0.5s;
+        }
+
+        /* Content Area */
         .content-area {
             flex: 1;
             padding: 20px;
-            height: calc(100vh - 100px);
         }
 
         iframe {
             width: 100%;
-            height: 100%;
+            height: 75vh;
             border: none;
             border-radius: 20px;
-            background: white;
+            background: var(--white);
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            animation: fadeIn 1s ease-out;
+            animation: fadeInUp 0.8s ease;
         }
 
         /* Footer */
         footer {
             text-align: center;
-            padding: 15px;
-            background: white;
+            padding: 20px;
+            background: var(--white);
             margin-top: auto;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            font-weight: bold;
-            color: var(--dark-color);
             border-top: 1px solid #eee;
+            animation: fadeInUp 0.8s ease;
         }
 
         .footer-logo {
-            width: 25px;
-            height: 25px;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
+            vertical-align: middle;
+            margin-right: 10px;
+            object-fit: cover;
         }
 
-        /* Mobile Responsive */
+        /* Responsive */
         @media (max-width: 768px) {
             header {
-                padding: 10px 15px;
+                width: 90%;
                 top: 10px;
-            }
-            header h1 { font-size: 0.9rem; }
-            .header-logo { width: 35px; height: 35px; }
-
-            .main-container {
-                margin-top: 70px;
-                flex-direction: column;
-            }
-
-            nav {
-                width: 100%;
-                height: auto;
-                position: relative;
-                top: 0;
-                flex-direction: row;
-                justify-content: space-around;
-                border-radius: 0 0 20px 20px;
                 padding: 10px;
             }
-            
-            nav:hover { width: 100%; }
-            .nav-item span { display: none; } /* Hide text on mobile */
-            .nav-item { padding: 8px; }
-
-            .content-area {
-                height: calc(100vh - 170px);
-                padding: 10px;
+            header h1 {
+                font-size: 16px;
+            }
+            .header-logo {
+                width: 40px;
+                height: 40px;
+            }
+            .sidebar {
+                width: 60px;
+            }
+            .menu-item {
+                width: 40px;
+                height: 40px;
             }
         }
     </style>
@@ -291,18 +292,18 @@
 <body>
 
     <div id="login-page">
-        <div class="login-container">
+        <div class="login-card">
             <img src="https://lh3.googleusercontent.com/d/1rTcKE5xcEHCqgLIEK4eoep36Z0ZvRR3s" alt="Logo" class="login-logo">
-            <h2>Selamat Datang</h2>
-            <p>di Dashboard Ikapuspaqilla Salon<br>Silahkan Login terlebih dahulu</p>
-            
-            <div class="input-group">
-                <input type="text" id="username" placeholder="Username">
-            </div>
-            <div class="input-group">
-                <input type="password" id="password" placeholder="Password">
-            </div>
-            <button class="login-btn" onclick="checkLogin()">Login</button>
+            <h2>Selamat Datang di Dashboard Ikapuspaqilla Salon <br>Silahkan Login terlebih dahulu</h2>
+            <form onsubmit="handleLogin(event)">
+                <div class="input-group">
+                    <input type="text" id="username" placeholder="Username" required>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="password" placeholder="Password" required>
+                </div>
+                <button type="submit" class="login-btn">LOGIN</button>
+            </form>
         </div>
     </div>
 
@@ -313,21 +314,26 @@
         </header>
 
         <div class="main-container">
-            <nav>
-                <a href="#" class="nav-item" onclick="loadContent('Jurnal')">
-                    <span class="icon">📖</span> <span>Jurnal Keuangan</span>
+            <nav class="sidebar">
+                <a href="#" class="menu-item" onclick="loadContent('jurnal.html')">
+                    <span class="menu-icon">📊</span>
+                    <span class="menu-text">Jurnal Keuangan</span>
                 </a>
-                <a href="#" class="nav-item" onclick="loadContent('Pengeluaran')">
-                    <span class="icon">💸</span> <span>Pengeluaran Bulanan</span>
+                <a href="#" class="menu-item" onclick="loadContent('pengeluaran.html')">
+                    <span class="menu-icon">💸</span>
+                    <span class="menu-text">Pengeluaran Bulanan</span>
                 </a>
-                <a href="#" class="nav-item" onclick="loadContent('Omset')">
-                    <span class="icon">📈</span> <span>Omset Bulanan</span>
+                <a href="#" class="menu-item" onclick="loadContent('omset.html')">
+                    <span class="menu-icon">📈</span>
+                    <span class="menu-text">Omset Bulanan</span>
                 </a>
-                <a href="#" class="nav-item" onclick="loadContent('Komisi')">
-                    <span class="icon">🧑‍💼</span> <span>Komisi Karyawan</span>
+                <a href="#" class="menu-item" onclick="loadContent('komisi.html')">
+                    <span class="menu-icon">👥</span>
+                    <span class="menu-text">Komisi Karyawan</span>
                 </a>
-                <a href="#" class="nav-item" onclick="loadContent('Member')">
-                    <span class="icon">💳</span> <span>Daftar Member</span>
+                <a href="#" class="menu-item" onclick="loadContent('member.html')">
+                    <span class="menu-icon">💳</span>
+                    <span class="menu-text">Daftar Member</span>
                 </a>
             </nav>
 
@@ -337,59 +343,32 @@
         </div>
 
         <footer>
-            <img src="https://lh3.googleusercontent.com/d/1AcUPbZdtoKhbAEDhLgg4102LwKpQeRBn" alt="Logo" class="footer-logo">
-            <p>IkeBagus 2026</p>
+            <img src="https://lh3.googleusercontent.com/d/1AcUPbZdtoKhbAEDhLgg4102LwKpQeRBn" alt="Logo Footer" class="footer-logo">
+            <span>IkeBagus 2026</span>
         </footer>
     </div>
 
     <script>
-        function checkLogin() {
-            const user = document.getElementById('username').value;
-            const pass = document.getElementById('password').value;
+        // Simple Login Logic
+        function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
 
-            if (user === 'admin' && pass === '1234') {
+            if (username === 'admin' && password === '1234') {
                 document.getElementById('login-page').style.display = 'none';
                 document.getElementById('dashboard-page').style.display = 'flex';
-                // Load default content
-                loadContent('Jurnal');
+                // Load default page
+                loadContent('about:blank'); 
             } else {
-                alert('Username atau Password Salah!');
+                alert('Username atau Password salah!');
             }
         }
 
-        function loadContent(page) {
+        // Load Content into Iframe
+        function loadContent(pageUrl) {
             const iframe = document.getElementById('main-iframe');
-            
-            // --- BAGIAN UNTUK PASTE HTML ANDA ---
-            // Ganti 'about:blank' dengan path file html Anda atau gunakan data:text/html
-            
-            let content = "";
-            switch(page) {
-                case 'Jurnal':
-                    content = '<h1>Halaman Jurnal Keuangan</h1><p>Paste kode HTML jurnal disini.</p>';
-                    break;
-                case 'Pengeluaran':
-                    content = '<h1>Halaman Pengeluaran</h1><p>Paste kode HTML pengeluaran disini.</p>';
-                    break;
-                case 'Omset':
-                    content = '<h1>Halaman Omset</h1><p>Paste kode HTML omset disini.</p>';
-                    break;
-                case 'Komisi':
-                    content = '<h1>Halaman Komisi</h1><p>Paste kode HTML komisi disini.</p>';
-                    break;
-                case 'Member':
-                    content = '<h1>Halaman Member</h1><p>Paste kode HTML member disini.</p>';
-                    break;
-            }
-            
-            // Menggunakan data:text/html untuk simulasi konten iframe dalam satu file
-            iframe.srcdoc = `
-                <html>
-                    <body style="font-family: sans-serif; padding: 20px; color: #333;">
-                        ${content}
-                    </body>
-                </html>
-            `;
+            iframe.src = pageUrl;
         }
     </script>
 </body>
