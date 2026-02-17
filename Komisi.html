@@ -531,8 +531,9 @@
       const timeStr = now.toTimeString().slice(0, 5);
       
       document.getElementById('form-tanggal').value = dateStr;
-      document.getElementById('form-berangkat').value = timeStr;
-      document.getElementById('form-pulang').value = timeStr;
+      document.getElementById('form-berangkat').value = '';
+      document.getElementById('form-pulang').value = '';
+
       
       // Form submit handler
       document.getElementById('data-form').addEventListener('submit', handleFormSubmit);
@@ -667,13 +668,25 @@
                 <span class="font-medium text-gray-800">${row.nama || '-'}</span>
               </span>
             </td>
-            <td class="px-4 py-3 text-center text-gray-600">${row.berangkat || '-'}</td>
-            <td class="px-4 py-3 text-center text-gray-600">${row.pulang || '-'}</td>
-            <td class="px-4 py-3 text-right font-medium text-gray-700">Rp ${formatNumber(lembur)}</td>
-            <td class="px-4 py-3 text-right text-gray-600">${formatNumber(row.sr)}</td>
+            <td class="px-4 py-3 text-center text-gray-600">
+  ${row.berangkat && row.berangkat.trim() !== '' ? row.berangkat : '-'}
+</td>
+            <td class="px-3 py-2 text-center text-gray-600">
+  ${row.pulang && row.pulang.trim() !== '' ? row.pulang : '-'}
+</td>
+            <td class="px-4 py-3 text-right font-medium text-gray-700">
+  ${lembur > 0 ? 'Rp ' + formatNumber(lembur) : '-'}
+</td>
+            <td class="px-4 py-3 text-right text-gray-600">
+  ${row.sr && parseFormattedNumber(row.sr) > 0 ? formatNumber(row.sr) : '-'}
+</td>
             <td class="px-4 py-3 text-gray-600">${row.treatment || '-'}</td>
-            <td class="px-4 py-3 text-right font-medium text-gray-700">Rp ${formatNumber(nominal)}</td>
-            <td class="px-4 py-3 text-right font-bold text-pink-600">Rp ${formatNumber(total)}</td>
+            <td class="px-4 py-3 text-right font-medium text-gray-700">
+  ${nominal > 0 ? 'Rp ' + formatNumber(nominal) : '-'}
+</td>
+            <td class="px-4 py-3 text-right font-bold text-pink-600">
+  ${total > 0 ? 'Rp ' + formatNumber(total) : '-'}
+</td>
             <td class="px-4 py-3 text-center">
               <div class="flex items-center justify-center gap-2">
                 <button onclick="openEditModal(${actualIndex})" class="w-7 h-7 bg-blue-100 hover:bg-blue-200 text-blue-600 rounded-lg flex items-center justify-center transition-all" title="Edit">
@@ -907,8 +920,8 @@
       document.getElementById('form-row-index').value = '';
       document.getElementById('form-tanggal').value = now.toISOString().split('T')[0];
       document.getElementById('form-nama').value = '';
-      document.getElementById('form-berangkat').value = now.toTimeString().slice(0, 5);
-      document.getElementById('form-pulang').value = now.toTimeString().slice(0, 5);
+      document.getElementById('form-berangkat').value = '';
+      document.getElementById('form-pulang').value = '';
       document.getElementById('form-lembur').value = '';
       document.getElementById('form-sr').value = '';
       document.getElementById('form-treatment').value = '';
