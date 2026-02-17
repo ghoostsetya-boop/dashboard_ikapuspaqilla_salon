@@ -3,152 +3,394 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Ikapuspaqilla Salon</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Dashboard Management Keuangan Salon</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
-        
-        body { font-family: 'Poppins', sans-serif; background-color: #FFF5F0; color: #4A2C2A; overflow: hidden; }
-        
-        /* Animasi */
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
+        :root {
+            --primary-color: #FFDAB9; /* Pink Peach */
+            --secondary-color: #FFC0CB; /* Pink */
+            --dark-color: #5D4037;
+            --text-color: #333;
+            --bg-color: #FFF5F0;
+            --transition: all 0.3s ease;
         }
-        @keyframes fadeInUp {
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+
+        /* --- Animasi --- */
+        @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        @keyframes slideInLeft {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        /* Animasi Logo Bergerak */
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
+
+        @keyframes floatLogo {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
         }
 
-        .animate-fade-in-down { animation: fadeInDown 0.8s ease-out; }
-        .animate-fade-in-up { animation: fadeInUp 0.8s ease-out; }
-        .animate-slide-in-left { animation: slideInLeft 0.5s ease-out forwards; }
-        .animate-float { animation: float 3s ease-in-out infinite; }
+        /* --- Halaman Login --- */
+        #login-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #FFF5F0 0%, #FFDAB9 100%);
+        }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 5px; height: 5px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #FFB5A7; border-radius: 2px; }
-        ::-webkit-scrollbar-thumb:hover { background: #E07A5F; }
+        .login-container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .login-logo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 20px;
+            border: 4px solid var(--secondary-color);
+            animation: floatLogo 3s infinite ease-in-out;
+        }
+
+        .login-container h2 {
+            margin-bottom: 10px;
+            color: var(--dark-color);
+            font-size: 1.5rem;
+        }
+
+        .login-container p {
+            margin-bottom: 30px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .input-group input:focus {
+            border-color: var(--secondary-color);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background-color: var(--secondary-color);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            background-color: #FF9AA2;
+            transform: scale(1.02);
+        }
+
+        /* --- Main Dashboard --- */
+        #dashboard-page {
+            display: none;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+
+        /* Header Floating */
+        header {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 95%;
+            background: rgba(255, 218, 185, 0.95);
+            padding: 15px 30px;
+            border-radius: 50px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 20px;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .header-logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        header h1 {
+            font-size: 1.2rem;
+            color: var(--dark-color);
+        }
+
+        /* Layout Utama */
+        .main-container {
+            display: flex;
+            margin-top: 100px; /* Space for fixed header */
+            flex: 1;
+        }
+
+        /* Sidebar Tipis */
+        nav {
+            width: 60px;
+            background: white;
+            padding: 20px 10px;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            border-radius: 0 20px 20px 0;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 100px;
+            height: calc(100vh - 120px);
+        }
+
+        nav:hover {
+            width: 200px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--dark-color);
+            text-decoration: none;
+            padding: 10px;
+            border-radius: 10px;
+            transition: var(--transition);
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .nav-item:hover {
+            background-color: var(--primary-color);
+        }
+
+        .nav-item span {
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        nav:hover .nav-item span {
+            opacity: 1;
+        }
+
+        .icon {
+            font-size: 1.2rem;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        /* Iframe Area */
+        .content-area {
+            flex: 1;
+            padding: 20px;
+            height: calc(100vh - 100px);
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 20px;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            animation: fadeIn 1s ease-out;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            margin-top: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            color: var(--dark-color);
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            header {
+                padding: 10px 15px;
+                top: 10px;
+            }
+            header h1 { font-size: 0.9rem; }
+            .header-logo { width: 35px; height: 35px; }
+
+            .main-container {
+                margin-top: 70px;
+                flex-direction: column;
+            }
+
+            nav {
+                width: 100%;
+                height: auto;
+                position: relative;
+                top: 0;
+                flex-direction: row;
+                justify-content: space-around;
+                border-radius: 0 0 20px 20px;
+                padding: 10px;
+            }
+            
+            nav:hover { width: 100%; }
+            .nav-item span { display: none; } /* Hide text on mobile */
+            .nav-item { padding: 8px; }
+
+            .content-area {
+                height: calc(100vh - 170px);
+                padding: 10px;
+            }
+        }
     </style>
 </head>
-<body class="h-screen flex flex-col">
+<body>
 
-    <div id="loginPage" class="fixed inset-0 bg-[#FFF5F0] z-50 flex items-center justify-center p-4">
-        <div class="bg-white p-6 md:p-8 rounded-3xl shadow-2xl w-full max-w-sm md:max-w-md border border-pink-100 animate-fade-in-up">
-            <div class="text-center mb-6 md:mb-8">
-                <img src="https://lh3.googleusercontent.com/d/1rTcKE5xcEHCqgLIEK4eoep36Z0ZvRR3s" alt="Logo" class="h-20 w-20 md:h-24 md:w-24 rounded-full border-4 border-pink-100 mx-auto mb-4 md:mb-6 animate-float shadow-lg">
-                
-                <h2 class="text-xl md:text-2xl font-bold text-pink-900 mb-1 md:mb-2">Selamat Datang</h2>
-                <h3 class="text-lg md:text-xl font-semibold text-pink-700 mb-1 md:mb-2">Ikapuspaqilla Salon</h3>
-                <p class="text-pink-600 text-xs md:text-sm">Silahkan Login terlebih dahulu</p>
+    <div id="login-page">
+        <div class="login-container">
+            <img src="https://lh3.googleusercontent.com/d/1rTcKE5xcEHCqgLIEK4eoep36Z0ZvRR3s" alt="Logo" class="login-logo">
+            <h2>Selamat Datang</h2>
+            <p>di Dashboard Ikapuspaqilla Salon<br>Silahkan Login terlebih dahulu</p>
+            
+            <div class="input-group">
+                <input type="text" id="username" placeholder="Username">
             </div>
-            <form onsubmit="handleLogin(event)">
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-pink-800 mb-1">Username</label>
-                    <input type="text" id="username" required class="w-full px-4 py-2 md:py-3 rounded-xl border border-pink-200 focus:outline-none focus:ring-2 focus:ring-pink-300">
-                </div>
-                <div class="mb-6">
-                    <label class="block text-sm font-medium text-pink-800 mb-1">Password</label>
-                    <input type="password" id="password" required class="w-full px-4 py-2 md:py-3 rounded-xl border border-pink-200 focus:outline-none focus:ring-2 focus:ring-pink-300">
-                </div>
-                <button type="submit" class="w-full bg-pink-500 text-white py-3 rounded-xl font-semibold hover:bg-pink-600 transition duration-300 shadow-md hover:shadow-lg">
-                    Masuk
-                </button>
-            </form>
+            <div class="input-group">
+                <input type="password" id="password" placeholder="Password">
+            </div>
+            <button class="login-btn" onclick="checkLogin()">Login</button>
         </div>
     </div>
 
-    <div id="dashboardPage" class="hidden flex flex-col h-screen">
-        <header class="fixed top-2 md:top-4 left-2 md:left-4 right-2 md:right-4 z-40 animate-fade-in-down">
-            <div class="bg-white/90 backdrop-blur-sm shadow-lg rounded-full px-4 md:px-6 py-2 md:py-3 flex items-center justify-between border border-pink-100">
-                <div class="flex items-center gap-2 md:gap-4">
-                    <img src="https://lh3.googleusercontent.com/d/1rTcKE5xcEHCqgLIEK4eoep36Z0ZvRR3s" alt="Logo" class="h-10 w-10 md:h-12 md:w-12 rounded-full border-2 border-pink-200">
-                    <h1 class="text-sm md:text-xl font-bold text-pink-900 truncate max-w-[150px] md:max-w-none">Salon Dashboard</h1>
-                </div>
-                <div class="flex items-center gap-2 md:gap-4">
-                    <button onclick="handleLogout()" class="text-xs bg-pink-100 text-pink-700 px-3 md:px-4 py-1.5 md:py-2 rounded-full hover:bg-pink-200 font-semibold">Keluar</button>
-                </div>
-            </div>
+    <div id="dashboard-page">
+        <header>
+            <img src="https://lh3.googleusercontent.com/d/1rTcKE5xcEHCqgLIEK4eoep36Z0ZvRR3s" alt="Logo" class="header-logo">
+            <h1>Dasboard Management Keuangan Salon</h1>
         </header>
 
-        <div class="flex flex-1 pt-16 md:pt-24 pb-12 md:pb-16 overflow-hidden">
-            <nav class="w-16 md:w-20 flex flex-col items-center bg-white shadow-md rounded-r-3xl mr-2 md:mr-4 ml-1 md:ml-2 my-2 py-4 md:py-8 gap-4 md:gap-6 animate-slide-in-left border-r border-pink-50 sidebar-scroll overflow-y-auto">
-                <button onclick="loadPage('Jurnal.html')" class="group relative flex flex-col items-center gap-2" title="Jurnal Keuangan">
-                    <div class="p-3 md:p-4 rounded-xl md:rounded-2xl bg-pink-50 group-hover:bg-pink-100 transition-all duration-300">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-pink-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                    </div>
-                </button>
-                <button onclick="loadPage('Pengeluaran.html')" class="group relative flex flex-col items-center gap-2" title="Pengeluaran Bulanan">
-                    <div class="p-3 md:p-4 rounded-xl md:rounded-2xl bg-pink-50 group-hover:bg-pink-100 transition-all duration-300">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-pink-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2h-9a2 2 0 00-2 2v6a2 2 0 002 2z" /></svg>
-                    </div>
-                </button>
-                <button onclick="loadPage('Omset.html')" class="group relative flex flex-col items-center gap-2" title="Omset Bulanan">
-                    <div class="p-3 md:p-4 rounded-xl md:rounded-2xl bg-pink-50 group-hover:bg-pink-100 transition-all duration-300">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-pink-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                    </div>
-                </button>
-                <button onclick="loadPage('Member.html')" class="group relative flex flex-col items-center gap-2" title="Daftar Member">
-                    <div class="p-3 md:p-4 rounded-xl md:rounded-2xl bg-pink-50 group-hover:bg-pink-100 transition-all duration-300">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-pink-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
-                    </div>
-                </button>
+        <div class="main-container">
+            <nav>
+                <a href="#" class="nav-item" onclick="loadContent('Jurnal')">
+                    <span class="icon">📖</span> <span>Jurnal Keuangan</span>
+                </a>
+                <a href="#" class="nav-item" onclick="loadContent('Pengeluaran')">
+                    <span class="icon">💸</span> <span>Pengeluaran Bulanan</span>
+                </a>
+                <a href="#" class="nav-item" onclick="loadContent('Omset')">
+                    <span class="icon">📈</span> <span>Omset Bulanan</span>
+                </a>
+                <a href="#" class="nav-item" onclick="loadContent('Komisi')">
+                    <span class="icon">🧑‍💼</span> <span>Komisi Karyawan</span>
+                </a>
+                <a href="#" class="nav-item" onclick="loadContent('Member')">
+                    <span class="icon">💳</span> <span>Daftar Member</span>
+                </a>
             </nav>
 
-            <main class="flex-1 bg-white rounded-3xl shadow-inner mr-2 md:mr-4 my-2 overflow-hidden border border-pink-50 animate-fade-in-up">
-                <iframe id="contentFrame" src="Jurnal.html" class="w-full h-full border-none" title="Dashboard Content"></iframe>
-            </main>
+            <div class="content-area">
+                <iframe id="main-iframe" src="about:blank"></iframe>
+            </div>
         </div>
 
-        <footer class="fixed bottom-0 left-0 right-0 h-10 md:h-12 bg-white/80 backdrop-blur-sm border-t border-pink-100 flex items-center justify-center gap-2 md:gap-3 animate-fade-in-up z-40">
-            <img src="https://lh3.googleusercontent.com/d/1AcUPbZdtoKhbAEDhLgg4102LwKpQeRBn" alt="Footer Logo" class="h-4 w-4 md:h-6 md:w-6 rounded-full">
-            <p class="text-xs md:text-sm text-pink-800 font-medium">IkeBagus 2026</p>
+        <footer>
+            <img src="https://lh3.googleusercontent.com/d/1AcUPbZdtoKhbAEDhLgg4102LwKpQeRBn" alt="Logo" class="footer-logo">
+            <p>IkeBagus 2026</p>
         </footer>
     </div>
 
     <script>
-        function handleLogin(event) {
-            event.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
+        function checkLogin() {
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
 
-            if (username === 'admin' && password === '1234') {
-                document.getElementById('loginPage').classList.add('hidden');
-                document.getElementById('dashboardPage').classList.remove('hidden');
+            if (user === 'admin' && pass === '1234') {
+                document.getElementById('login-page').style.display = 'none';
+                document.getElementById('dashboard-page').style.display = 'flex';
+                // Load default content
+                loadContent('Jurnal');
             } else {
-                alert('Username atau Password salah!');
+                alert('Username atau Password Salah!');
             }
         }
 
-        function handleLogout() {
-            document.getElementById('loginPage').classList.remove('hidden');
-            document.getElementById('dashboardPage').classList.add('hidden');
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
+        function loadContent(page) {
+            const iframe = document.getElementById('main-iframe');
+            
+            // --- BAGIAN UNTUK PASTE HTML ANDA ---
+            // Ganti 'about:blank' dengan path file html Anda atau gunakan data:text/html
+            
+            let content = "";
+            switch(page) {
+                case 'Jurnal':
+                    content = '<h1>Halaman Jurnal Keuangan</h1><p>Paste kode HTML jurnal disini.</p>';
+                    break;
+                case 'Pengeluaran':
+                    content = '<h1>Halaman Pengeluaran</h1><p>Paste kode HTML pengeluaran disini.</p>';
+                    break;
+                case 'Omset':
+                    content = '<h1>Halaman Omset</h1><p>Paste kode HTML omset disini.</p>';
+                    break;
+                case 'Komisi':
+                    content = '<h1>Halaman Komisi</h1><p>Paste kode HTML komisi disini.</p>';
+                    break;
+                case 'Member':
+                    content = '<h1>Halaman Member</h1><p>Paste kode HTML member disini.</p>';
+                    break;
+            }
+            
+            // Menggunakan data:text/html untuk simulasi konten iframe dalam satu file
+            iframe.srcdoc = `
+                <html>
+                    <body style="font-family: sans-serif; padding: 20px; color: #333;">
+                        ${content}
+                    </body>
+                </html>
+            `;
         }
-
-        function loadPage(pageUrl) {
-            const frame = document.getElementById('contentFrame');
-            frame.style.opacity = 0;
-            setTimeout(() => {
-                frame.src = pageUrl;
-                frame.style.opacity = 1;
-            }, 300);
-        }
-        
-        const frame = document.getElementById('contentFrame');
-        frame.style.transition = 'opacity 0.3s ease-in-out';
     </script>
 </body>
 </html>
