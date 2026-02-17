@@ -224,30 +224,32 @@
         <!-- Data Table -->
         <div class="bg-white/90 backdrop-blur rounded-2xl shadow-lg border border-pink-100 overflow-hidden">
           <div class="overflow-x-auto">
-            <table class="w-full">
-              <thead>
-                <tr class="text-white text-sm" style="background: linear-gradient(135deg, #ad1457 0%, #d81b60 100%);">
-                  <th class="px-4 py-4 text-left font-semibold">Tanggal</th>
-                  <th class="px-4 py-4 text-left font-semibold">Nama Karyawan</th>
-                  <th class="px-4 py-4 text-center font-semibold">Berangkat</th>
-                  <th class="px-4 py-4 text-center font-semibold">Pulang</th>
-                  <th class="px-4 py-4 text-right font-semibold">Nominal Lembur</th>
-                  <th class="px-4 py-4 text-right font-semibold">SR</th>
-                  <th class="px-4 py-4 text-left font-semibold">Treatment</th>
-                  <th class="px-4 py-4 text-right font-semibold">Nominal</th>
-                  <th class="px-4 py-4 text-right font-semibold">Total</th>
-                  <th class="px-4 py-4 text-center font-semibold">Aksi</th>
-                </tr>
-              </thead>
-              <tbody id="table-body">
-                <tr>
-                  <td colspan="10" class="text-center py-12">
-                    <div class="shimmer-bg h-8 w-48 mx-auto rounded-lg mb-2"></div>
-                    <p class="text-pink-400">Memuat data...</p>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <table class="w-full text-[13px]">
+  <thead>
+    <tr class="text-white text-[12px] uppercase tracking-wide"
+        style="background: linear-gradient(135deg, #ad1457 0%, #d81b60 100%);">
+      <th class="px-3 py-2 text-left font-semibold">Tanggal</th>
+      <th class="px-3 py-2 text-left font-semibold">Nama Karyawan</th>
+      <th class="px-3 py-2 text-center font-semibold">Berangkat</th>
+      <th class="px-3 py-2 text-center font-semibold">Pulang</th>
+      <th class="px-3 py-2 text-right font-semibold">Nominal Lembur</th>
+      <th class="px-3 py-2 text-right font-semibold">SR</th>
+      <th class="px-3 py-2 text-left font-semibold">Treatment</th>
+      <th class="px-3 py-2 text-right font-semibold">Nominal</th>
+      <th class="px-3 py-2 text-right font-semibold">Total</th>
+      <th class="px-3 py-2 text-center font-semibold">Aksi</th>
+    </tr>
+  </thead>
+  <tbody id="table-body">
+    <tr>
+      <td colspan="10" class="text-center py-8">
+        <div class="shimmer-bg h-6 w-40 mx-auto rounded-lg mb-2"></div>
+        <p class="text-pink-400 text-sm">Memuat data...</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
           </div>
           
           <!-- Table Footer with Total -->
@@ -656,10 +658,10 @@
         
         return `
           <tr class="border-b border-pink-50 table-row-hover transition-all" style="animation: slideUp 0.3s ease-out ${index * 0.05}s both;">
-            <td class="px-4 py-3 text-gray-700">${formatDate(row.tanggal)}</td>
-            <td class="px-4 py-3">
+            <td class="px-3 py-2 text-gray-700">${formatDate(row.tanggal)}</td>
+            <td class="px-3 py-2">
               <span class="inline-flex items-center gap-2">
-                <span class="w-8 h-8 bg-gradient-to-br from-pink-400 to-rose-400 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                <span class="w-7 h-7 bg-gradient-to-br from-pink-400 to-rose-400 rounded-full flex items-center justify-center text-white text-[11px] font-bold">
                   ${(row.nama || '?').charAt(0).toUpperCase()}
                 </span>
                 <span class="font-medium text-gray-800">${row.nama || '-'}</span>
@@ -674,8 +676,8 @@
             <td class="px-4 py-3 text-right font-bold text-pink-600">Rp ${formatNumber(total)}</td>
             <td class="px-4 py-3 text-center">
               <div class="flex items-center justify-center gap-2">
-                <button onclick="openEditModal(${actualIndex})" class="w-8 h-8 bg-blue-100 hover:bg-blue-200 text-blue-600 rounded-lg flex items-center justify-center transition-all" title="Edit">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                <button onclick="openEditModal(${actualIndex})" class="w-7 h-7 bg-blue-100 hover:bg-blue-200 text-blue-600 rounded-lg flex items-center justify-center transition-all" title="Edit">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                 </button>
                 <button onclick="openDeleteModal(${actualIndex})" class="w-8 h-8 bg-red-100 hover:bg-red-200 text-red-600 rounded-lg flex items-center justify-center transition-all" title="Hapus">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
