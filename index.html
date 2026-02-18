@@ -15,52 +15,59 @@
 
         body {
             background-color: var(--soft-white);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow-x: hidden;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            overflow: hidden;
         }
 
-        /* Animasi Login Logo */
+        /* Animasi Logo Melayang */
         @keyframes float {
             0% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-10px) rotate(5deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
             100% { transform: translateY(0px) rotate(0deg); }
         }
 
         .animated-logo {
-            animation: float 3s ease-in-out infinite;
+            animation: float 4s ease-in-out infinite;
             border-radius: 50%;
-            border: 4px solid var(--pink-peach);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border: 5px solid white;
+            box-shadow: 0 10px 25px rgba(244, 164, 130, 0.3);
         }
 
-        /* Header Floating styling */
+        /* Header Floating */
         .header-floating {
             background: var(--pink-peach);
-            border-radius: 20px;
-            margin: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
+            border-radius: 25px;
+            margin: 15px 20px;
+            padding: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            z-index: 50;
         }
 
-        /* Sidebar Thin styling */
+        /* Sidebar Tipis (Auto Expand) */
         .sidebar {
-            width: 70px;
-            transition: width 0.3s ease;
+            width: 60px;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             background: white;
             border-right: 1px solid var(--pink-peach);
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            z-index: 40;
         }
 
         .sidebar:hover {
-            width: 220px;
+            width: 240px;
         }
 
         .sidebar-item {
             display: flex;
             align-items: center;
-            padding: 15px 25px;
-            color: #555;
-            transition: all 0.2s;
+            padding: 18px 20px;
+            color: #7d7d7d;
+            cursor: pointer;
+            transition: all 0.3s;
             white-space: nowrap;
         }
 
@@ -70,22 +77,41 @@
         }
 
         .sidebar-item i {
-            min-width: 30px;
+            min-width: 25px;
             font-size: 1.2rem;
+            text-align: center;
         }
 
-        /* Main Content Transition */
-        .content-frame {
-            border-radius: 15px;
-            background: white;
+        .sidebar-item span {
+            margin-left: 20px;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .sidebar:hover .sidebar-item span {
+            opacity: 1;
+        }
+
+        /* Kontainer Iframe */
+        .iframe-container {
+            flex: 1;
+            padding: 15px;
+            background: #fffafa;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #mainIframe {
             width: 100%;
-            height: calc(100vh - 250px);
+            height: 100%;
             border: 2px solid var(--pink-peach);
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 20px;
+            background: white;
         }
 
         #loginPage {
-            background: linear-gradient(135deg, var(--soft-white) 0%, var(--pink-peach) 100%);
+            background: linear-gradient(135deg, #fff5f2 0%, #ffcbba 100%);
             display: flex;
         }
 
@@ -94,125 +120,86 @@
 </head>
 <body>
 
-    <div id="loginPage" class="fixed inset-0 z-[100] flex flex-col justify-center items-center p-4">
-        <div class="bg-white p-10 rounded-[40px] shadow-2xl w-full max-w-md text-center transform transition hover:scale-105 duration-500">
-            <img src="https://lh3.googleusercontent.com/d/1rTcKE5xcEHCqgLIEK4eoep36Z0ZvRR3s" alt="Logo" class="animated-logo w-32 h-32 mx-auto mb-6">
-            <h2 class="text-2xl font-bold text-gray-700 mb-2">Selamat Datang di</h2>
-            <h3 class="text-xl font-medium text-pink-600 mb-8">Dashboard Ikapuspaqilla Salon</h3>
+    <div id="loginPage" class="fixed inset-0 z-[100] flex flex-col justify-center items-center">
+        <div class="bg-white/90 backdrop-blur-md p-10 rounded-[50px] shadow-2xl w-[90%] max-w-md text-center">
+            <img src="https://lh3.googleusercontent.com/d/1rTcKE5xcEHCqgLIEK4eoep36Z0ZvRR3s" alt="Logo" class="animated-logo w-28 h-28 mx-auto mb-6 object-cover">
+            <h2 class="text-lg text-gray-500">Selamat Datang di</h2>
+            <h1 class="text-2xl font-bold text-pink-500 mb-8">Dashboard Ikapuspaqilla Salon</h1>
             
             <div class="space-y-4">
-                <input type="text" id="username" placeholder="Username" class="w-full px-5 py-3 rounded-full border border-pink-200 focus:outline-none focus:ring-2 focus:ring-pink-400">
-                <input type="password" id="password" placeholder="Password" class="w-full px-5 py-3 rounded-full border border-pink-200 focus:outline-none focus:ring-2 focus:ring-pink-400">
-                <button onclick="login()" class="w-full bg-pink-400 hover:bg-pink-500 text-white font-bold py-3 rounded-full shadow-lg transition duration-300">
-                    Masuk Sekarang
+                <input type="text" id="username" placeholder="Username" class="w-full px-6 py-4 rounded-2xl bg-gray-50 border-none focus:ring-2 focus:ring-pink-300 outline-none">
+                <input type="password" id="password" placeholder="Password" class="w-full px-6 py-4 rounded-2xl bg-gray-50 border-none focus:ring-2 focus:ring-pink-300 outline-none">
+                <button onclick="checkLogin()" class="w-full bg-pink-400 hover:bg-pink-500 text-white font-bold py-4 rounded-2xl shadow-lg transition-transform active:scale-95">
+                    LOGIN
                 </button>
             </div>
-            <p id="errorMsg" class="text-red-500 mt-4 hidden text-sm">Akses ditolak! Cek kembali kredensial Anda.</p>
+            <p id="errorMsg" class="text-red-400 mt-4 hidden text-sm font-semibold">Akses Ditolak!</p>
         </div>
     </div>
 
-    <div id="mainDashboard" class="hidden min-h-screen flex flex-col">
+    <div id="dashboardApp" class="hidden h-screen flex flex-col">
         
-        <header class="header-floating p-6 flex flex-col items-center justify-center text-center">
-            <img src="https://lh3.googleusercontent.com/d/1rTcKE5xcEHCqgLIEK4eoep36Z0ZvRR3s" alt="Logo Header" class="w-20 h-20 mb-2 drop-shadow-md">
-            <h1 class="text-2xl md:text-3xl font-serif font-bold text-white tracking-wide">
-                Dashboard Management Keuangan Salon
-            </h1>
-        </header>
-
-        <div class="flex flex-1 overflow-hidden">
-            <aside class="sidebar h-full flex flex-col py-10 shadow-lg">
-                <div class="sidebar-item cursor-pointer" onclick="loadPage('Jurnal')">
-                    <i class="fas fa-book"></i> <span class="ml-4 font-semibold">Jurnal Keuangan</span>
-                </div>
-                <div class="sidebar-item cursor-pointer" onclick="loadPage('Pengeluaran')">
-                    <i class="fas fa-money-bill-wave"></i> <span class="ml-4 font-semibold">Pengeluaran Bulanan</span>
-                </div>
-                <div class="sidebar-item cursor-pointer" onclick="loadPage('Omset')">
-                    <i class="fas fa-chart-line"></i> <span class="ml-4 font-semibold">Omset Bulanan</span>
-                </div>
-                <div class="sidebar-item cursor-pointer" onclick="loadPage('Komisi')">
-                    <i class="fas fa-users-cog"></i> <span class="ml-4 font-semibold">Komisi Karyawan</span>
-                </div>
-                <div class="sidebar-item cursor-pointer" onclick="loadPage('Member')">
-                    <i class="fas fa-id-card"></i> <span class="ml-4 font-semibold">Daftar Member</span>
-                </div>
-            </aside>
-
-            <main class="flex-1 p-6 overflow-y-auto">
-                <div id="contentTitle" class="text-xl font-bold text-pink-600 mb-4 px-2">Silahkan pilih menu di samping...</div>
-                
-                <div id="iframeDisplay" class="content-frame p-4 overflow-auto">
-                    <div class="flex flex-col items-center justify-center h-full text-gray-400">
-                        <i class="fas fa-spa text-6xl mb-4 opacity-20"></i>
-                        <p>Konten akan tampil di sini setelah Anda memilih menu.</p>
-                    </div>
-                </div>
-            </main>
+        <div class="header-floating">
+            <img src="https://lh3.googleusercontent.com/d/1rTcKE5xcEHCqgLIEK4eoep36Z0ZvRR3s" alt="Logo" class="w-16 h-16 mx-auto mb-1 rounded-full border-2 border-white shadow-md">
+            <h2 class="text-white text-xl font-bold uppercase tracking-widest">Dasboard Management Keuangan Salon</h2>
         </div>
 
-        <footer class="p-4 flex justify-center items-center bg-white border-t border-pink-100">
-            <img src="https://lh3.googleusercontent.com/d/1AcUPbZdtoKhbAEDhLgg4102LwKpQeRBn" alt="Footer Logo" class="w-8 h-8 mr-3 rounded-full shadow-sm">
-            <span class="text-pink-400 font-medium">IkeBagus 2026</span>
+        <div class="flex flex-1 overflow-hidden">
+            <div class="sidebar shadow-xl">
+                <div class="sidebar-item" onclick="changeSrc('Jurnal.html')">
+                    <i class="fas fa-file-invoice-dollar"></i><span>Jurnal Keuangan</span>
+                </div>
+                <div class="sidebar-item" onclick="changeSrc('Pengeluaran.html')">
+                    <i class="fas fa-wallet"></i><span>Pengeluaran Bulanan</span>
+                </div>
+                <div class="sidebar-item" onclick="changeSrc('Omset.html')">
+                    <i class="fas fa-chart-line"></i><span>Omset Bulanan</span>
+                </div>
+                <div class="sidebar-item" onclick="changeSrc('Komisi.html')">
+                    <i class="fas fa-cut"></i><span>Komisi Karyawan</span>
+                </div>
+                <div class="sidebar-item" onclick="changeSrc('Member.html')">
+                    <i class="fas fa-heart"></i><span>Daftar Member</span>
+                </div>
+            </div>
+
+            <div class="iframe-container">
+                <iframe id="mainIframe" name="mainIframe" src="about:blank" title="Content Area"></iframe>
+            </div>
+        </div>
+
+        <footer class="flex justify-center items-center py-3 bg-white border-t border-pink-100 text-pink-400 text-xs font-bold">
+            <img src="https://lh3.googleusercontent.com/d/1AcUPbZdtoKhbAEDhLgg4102LwKpQeRBn" alt="Footer Logo" class="w-6 h-6 mr-2 rounded-full">
+            IkeBagus 2026
         </footer>
     </div>
 
     <script>
-        // LOGIKA LOGIN
-        function login() {
-            const user = document.getElementById('username').value;
-            const pass = document.getElementById('password').value;
-            const errorMsg = document.getElementById('errorMsg');
-
-            if (user === 'admin' && pass === '1234') {
+        // Logika Login
+        function checkLogin() {
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+            if(u === 'admin' && p === '1234') {
                 document.getElementById('loginPage').classList.add('hidden');
-                document.getElementById('mainDashboard').classList.remove('hidden');
+                document.getElementById('dashboardApp').classList.remove('hidden');
+                // Set default page saat login berhasil
+                changeSrc('jurnal.html'); 
             } else {
-                errorMsg.classList.remove('hidden');
-                setTimeout(() => errorMsg.classList.add('hidden'), 3000);
+                document.getElementById('errorMsg').classList.remove('hidden');
             }
         }
 
-        // LOGIKA PERPINDAHAN HALAMAN (SIMULASI IFRAME)
-        function loadPage(pageName) {
-            const display = document.getElementById('iframeDisplay');
-            const title = document.getElementById('contentTitle');
+        // FUNGSI PENGGANTI SRC IFRAME
+        function changeSrc(fileName) {
+            const iframe = document.getElementById('mainIframe');
             
-            // Animasi Fade Out
-            display.style.opacity = '0';
-            display.style.transform = 'translateY(10px)';
+            // JIKA FILE ADA DI REPO YANG SAMA (Folder yang sama di GitHub)
+            // Cukup panggil nama filenya saja
+            iframe.src = fileName;
 
-            setTimeout(() => {
-                switch(pageName) {
-                    case 'jurnal':
-                        title.innerText = "Jurnal Keuangan";
-                        display.innerHTML = `<div class="p-4"><h3>Memuat Jurnal...</h3><p>Data keuangan Anda akan muncul di sini.</p></div>`;
-                        break;
-                    case 'pengeluaran':
-                        title.innerText = "Pengeluaran Bulanan";
-                        display.innerHTML = `<div class="p-4"><h3>Daftar Pengeluaran</h3></div>`;
-                        break;
-                    case 'omset':
-                        title.innerText = "Omset Bulanan";
-                        display.innerHTML = `<div class="p-4"><h3>Statistik Omset</h3></div>`;
-                        break;
-                    case 'komisi':
-                        title.innerText = "Komisi Karyawan";
-                        display.innerHTML = `<div class="p-4"><h3>Rincian Komisi</h3></div>`;
-                        break;
-                    case 'member':
-                        title.innerText = "Daftar Member";
-                        display.innerHTML = `<div class="p-4"><h3>Database Pelanggan Loyal</h3></div>`;
-                        break;
-                }
-                
-                // Animasi Fade In
-                display.style.transition = 'all 0.5s ease';
-                display.style.opacity = '1';
-                display.style.transform = 'translateY(0px)';
-            }, 300);
+            // Jika file ada di repo lain, gunakan URL lengkap:
+            // iframe.src = "https://username.github.io/repo-name/" + fileName;
         }
     </script>
 </body>
 </html>
-
