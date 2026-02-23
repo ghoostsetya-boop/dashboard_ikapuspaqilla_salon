@@ -414,91 +414,93 @@
     </div>
    </footer>
   </div><!-- Input Modal -->
-  <div id="input-modal" class="fixed inset-0 z-50 hidden">
+  <div id="input-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-3">
    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeInputModal()"></div>
-   <div class="absolute inset-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden animate-scale-in max-h-[90%] overflow-y-auto">
-    <div class="sticky top-0 bg-gradient-to-r from-pink-500 to-rose-500 px-4 md:px-6 py-4 flex items-center justify-between z-10">
+   <div class="relative w-full max-w-2xl max-h-[95vh] flex flex-col bg-white rounded-3xl shadow-2xl animate-scale-in">
+    <div class="flex-shrink-0 bg-gradient-to-r from-pink-500 to-rose-500 px-4 md:px-6 py-4 rounded-t-3xl flex items-center justify-between">
      <h3 class="text-lg md:text-xl font-bold text-white flex items-center gap-2">
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
       </svg><span class="hidden md:inline">Input Data Baru</span><span class="md:hidden">Input Data</span></h3><button onclick="closeInputModal()" class="text-white/80 hover:text-white transition-colors">
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
       </svg></button>
     </div>
-    <form id="input-form" onsubmit="submitData(event)" class="p-4 md:p-6 space-y-4 overflow-y-auto" style="max-height: calc(100vh - 8rem);">
-     <div class="grid grid-cols-1 md:grid-cols-2 gap-4"><!-- Tanggal -->
+    <form id="input-form" onsubmit="submitData(event)" class="flex-1 overflow-y-auto px-4 md:px-6 py-4 space-y-4">
+     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div><label class="block text-xs md:text-sm font-semibold text-gray-700 mb-2">Tanggal</label> <input type="date" id="input-tanggal" required class="w-full px-3 md:px-4 py-2 md:py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-pink-400 focus:bg-white outline-none transition-all input-focus text-sm">
-      </div><!-- Nama Karyawan -->
+      </div>
       <div><label class="block text-xs md:text-sm font-semibold text-gray-700 mb-2">Nama Karyawan</label> <select id="input-nama" required class="w-full px-3 md:px-4 py-2 md:py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-pink-400 focus:bg-white outline-none transition-all input-focus text-sm"> <option value="">Pilih Karyawan</option> <option value="Nungki">Nungki</option> <option value="Risa">Risa</option> <option value="Bu Yanti">Bu Yanti</option> <option value="Ike">Ike</option> <option value="Abel">Abel</option> </select>
-      </div><!-- Berangkat -->
+      </div>
       <div><label class="block text-xs md:text-sm font-semibold text-gray-700 mb-2">Jam Berangkat</label> <input type="time" id="input-berangkat" required class="w-full px-3 md:px-4 py-2 md:py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-pink-400 focus:bg-white outline-none transition-all input-focus text-sm">
-      </div><!-- Nominal Lembur -->
+      </div>
       <div><label class="block text-xs md:text-sm font-semibold text-gray-700 mb-2">Nominal Lembur</label> <input type="text" id="input-lembur" placeholder="0" oninput="formatNumberInput(this)" class="w-full px-3 md:px-4 py-2 md:py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-pink-400 focus:bg-white outline-none transition-all input-focus text-sm">
       </div>
-     </div><!-- Multiple Treatment Inputs -->
+     </div>
      <div>
       <div class="flex items-center justify-between mb-3"><label class="text-xs md:text-sm font-semibold text-gray-700">Treatment</label> <button type="button" onclick="addTreatmentRow()" class="px-2 md:px-3 py-1 md:py-1.5 bg-pink-100 hover:bg-pink-200 text-pink-600 text-xs md:text-sm font-semibold rounded-lg transition-colors flex items-center gap-1">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
         </svg><span class="hidden md:inline">Tambah Treatment</span><span class="md:hidden">Tambah</span> </button>
       </div>
-      <div id="treatment-container" class="space-y-2"><!-- Treatment rows will be added here -->
+      <div id="treatment-container" class="space-y-2">
       </div>
-     </div><!-- Pulang -->
+     </div>
      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div><label class="block text-xs md:text-sm font-semibold text-gray-700 mb-2">Jam Pulang</label> <input type="time" id="input-pulang" required class="w-full px-3 md:px-4 py-2 md:py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-pink-400 focus:bg-white outline-none transition-all input-focus text-sm">
       </div>
      </div>
-     <div class="flex gap-2 md:gap-3 pt-4 sticky bottom-0 bg-white"><button type="button" onclick="closeInputModal()" class="flex-1 px-3 md:px-6 py-2 md:py-3 bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold text-sm md:text-base rounded-xl transition-all btn-hover"> Batal </button> <button type="submit" id="submit-btn" class="flex-1 px-3 md:px-6 py-2 md:py-3 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold text-sm md:text-base rounded-xl shadow-lg transition-all btn-hover flex items-center justify-center gap-2">
-       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-       </svg> Simpan </button>
-     </div>
     </form>
+    <div class="flex-shrink-0 flex gap-2 md:gap-3 px-4 md:px-6 py-4 bg-white border-t border-gray-100 rounded-b-3xl"><button type="button" onclick="closeInputModal()" class="flex-1 px-3 md:px-6 py-2 md:py-3 bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold text-sm md:text-base rounded-xl transition-all btn-hover">Batal</button> <button type="button" onclick="document.getElementById('input-form').dispatchEvent(new Event('submit', { cancelable: true }))" id="submit-btn" class="flex-1 px-3 md:px-6 py-2 md:py-3 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold text-sm md:text-base rounded-xl shadow-lg transition-all btn-hover flex items-center justify-center gap-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+      </svg>Simpan </button>
+    </div>
    </div>
   </div><!-- Edit Modal -->
-  <div id="edit-modal" class="fixed inset-0 z-50 hidden">
+  <div id="edit-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-3">
    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeEditModal()"></div>
-   <div class="absolute inset-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden animate-scale-in max-h-[90%] overflow-y-auto">
-    <div class="sticky top-0 bg-gradient-to-r from-blue-500 to-indigo-500 px-4 md:px-6 py-4 flex items-center justify-between z-10">
+   <div class="relative w-full max-w-2xl max-h-[95vh] flex flex-col bg-white rounded-3xl shadow-2xl animate-scale-in">
+    <div class="flex-shrink-0 bg-gradient-to-r from-blue-500 to-indigo-500 px-4 md:px-6 py-4 rounded-t-3xl flex items-center justify-between">
      <h3 class="text-lg md:text-xl font-bold text-white flex items-center gap-2">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+      </svg><span class="hidden md:inline">Edit Data</span><span class="md:hidden">Edit</span></h3><button onclick="closeEditModal()" class="text-white/80 hover:text-white transition-colors">
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-      </svg></h3>
+      </svg></button>
     </div>
-    <form id="edit-form" onsubmit="updateData(event)" class="p-6 space-y-5"><input type="hidden" id="edit-row-index">
-     <div class="grid grid-cols-1 md:grid-cols-2 gap-5"><!-- Tanggal -->
-      <div><label class="block text-sm font-semibold text-gray-700 mb-2">Tanggal</label> <input type="date" id="edit-tanggal" required class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-pink-400 focus:bg-white outline-none transition-all input-focus">
-      </div><!-- Nama Karyawan -->
-      <div><label class="block text-sm font-semibold text-gray-700 mb-2">Nama Karyawan</label> <select id="edit-nama" required class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-pink-400 focus:bg-white outline-none transition-all input-focus"> <option value="">Pilih Karyawan</option> <option value="Nungki">Nungki</option> <option value="Risa">Risa</option> <option value="Bu Yanti">Bu Yanti</option> <option value="Ike">Ike</option> <option value="Abel">Abel</option> </select>
-      </div><!-- Berangkat -->
-      <div><label class="block text-sm font-semibold text-gray-700 mb-2">Jam Berangkat</label> <input type="time" id="edit-berangkat" required class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-pink-400 focus:bg-white outline-none transition-all input-focus">
-      </div><!-- Nominal Lembur -->
-      <div><label class="block text-sm font-semibold text-gray-700 mb-2">Nominal Lembur</label> <input type="text" id="edit-lembur" placeholder="0" oninput="formatNumberInput(this)" class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-pink-400 focus:bg-white outline-none transition-all input-focus">
+    <form id="edit-form" onsubmit="updateData(event)" class="flex-1 overflow-y-auto px-4 md:px-6 py-4 space-y-4"><input type="hidden" id="edit-row-index">
+     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div><label class="block text-xs md:text-sm font-semibold text-gray-700 mb-2">Tanggal</label> <input type="date" id="edit-tanggal" required class="w-full px-3 md:px-4 py-2 md:py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-blue-400 focus:bg-white outline-none transition-all input-focus text-sm">
       </div>
-     </div><!-- Multiple Treatment Inputs -->
-     <div>
-      <div class="flex items-center justify-between mb-3"><label class="text-sm font-semibold text-gray-700">Treatment</label> <button type="button" onclick="addEditTreatmentRow()" class="px-3 py-1.5 bg-blue-100 hover:bg-blue-200 text-blue-600 text-sm font-semibold rounded-lg transition-colors flex items-center gap-1">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-        </svg> Tambah Treatment </button>
+      <div><label class="block text-xs md:text-sm font-semibold text-gray-700 mb-2">Nama Karyawan</label> <select id="edit-nama" required class="w-full px-3 md:px-4 py-2 md:py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-blue-400 focus:bg-white outline-none transition-all input-focus text-sm"> <option value="">Pilih Karyawan</option> <option value="Nungki">Nungki</option> <option value="Risa">Risa</option> <option value="Bu Yanti">Bu Yanti</option> <option value="Ike">Ike</option> <option value="Abel">Abel</option> </select>
       </div>
-      <div id="edit-treatment-container" class="space-y-3"><!-- Treatment rows will be added here -->
+      <div><label class="block text-xs md:text-sm font-semibold text-gray-700 mb-2">Jam Berangkat</label> <input type="time" id="edit-berangkat" required class="w-full px-3 md:px-4 py-2 md:py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-blue-400 focus:bg-white outline-none transition-all input-focus text-sm">
       </div>
-     </div><!-- Pulang -->
-     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-      <div><label class="block text-sm font-semibold text-gray-700 mb-2">Jam Pulang</label> <input type="time" id="edit-pulang" required class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-pink-400 focus:bg-white outline-none transition-all input-focus">
+      <div><label class="block text-xs md:text-sm font-semibold text-gray-700 mb-2">Nominal Lembur</label> <input type="text" id="edit-lembur" placeholder="0" oninput="formatNumberInput(this)" class="w-full px-3 md:px-4 py-2 md:py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-blue-400 focus:bg-white outline-none transition-all input-focus text-sm">
       </div>
      </div>
-     <div class="flex gap-3 pt-4"><button type="button" onclick="closeEditModal()" class="flex-1 px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold rounded-xl transition-all btn-hover"> Batal </button> <button type="submit" id="edit-submit-btn" class="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-semibold rounded-xl shadow-lg transition-all btn-hover flex items-center justify-center gap-2">
-       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-       </svg> Update </button>
+     <div>
+      <div class="flex items-center justify-between mb-3"><label class="text-xs md:text-sm font-semibold text-gray-700">Treatment</label> <button type="button" onclick="addEditTreatmentRow()" class="px-2 md:px-3 py-1 md:py-1.5 bg-blue-100 hover:bg-blue-200 text-blue-600 text-xs md:text-sm font-semibold rounded-lg transition-colors flex items-center gap-1">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg><span class="hidden md:inline">Tambah Treatment</span><span class="md:hidden">Tambah</span> </button>
+      </div>
+      <div id="edit-treatment-container" class="space-y-2">
+      </div>
+     </div>
+     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div><label class="block text-xs md:text-sm font-semibold text-gray-700 mb-2">Jam Pulang</label> <input type="time" id="edit-pulang" required class="w-full px-3 md:px-4 py-2 md:py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-blue-400 focus:bg-white outline-none transition-all input-focus text-sm">
+      </div>
      </div>
     </form>
+    <div class="flex-shrink-0 flex gap-2 md:gap-3 px-4 md:px-6 py-4 bg-white border-t border-gray-100 rounded-b-3xl"><button type="button" onclick="closeEditModal()" class="flex-1 px-3 md:px-6 py-2 md:py-3 bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold text-sm md:text-base rounded-xl transition-all btn-hover">Batal</button> <button type="button" onclick="document.getElementById('edit-form').dispatchEvent(new Event('submit', { cancelable: true }))" id="edit-submit-btn" class="flex-1 px-3 md:px-6 py-2 md:py-3 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-semibold text-sm md:text-base rounded-xl shadow-lg transition-all btn-hover flex items-center justify-center gap-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+      </svg>Update </button>
+    </div>
    </div>
   </div><!-- Delete Confirmation Modal -->
-  <div id="delete-modal" class="fixed inset-0 z-50 hidden">
+  <div id="delete-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-3">
    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeDeleteModal()"></div>
-   <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden animate-scale-in">
+   <div class="relative w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden animate-scale-in">
     <div class="bg-gradient-to-r from-red-500 to-rose-500 px-6 py-4">
      <h3 class="text-xl font-bold text-white flex items-center gap-2">
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-      </svg> Konfirmasi Hapus</h3>
+      </svg>Konfirmasi Hapus</h3>
     </div>
     <div class="p-6">
      <div class="text-center mb-6">
@@ -509,9 +511,9 @@
       <p class="text-gray-700 font-medium">Apakah Anda yakin ingin menghapus data ini?</p>
       <p class="text-gray-500 text-sm mt-1">Data yang dihapus tidak dapat dikembalikan.</p>
      </div><input type="hidden" id="delete-row-index">
-     <div class="flex gap-3"><button onclick="closeDeleteModal()" class="flex-1 px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold rounded-xl transition-all btn-hover"> Batal </button> <button onclick="confirmDelete()" class="flex-1 px-6 py-3 bg-gradient-to-r from-red-500 to-rose-500 hover:from-red-600 hover:to-rose-600 text-white font-semibold rounded-xl shadow-lg transition-all btn-hover flex items-center justify-center gap-2">
+     <div class="flex gap-3"><button onclick="closeDeleteModal()" class="flex-1 px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold rounded-xl transition-all btn-hover">Batal</button> <button onclick="confirmDelete()" class="flex-1 px-6 py-3 bg-gradient-to-r from-red-500 to-rose-500 hover:from-red-600 hover:to-rose-600 text-white font-semibold rounded-xl shadow-lg transition-all btn-hover flex items-center justify-center gap-2">
        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-       </svg> Hapus </button>
+       </svg>Hapus </button>
      </div>
     </div>
    </div>
@@ -886,25 +888,25 @@
       const rowId = treatmentRowCount++;
       
       const row = document.createElement('div');
-      row.className = 'treatment-row grid grid-cols-12 gap-3 animate-slide-up';
+      row.className = 'treatment-row grid grid-cols-12 gap-2 md:gap-3 animate-slide-up';
       row.dataset.rowId = rowId;
       row.innerHTML = `
         <div class="col-span-3">
           <input type="text" placeholder="No:SR" value="${noSR}"
-                 class="treatment-nosr w-full px-3 py-2.5 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-pink-400 focus:bg-white outline-none transition-all input-focus text-sm">
+                 class="treatment-nosr w-full px-2 md:px-3 py-2 bg-gray-50 border-2 border-gray-200 rounded-lg focus:border-pink-400 focus:bg-white outline-none transition-all input-focus text-xs md:text-sm">
         </div>
         <div class="col-span-5">
           <input type="text" placeholder="Treatment" value="${treatment}"
-                 class="treatment-name w-full px-3 py-2.5 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-pink-400 focus:bg-white outline-none transition-all input-focus text-sm">
+                 class="treatment-name w-full px-2 md:px-3 py-2 bg-gray-50 border-2 border-gray-200 rounded-lg focus:border-pink-400 focus:bg-white outline-none transition-all input-focus text-xs md:text-sm">
         </div>
         <div class="col-span-3">
           <input type="text" placeholder="Nominal" value="${nominal ? formatNumber(nominal) : ''}" oninput="formatNumberInput(this)"
-                 class="treatment-nominal w-full px-3 py-2.5 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-pink-400 focus:bg-white outline-none transition-all input-focus text-sm">
+                 class="treatment-nominal w-full px-2 md:px-3 py-2 bg-gray-50 border-2 border-gray-200 rounded-lg focus:border-pink-400 focus:bg-white outline-none transition-all input-focus text-xs md:text-sm">
         </div>
         <div class="col-span-1 flex items-center justify-center">
           <button type="button" onclick="removeTreatmentRow(${rowId})" 
-                  class="p-2 text-red-500 hover:bg-red-100 rounded-lg transition-colors">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  class="p-1.5 text-red-500 hover:bg-red-100 rounded-lg transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
             </svg>
           </button>
@@ -930,25 +932,25 @@
       const rowId = editTreatmentRowCount++;
       
       const row = document.createElement('div');
-      row.className = 'treatment-row grid grid-cols-12 gap-3 animate-slide-up';
+      row.className = 'treatment-row grid grid-cols-12 gap-2 md:gap-3 animate-slide-up';
       row.dataset.rowId = rowId;
       row.innerHTML = `
         <div class="col-span-3">
           <input type="text" placeholder="No:SR" value="${noSR}"
-                 class="treatment-nosr w-full px-3 py-2.5 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-blue-400 focus:bg-white outline-none transition-all input-focus text-sm">
+                 class="treatment-nosr w-full px-2 md:px-3 py-2 bg-gray-50 border-2 border-gray-200 rounded-lg focus:border-blue-400 focus:bg-white outline-none transition-all input-focus text-xs md:text-sm">
         </div>
         <div class="col-span-5">
           <input type="text" placeholder="Treatment" value="${treatment}"
-                 class="treatment-name w-full px-3 py-2.5 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-blue-400 focus:bg-white outline-none transition-all input-focus text-sm">
+                 class="treatment-name w-full px-2 md:px-3 py-2 bg-gray-50 border-2 border-gray-200 rounded-lg focus:border-blue-400 focus:bg-white outline-none transition-all input-focus text-xs md:text-sm">
         </div>
         <div class="col-span-3">
           <input type="text" placeholder="Nominal" value="${nominal ? formatNumber(parseFormattedNumber(nominal)) : ''}" oninput="formatNumberInput(this)"
-                 class="treatment-nominal w-full px-3 py-2.5 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-blue-400 focus:bg-white outline-none transition-all input-focus text-sm">
+                 class="treatment-nominal w-full px-2 md:px-3 py-2 bg-gray-50 border-2 border-gray-200 rounded-lg focus:border-blue-400 focus:bg-white outline-none transition-all input-focus text-xs md:text-sm">
         </div>
         <div class="col-span-1 flex items-center justify-center">
           <button type="button" onclick="removeEditTreatmentRow(${rowId})" 
-                  class="p-2 text-red-500 hover:bg-red-100 rounded-lg transition-colors">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  class="p-1.5 text-red-500 hover:bg-red-100 rounded-lg transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
             </svg>
           </button>
@@ -995,7 +997,7 @@
       submitBtn.disabled = true;
       submitBtn.innerHTML = `
         <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-        Menyimpan...
+        <span class="hidden md:inline">Menyimpan...</span><span class="md:hidden">Simpan...</span>
       `;
       
       try {
@@ -1059,7 +1061,7 @@
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
           </svg>
-          Simpan
+          <span class="hidden md:inline">Simpan</span><span class="md:hidden">Simpan</span>
         `;
       }
     }
@@ -1104,7 +1106,7 @@
       submitBtn.disabled = true;
       submitBtn.innerHTML = `
         <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-        Mengupdate...
+        <span class="hidden md:inline">Mengupdate...</span><span class="md:hidden">Update...</span>
       `;
       
       try {
@@ -1153,7 +1155,7 @@
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
           </svg>
-          Update
+          <span class="hidden md:inline">Update</span><span class="md:hidden">Update</span>
         `;
       }
     }
@@ -1354,5 +1356,5 @@
       document.getElementById('filter-date').value = getCurrentDate();
     });
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d297491d1999f85',t:'MTc3MTg3ODM1Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d297f31a1b19f85',t:'MTc3MTg3ODc5Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
