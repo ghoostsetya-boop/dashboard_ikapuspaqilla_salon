@@ -594,17 +594,22 @@
       document.body.style.overflow = '';
     }
 
-    function openEditModal(id) {
-      event?.stopPropagation();
-      const item = allData.find(d => d.id == id);
-      if (!item) return;
-      
-      document.getElementById('edit-id').value = id;
-      document.getElementById('edit-tanggal').value = item.tanggal || '';
-      document.getElementById('edit-nama').value = item.nama || '';
-      document.getElementById('edit-berangkat').value = item.berangkat || '';
-      document.getElementById('edit-lembur').value = formatThousand(item.lembur);
-      document.getElementById('edit-pulang').value = item.pulang || '';
+    function openEditModal(e, id) {
+  if (e) e.stopPropagation();
+
+  const item = allData.find(d => d.id == id);
+  if (!item) return;
+
+  document.getElementById('edit-id').value = id;
+  document.getElementById('edit-tanggal').value = item.tanggal || '';
+  document.getElementById('edit-nama').value = item.nama || '';
+  document.getElementById('edit-berangkat').value = item.berangkat || '';
+  document.getElementById('edit-lembur').value = formatThousand(item.lembur);
+  document.getElementById('edit-pulang').value = item.pulang || '';
+
+  document.getElementById('edit-modal').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
       
       // Parse treatments
       const treatments = [];
@@ -651,12 +656,13 @@
       document.body.style.overflow = '';
     }
 
-    function openDeleteModal(id) {
-      event?.stopPropagation();
-      document.getElementById('delete-id').value = id;
-      document.getElementById('delete-modal').classList.remove('hidden');
-      document.body.style.overflow = 'hidden';
-    }
+    function openDeleteModal(e, id) {
+  if (e) e.stopPropagation();
+
+  document.getElementById('delete-id').value = id;
+  document.getElementById('delete-modal').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
 
     function closeDeleteModal() {
       document.getElementById('delete-modal').classList.add('hidden');
@@ -850,10 +856,10 @@
             ${treatmentsHTML ? `<div class="mb-3 space-y-1">${treatmentsHTML}</div>` : ''}
             
             <div class="flex gap-2">
-              <button onclick="openEditModal(${item.id}); return false;" class="flex-1 px-3 py-2 bg-blue-500 text-white text-xs rounded-lg hover:bg-blue-600 transition-all font-medium">
+              <button onclick="openEditModal(event, '${item.id}')" class="flex-1 px-3 py-2 bg-blue-500 text-white text-xs rounded-lg hover:bg-blue-600 transition-all font-medium">
                 ✏️ Edit
               </button>
-              <button onclick="openDeleteModal(${item.id}); return false;" class="flex-1 px-3 py-2 bg-red-500 text-white text-xs rounded-lg hover:bg-red-600 transition-all font-medium">
+              <button onclick="openDeleteModal(event, '${item.id}')" class="flex-1 px-3 py-2 bg-red-500 text-white text-xs rounded-lg hover:bg-red-600 transition-all font-medium">
                 🗑️ Hapus
               </button>
             </div>
@@ -993,31 +999,28 @@
 
     // Confirm Delete
     async function confirmDelete() {
-      const id = document.getElementById('delete-id').value;
-      const btn = document.getElementById('delete-btn');
-      const text = document.getElementById('delete-text');
-      btn.disabled = true;
-      text.textContent = 'Menghapus...';
-      
-      try {
-        const response = await fetch(API_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'delete', id: id })
-        });
-        
-        showToast('Data berhasil dihapus!');
-        closeDeleteModal();
-        setTimeout(fetchData, 1000);
-      } catch (error) {
-        console.error('Delete error:', error);
-        showToast('Gagal menghapus data', false);
-      } finally {
-        btn.disabled = false;
-        text.textContent = 'Hapus';
-      }
-    }
+  const id = document.getElementById('delete-id').value;
+
+  try {
+    await fetch(API_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'delete',
+        id: id
+      })
+    });
+
+    showToast('Data berhasil dihapus!');
+    closeDeleteModal();
+    setTimeout(fetchData, 1000);
+
+  } catch (error) {
+    console.error(error);
+    showToast('Gagal menghapus data', false);
+  }
+}
 
     // Update Infografis
     function updateInfografis() {
