@@ -86,11 +86,11 @@
         }
 
         .header-logo {
-            width: 80px;
-            height: 80px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
             background: white;
-            padding: 10px;
+            padding: 15px;
             margin: 0 auto 15px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             position: relative;
@@ -559,50 +559,16 @@
             border-color: var(--primary-pink);
         }
 
-        /* Total Komisi Box Below Table */
+        /* Total Komisi Below Table - Simple Style */
         .total-komisi-box {
-            background: var(--gradient-primary);
-            background-size: 200% 200%;
-            animation: gradientMove 5s ease infinite;
-            border-radius: 20px;
-            padding: 25px 30px;
             margin-top: 25px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-            box-shadow: var(--shadow-soft);
-            transition: all 0.3s ease;
-        }
-
-        .total-komisi-box:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-hover);
-        }
-
-        .total-komisi-logo {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: white;
-            padding: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            flex-shrink: 0;
-        }
-
-        .total-komisi-logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .total-komisi-content {
             text-align: center;
+            padding: 20px;
         }
 
         .total-komisi-label {
             font-size: 1rem;
-            color: rgba(255,255,255,0.9);
+            color: #666;
             margin-bottom: 5px;
             font-weight: 500;
         }
@@ -610,8 +576,7 @@
         .total-komisi-value {
             font-size: 2rem;
             font-weight: 700;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            color: var(--dark-pink);
         }
 
         .total-preview {
@@ -1107,15 +1072,10 @@
                     </table>
                 </div>
 
-                <!-- Total Komisi Box -->
+                <!-- Total Komisi -->
                 <div class="total-komisi-box scroll-reveal">
-                    <div class="total-komisi-logo">
-                        <img src="https://lh3.googleusercontent.com/d/1rTcKE5xcEHCqgLIEK4eoep36Z0ZvRR3s" alt="Logo">
-                    </div>
-                    <div class="total-komisi-content">
-                        <div class="total-komisi-label">💰 Total Komisi</div>
-                        <div class="total-komisi-value" id="totalKomisiTable">Rp 0</div>
-                    </div>
+                    <div class="total-komisi-label">💰 Total Komisi</div>
+                    <div class="total-komisi-value" id="totalKomisiTable">Rp 0</div>
                 </div>
             </div>
         </div>
@@ -1205,7 +1165,7 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label">Nominal Lembur</label>
-                        <input type="text" class="form-input" id="nominalLembur" placeholder="0" oninput="formatNumber(this)" required>
+                        <input type="text" class="form-input" id="nominalLembur" placeholder="0" oninput="formatNumber(this)">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Pulang</label>
@@ -1845,19 +1805,20 @@
 
         // Infografis Functions
         function updateInfografis() {
-            // Calculate totals
-            const totalKomisi = allData.reduce((sum, item) => sum + (item.total || 0), 0);
-            const totalLembur = allData.reduce((sum, item) => sum + (item.nominalLembur || 0), 0);
+            // Calculate totals from ALL data for infografis tab
+            const totalKomisiAll = allData.reduce((sum, item) => sum + (item.total || 0), 0);
+            const totalLemburAll = allData.reduce((sum, item) => sum + (item.nominalLembur || 0), 0);
             
-            // Update infografis tab
-            document.getElementById('totalKomisi').textContent = formatCurrency(totalKomisi);
-            document.getElementById('totalLembur').textContent = formatCurrency(totalLembur);
+            // Update infografis tab (uses all data)
+            document.getElementById('totalKomisi').textContent = formatCurrency(totalKomisiAll);
+            document.getElementById('totalLembur').textContent = formatCurrency(totalLemburAll);
             document.getElementById('totalTransaksi').textContent = allData.length;
             
-            // Update total komisi below table
+            // Calculate total from FILTERED data for table view
+            const totalKomisiFiltered = filteredData.reduce((sum, item) => sum + (item.total || 0), 0);
             const totalKomisiTable = document.getElementById('totalKomisiTable');
             if (totalKomisiTable) {
-                totalKomisiTable.textContent = formatCurrency(totalKomisi);
+                totalKomisiTable.textContent = formatCurrency(totalKomisiFiltered);
             }
 
             // Update ranking and monthly chart
@@ -2055,6 +2016,3 @@
     </script>
 </body>
 </html>
-
-
-
