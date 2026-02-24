@@ -1,1358 +1,1664 @@
-<!doctype html>
-<html lang="id" class="h-full">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Komisi Karyawan</title>
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <script src="/_sdk/element_sdk.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            poppins: ['Poppins', 'sans-serif']
-          }
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Komisi Karyawan</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-      }
-    }
-  </script>
-  <style>
-    * { font-family: 'Poppins', sans-serif; }
-    
-    @keyframes gradientShift {
-      0%, 100% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-    }
-    
-    @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-    }
-    
-    @keyframes pulse-glow {
-      0%, 100% { box-shadow: 0 0 20px rgba(255, 182, 193, 0.4); }
-      50% { box-shadow: 0 0 40px rgba(255, 182, 193, 0.8); }
-    }
-    
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    @keyframes scaleIn {
-      from { opacity: 0; transform: scale(0.9); }
-      to { opacity: 1; transform: scale(1); }
-    }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-    
-    @keyframes shimmer {
-      0% { background-position: -200% 0; }
-      100% { background-position: 200% 0; }
-    }
-    
-    @keyframes bounce-soft {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-5px); }
-    }
-    
-    @keyframes countUp {
-      from { opacity: 0; transform: scale(0.5); }
-      to { opacity: 1; transform: scale(1); }
-    }
-    
-    @keyframes rotateIn {
-      from { opacity: 0; transform: rotate(-10deg) scale(0.9); }
-      to { opacity: 1; transform: rotate(0) scale(1); }
-    }
-    
-    @keyframes barGrow {
-      from { width: 0%; }
-    }
-    
-    @keyframes sparkle {
-      0%, 100% { opacity: 0; transform: scale(0); }
-      50% { opacity: 1; transform: scale(1); }
-    }
-    
-    .animate-gradient {
-      background: linear-gradient(-45deg, #FFB6C1, #FFC0CB, #FFDAB9, #FFE4E1, #FFB6C1);
-      background-size: 400% 400%;
-      animation: gradientShift 8s ease infinite;
-    }
-    
-    .animate-float { animation: float 3s ease-in-out infinite; }
-    .animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
-    .animate-slide-in { animation: slideIn 0.5s ease-out forwards; }
-    .animate-slide-up { animation: slideUp 0.5s ease-out forwards; }
-    .animate-scale-in { animation: scaleIn 0.3s ease-out forwards; }
-    .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
-    .animate-bounce-soft { animation: bounce-soft 2s ease-in-out infinite; }
-    .animate-count-up { animation: countUp 0.6s ease-out forwards; }
-    .animate-rotate-in { animation: rotateIn 0.5s ease-out forwards; }
-    
-    .shimmer-effect {
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-      background-size: 200% 100%;
-      animation: shimmer 2s infinite;
-    }
-    
-    .bar-animate { animation: barGrow 1s ease-out forwards; }
-    
-    .sparkle {
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      background: radial-gradient(circle, #fff 0%, transparent 70%);
-      border-radius: 50%;
-      animation: sparkle 1.5s ease-in-out infinite;
-    }
-    
-    .glass-effect {
-      background: rgba(255, 255, 255, 0.25);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-    }
-    
-    .table-row-animate {
-      animation: slideUp 0.3s ease-out forwards;
-    }
-    
-    .btn-hover {
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    .btn-hover:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
-    }
-    
-    .btn-hover:active {
-      transform: translateY(0);
-    }
-    
-    .input-focus {
-      transition: all 0.3s ease;
-    }
-    
-    .input-focus:focus {
-      transform: scale(1.02);
-      box-shadow: 0 0 0 3px rgba(255, 182, 193, 0.3);
-    }
-    
-    .card-hover {
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    .card-hover:hover {
-      transform: translateY(-5px) scale(1.02);
-      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
-    }
-    
-    .rank-badge {
-      transition: all 0.3s ease;
-    }
-    
-    .rank-badge:hover {
-      transform: scale(1.1) rotate(5deg);
-    }
-    
-    .progress-bar {
-      transition: width 1s ease-out;
-    }
-    
-    .tab-indicator {
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    .toast {
-      animation: slideIn 0.3s ease-out forwards;
-    }
-    
-    .toast-exit {
-      animation: slideIn 0.3s ease-out reverse forwards;
-    }
-    
-    ::-webkit-scrollbar { width: 8px; height: 8px; }
-    ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
-    ::-webkit-scrollbar-thumb { background: #FFB6C1; border-radius: 10px; }
-    ::-webkit-scrollbar-thumb:hover { background: #FF69B4; }
-    
-    .stagger-1 { animation-delay: 0.1s; }
-    .stagger-2 { animation-delay: 0.2s; }
-    .stagger-3 { animation-delay: 0.3s; }
-    .stagger-4 { animation-delay: 0.4s; }
-    .stagger-5 { animation-delay: 0.5s; }
-  </style>
-  <style>body { box-sizing: border-box; }</style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
- </head>
- <body class="h-full bg-gradient-to-br from-pink-50 via-white to-orange-50 overflow-auto">
-  <div id="app" class="min-h-full flex flex-col"><!-- Toast Container -->
-   <div id="toast-container" class="fixed top-2 right-2 z-50 flex flex-col gap-2 max-w-xs md:max-w-sm"></div><!-- Header -->
-   <header class="animate-gradient rounded-b-3xl shadow-2xl mx-2 md:mx-4 mt-4 animate-slide-in animate-pulse-glow">
-    <div class="px-4 md:px-6 py-6 md:py-8">
-     <div class="flex flex-col items-center justify-center gap-3">
-      <div class="w-20 h-20 md:w-24 md:h-24 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center shadow-lg animate-float border-2 border-white/30 p-1">
-       <img src="https://lh3.googleusercontent.com/d/1rTcKE5xcEHCqgLIEK4eoep36Z0ZvRR3s" alt="Logo" class="w-full h-full object-contain drop-shadow-lg rounded-full" loading="lazy" onerror="this.style.background='rgba(255,255,255,0.2)';">
-      </div>
-      <div class="text-center">
-       <h1 id="app-title" class="text-2xl md:text-4xl font-bold text-white drop-shadow-lg tracking-wide">Komisi Karyawan</h1>
-       <p class="text-white/80 text-xs md:text-sm mt-1">Sistem Manajemen Komisi</p>
-      </div>
-     </div>
-    </div>
-   </header><!-- Tab Navigation -->
-   <nav class="mx-4 mt-6 animate-slide-up stagger-1">
-    <div class="flex bg-white rounded-2xl p-1.5 shadow-lg max-w-md mx-auto"><button onclick="switchTab('komisi')" id="tab-komisi" class="tab-btn flex-1 py-3 px-6 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 bg-pink-500 text-white shadow-md">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-      </svg><span>Komisi</span> </button> <button onclick="switchTab('infografis')" id="tab-infografis" class="tab-btn flex-1 py-3 px-6 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 text-gray-500 hover:bg-pink-50">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-      </svg><span>Infografis</span> </button>
-    </div>
-   </nav><!-- Main Content -->
-   <main class="flex-1 px-4 py-6"><!-- Komisi Tab -->
-    <div id="content-komisi" class="tab-content"><!-- Filters -->
-     <div class="bg-white rounded-2xl shadow-lg p-4 mb-6 animate-slide-up stagger-2">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4"><!-- Month Filter -->
-       <div class="relative"><label class="block text-xs font-medium text-gray-500 mb-1.5">Periode Bulan</label> <select id="filter-month" onchange="applyFilters()" class="w-full px-4 py-2.5 bg-pink-50 border-2 border-pink-100 rounded-xl focus:border-pink-400 focus:ring-0 outline-none transition-all input-focus font-medium text-gray-700"> <option value="">Semua Bulan</option> </select>
-       </div><!-- Date Filter -->
-       <div class="relative"><label class="block text-xs font-medium text-gray-500 mb-1.5">Tanggal</label> <input type="date" id="filter-date" onchange="applyFilters()" class="w-full px-4 py-2.5 bg-pink-50 border-2 border-pink-100 rounded-xl focus:border-pink-400 focus:ring-0 outline-none transition-all input-focus font-medium text-gray-700">
-       </div><!-- Employee Filter -->
-       <div class="relative"><label class="block text-xs font-medium text-gray-500 mb-1.5">Nama Karyawan</label> <select id="filter-employee" onchange="applyFilters()" class="w-full px-4 py-2.5 bg-pink-50 border-2 border-pink-100 rounded-xl focus:border-pink-400 focus:ring-0 outline-none transition-all input-focus font-medium text-gray-700"> <option value="">Semua Karyawan</option> <option value="Nungki">Nungki</option> <option value="Risa">Risa</option> <option value="Bu Yanti">Bu Yanti</option> <option value="Ike">Ike</option> <option value="Abel">Abel</option> </select>
-       </div><!-- Quick Search -->
-       <div class="relative"><label class="block text-xs font-medium text-gray-500 mb-1.5">Pencarian Cepat</label>
-        <div class="relative"><input type="text" id="quick-search" onkeyup="applyFilters()" placeholder="Cari..." class="w-full px-4 py-2.5 pl-10 bg-pink-50 border-2 border-pink-100 rounded-xl focus:border-pink-400 focus:ring-0 outline-none transition-all input-focus font-medium text-gray-700">
-         <svg class="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-         </svg>
-        </div>
-       </div><!-- Reset Button -->
-       <div class="flex items-end"><button onclick="resetFilters()" class="w-full px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold rounded-xl transition-all btn-hover flex items-center justify-center gap-2">
-         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-         </svg> Reset </button>
-       </div>
-      </div>
-     </div><!-- Table Section -->
-     <div class="bg-white rounded-2xl shadow-lg overflow-hidden animate-slide-up stagger-3"><!-- Table Header -->
-      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 bg-pink-100 rounded-xl flex items-center justify-center">
-         <svg class="w-6 h-6 text-pink-500" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
-         </svg>
-        </div>
-        <div>
-         <h2 class="text-lg font-bold text-gray-800">Data Komisi</h2>
-         <p class="text-xs text-gray-500" id="data-count">0 data</p>
-        </div>
-       </div><button onclick="openInputModal()" class="px-5 py-2.5 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold rounded-xl shadow-lg btn-hover flex items-center gap-2">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-        </svg> Input Data </button>
-      </div><!-- Table -->
-      <div class="overflow-x-auto">
-       <table class="w-full">
-        <thead class="bg-gradient-to-r from-pink-600 to-rose-600 text-white">
-         <tr>
-          <th class="px-4 py-4 text-left text-sm font-semibold">Tanggal</th>
-          <th class="px-4 py-4 text-left text-sm font-semibold">Nama Karyawan</th>
-          <th class="px-4 py-4 text-center text-sm font-semibold">Berangkat</th>
-          <th class="px-4 py-4 text-right text-sm font-semibold">Nominal Lembur</th>
-          <th class="px-4 py-4 text-left text-sm font-semibold">No:SR</th>
-          <th class="px-4 py-4 text-left text-sm font-semibold">Treatment</th>
-          <th class="px-4 py-4 text-right text-sm font-semibold">Nominal</th>
-          <th class="px-4 py-4 text-right text-sm font-semibold">Total</th>
-          <th class="px-4 py-4 text-center text-sm font-semibold">Pulang</th>
-          <th class="px-4 py-4 text-center text-sm font-semibold">Aksi</th>
-         </tr>
-        </thead>
-        <tbody id="table-body" class="divide-y divide-gray-100"><!-- Data will be loaded here -->
-        </tbody>
-       </table>
-      </div><!-- Loading State -->
-      <div id="loading-state" class="hidden p-12 text-center">
-       <div class="inline-block w-12 h-12 border-4 border-pink-200 border-t-pink-500 rounded-full animate-spin"></div>
-       <p class="mt-4 text-gray-500 font-medium">Memuat data...</p>
-      </div><!-- Empty State -->
-      <div id="empty-state" class="hidden p-12 text-center">
-       <div class="w-24 h-24 mx-auto bg-pink-50 rounded-full flex items-center justify-center mb-4">
-        <svg class="w-12 h-12 text-pink-300" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-        </svg>
-       </div>
-       <p class="text-gray-500 font-medium">Belum ada data</p>
-       <p class="text-gray-400 text-sm mt-1">Klik "Input Data" untuk menambahkan data baru</p>
-      </div>
-     </div><!-- Summary Cards -->
-     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-      <div class="bg-white rounded-2xl shadow-lg p-5 card-hover animate-slide-up stagger-4">
-       <div class="flex items-center gap-4">
-        <div class="w-14 h-14 bg-gradient-to-br from-green-400 to-emerald-500 rounded-2xl flex items-center justify-center shadow-lg">
-         <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-         </svg>
-        </div>
-        <div>
-         <p class="text-sm text-gray-500 font-medium">Total Komisi</p>
-         <p id="total-komisi" class="text-2xl font-bold text-gray-800">Rp 0</p>
-        </div>
-       </div>
-      </div>
-      <div class="bg-white rounded-2xl shadow-lg p-5 card-hover animate-slide-up stagger-5">
-       <div class="flex items-center gap-4">
-        <div class="w-14 h-14 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-2xl flex items-center justify-center shadow-lg">
-         <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-         </svg>
-        </div>
-        <div>
-         <p class="text-sm text-gray-500 font-medium">Total Lembur</p>
-         <p id="total-lembur" class="text-2xl font-bold text-gray-800">Rp 0</p>
-        </div>
-       </div>
-      </div>
-      <div class="bg-white rounded-2xl shadow-lg p-5 card-hover animate-slide-up stagger-5">
-       <div class="flex items-center gap-4">
-        <div class="w-14 h-14 bg-gradient-to-br from-purple-400 to-pink-500 rounded-2xl flex items-center justify-center shadow-lg">
-         <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-         </svg>
-        </div>
-        <div>
-         <p class="text-sm text-gray-500 font-medium">Total Transaksi</p>
-         <p id="total-transaksi" class="text-2xl font-bold text-gray-800">0</p>
-        </div>
-       </div>
-      </div>
-     </div>
-    </div><!-- Infografis Tab -->
-    <div id="content-infografis" class="tab-content hidden">
-     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6"><!-- Top Performer Card -->
-      <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
-       <div class="flex items-center gap-3 mb-6">
-        <div class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg">
-         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-         </svg>
-        </div>
-        <div>
-         <h3 class="text-lg font-bold text-gray-800">🏆 Top Performer</h3>
-         <p class="text-sm text-gray-500">Karyawan dengan komisi tertinggi</p>
-        </div>
-       </div>
-       <div id="top-performer" class="text-center py-6">
-        <div class="w-24 h-24 mx-auto bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mb-4 shadow-xl animate-bounce-soft"><span class="text-4xl">👑</span>
-        </div>
-        <p class="text-2xl font-bold text-gray-800" id="top-name">-</p>
-        <p class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-rose-500 mt-2" id="top-amount">Rp 0</p>
-       </div>
-      </div><!-- Ranking Card -->
-      <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
-       <div class="flex items-center gap-3 mb-6">
-        <div class="w-12 h-12 bg-gradient-to-br from-pink-400 to-rose-500 rounded-2xl flex items-center justify-center shadow-lg">
-         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-         </svg>
-        </div>
-        <div>
-         <h3 class="text-lg font-bold text-gray-800">📊 Peringkat Komisi</h3>
-         <p class="text-sm text-gray-500">Ranking berdasarkan total komisi</p>
-        </div>
-       </div>
-       <div id="ranking-list" class="space-y-3"><!-- Rankings will be loaded here -->
-       </div>
-      </div><!-- Commission Chart -->
-      <div class="bg-white rounded-2xl shadow-lg p-6 card-hover lg:col-span-2">
-       <div class="flex items-center gap-3 mb-6">
-        <div class="w-12 h-12 bg-gradient-to-br from-purple-400 to-indigo-500 rounded-2xl flex items-center justify-center shadow-lg">
-         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-         </svg>
-        </div>
-        <div>
-         <h3 class="text-lg font-bold text-gray-800">📈 Grafik Komisi per Karyawan</h3>
-         <p class="text-sm text-gray-500">Visualisasi perbandingan komisi</p>
-        </div>
-       </div>
-       <div id="chart-container" class="space-y-4"><!-- Chart bars will be loaded here -->
-       </div>
-      </div><!-- Statistics Cards -->
-      <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
-       <div class="flex items-center gap-3 mb-6">
-        <div class="w-12 h-12 bg-gradient-to-br from-cyan-400 to-teal-500 rounded-2xl flex items-center justify-center shadow-lg">
-         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-         </svg>
-        </div>
-        <div>
-         <h3 class="text-lg font-bold text-gray-800">💡 Insight</h3>
-         <p class="text-sm text-gray-500">Statistik menarik</p>
-        </div>
-       </div>
-       <div id="insights" class="space-y-4"><!-- Insights will be loaded here -->
-       </div>
-      </div><!-- Treatment Stats -->
-      <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
-       <div class="flex items-center gap-3 mb-6">
-        <div class="w-12 h-12 bg-gradient-to-br from-emerald-400 to-green-500 rounded-2xl flex items-center justify-center shadow-lg">
-         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-         </svg>
-        </div>
-        <div>
-         <h3 class="text-lg font-bold text-gray-800">🏥 Treatment Terpopuler</h3>
-         <p class="text-sm text-gray-500">Treatment yang paling sering dilakukan</p>
-        </div>
-       </div>
-       <div id="treatment-stats" class="space-y-3"><!-- Treatment stats will be loaded here -->
-       </div>
-      </div>
-     </div>
-    </div>
-   </main><!-- Footer -->
-   <footer class="bg-white border-t border-gray-100 py-4 mt-auto">
-    <div class="flex items-center justify-center gap-2 text-gray-400 text-sm"><img src="https://lh3.googleusercontent.com/d/1AcUPbZdtoKhbAEDhLgg4102LwKpQeRBn" alt="Logo Footer" class="w-6 h-6 object-contain opacity-60" loading="lazy" onerror="this.style.display='none';"> <span>IkeBagus 2026</span>
-    </div>
-   </footer>
-  </div><!-- Input Modal -->
-  <div id="input-modal" class="fixed inset-0 z-50 hidden">
-   <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeInputModal()"></div>
-   <div class="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden animate-scale-in flex flex-col max-h-[90vh]">
-    <div class="sticky top-0 bg-gradient-to-r from-pink-500 to-rose-500 px-4 md:px-6 py-4 flex items-center justify-between z-10 flex-shrink-0">
-     <h3 class="text-lg md:text-xl font-bold text-white flex items-center gap-2">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-      </svg><span class="hidden md:inline">Input Data Baru</span><span class="md:hidden">Input Data</span></h3><button onclick="closeInputModal()" class="text-white/80 hover:text-white transition-colors">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-      </svg></button>
-    </div>
-    <form id="input-form" onsubmit="submitData(event)" class="p-4 md:p-6 space-y-4 overflow-y-auto flex-1">
-     <div class="grid grid-cols-1 md:grid-cols-2 gap-4"><!-- Tanggal -->
-      <div><label class="block text-xs md:text-sm font-semibold text-gray-700 mb-2">Tanggal</label> <input type="date" id="input-tanggal" required class="w-full px-3 md:px-4 py-2 md:py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-pink-400 focus:bg-white outline-none transition-all input-focus text-sm">
-      </div><!-- Nama Karyawan -->
-      <div><label class="block text-xs md:text-sm font-semibold text-gray-700 mb-2">Nama Karyawan</label> <select id="input-nama" required class="w-full px-3 md:px-4 py-2 md:py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-pink-400 focus:bg-white outline-none transition-all input-focus text-sm"> <option value="">Pilih Karyawan</option> <option value="Nungki">Nungki</option> <option value="Risa">Risa</option> <option value="Bu Yanti">Bu Yanti</option> <option value="Ike">Ike</option> <option value="Abel">Abel</option> </select>
-      </div><!-- Berangkat -->
-      <div><label class="block text-xs md:text-sm font-semibold text-gray-700 mb-2">Jam Berangkat</label> <input type="time" id="input-berangkat" required class="w-full px-3 md:px-4 py-2 md:py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-pink-400 focus:bg-white outline-none transition-all input-focus text-sm">
-      </div><!-- Nominal Lembur -->
-      <div><label class="block text-xs md:text-sm font-semibold text-gray-700 mb-2">Nominal Lembur</label> <input type="text" id="input-lembur" placeholder="0" oninput="formatNumberInput(this)" class="w-full px-3 md:px-4 py-2 md:py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-pink-400 focus:bg-white outline-none transition-all input-focus text-sm">
-      </div>
-     </div><!-- Multiple Treatment Inputs -->
-     <div>
-      <div class="flex items-center justify-between mb-3"><label class="text-xs md:text-sm font-semibold text-gray-700">Treatment</label> <button type="button" onclick="addTreatmentRow()" class="px-2 md:px-3 py-1 md:py-1.5 bg-pink-100 hover:bg-pink-200 text-pink-600 text-xs md:text-sm font-semibold rounded-lg transition-colors flex items-center gap-1">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-        </svg><span class="hidden md:inline">Tambah Treatment</span><span class="md:hidden">Tambah</span> </button>
-      </div>
-      <div id="treatment-container" class="space-y-2"><!-- Treatment rows will be added here -->
-      </div>
-     </div><!-- Pulang -->
-     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div><label class="block text-xs md:text-sm font-semibold text-gray-700 mb-2">Jam Pulang</label> <input type="time" id="input-pulang" required class="w-full px-3 md:px-4 py-2 md:py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-pink-400 focus:bg-white outline-none transition-all input-focus text-sm">
-      </div>
-     </div>
-     <div class="flex gap-2 md:gap-3 pt-4 flex-shrink-0 bg-white border-t border-gray-100"><button type="button" onclick="closeInputModal()" class="flex-1 px-3 md:px-6 py-2 md:py-3 bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold text-sm md:text-base rounded-xl transition-all btn-hover"> Batal </button> <button type="submit" id="submit-btn" class="flex-1 px-3 md:px-6 py-2 md:py-3 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold text-sm md:text-base rounded-xl shadow-lg transition-all btn-hover flex items-center justify-center gap-2">
-       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-       </svg> Simpan </button>
-     </div>
-    </form>
-   </div>
-  </div><!-- Edit Modal -->
-  <div id="edit-modal" class="fixed inset-0 z-50 hidden">
-   <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeEditModal()"></div>
-   <div class="absolute inset-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden animate-scale-in max-h-[90%] overflow-y-auto">
-    <div class="sticky top-0 bg-gradient-to-r from-blue-500 to-indigo-500 px-4 md:px-6 py-4 flex items-center justify-between z-10">
-     <h3 class="text-lg md:text-xl font-bold text-white flex items-center gap-2">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-      </svg></h3>
-    </div>
-    <form id="edit-form" onsubmit="updateData(event)" class="p-6 space-y-5"><input type="hidden" id="edit-row-index">
-     <div class="grid grid-cols-1 md:grid-cols-2 gap-5"><!-- Tanggal -->
-      <div><label class="block text-sm font-semibold text-gray-700 mb-2">Tanggal</label> <input type="date" id="edit-tanggal" required class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-pink-400 focus:bg-white outline-none transition-all input-focus">
-      </div><!-- Nama Karyawan -->
-      <div><label class="block text-sm font-semibold text-gray-700 mb-2">Nama Karyawan</label> <select id="edit-nama" required class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-pink-400 focus:bg-white outline-none transition-all input-focus"> <option value="">Pilih Karyawan</option> <option value="Nungki">Nungki</option> <option value="Risa">Risa</option> <option value="Bu Yanti">Bu Yanti</option> <option value="Ike">Ike</option> <option value="Abel">Abel</option> </select>
-      </div><!-- Berangkat -->
-      <div><label class="block text-sm font-semibold text-gray-700 mb-2">Jam Berangkat</label> <input type="time" id="edit-berangkat" required class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-pink-400 focus:bg-white outline-none transition-all input-focus">
-      </div><!-- Nominal Lembur -->
-      <div><label class="block text-sm font-semibold text-gray-700 mb-2">Nominal Lembur</label> <input type="text" id="edit-lembur" placeholder="0" oninput="formatNumberInput(this)" class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-pink-400 focus:bg-white outline-none transition-all input-focus">
-      </div>
-     </div><!-- Multiple Treatment Inputs -->
-     <div>
-      <div class="flex items-center justify-between mb-3"><label class="text-sm font-semibold text-gray-700">Treatment</label> <button type="button" onclick="addEditTreatmentRow()" class="px-3 py-1.5 bg-blue-100 hover:bg-blue-200 text-blue-600 text-sm font-semibold rounded-lg transition-colors flex items-center gap-1">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-        </svg> Tambah Treatment </button>
-      </div>
-      <div id="edit-treatment-container" class="space-y-3"><!-- Treatment rows will be added here -->
-      </div>
-     </div><!-- Pulang -->
-     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-      <div><label class="block text-sm font-semibold text-gray-700 mb-2">Jam Pulang</label> <input type="time" id="edit-pulang" required class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-pink-400 focus:bg-white outline-none transition-all input-focus">
-      </div>
-     </div>
-     <div class="flex gap-3 pt-4 flex-shrink-0 bg-white border-t border-gray-100"><button type="button" onclick="closeEditModal()" class="flex-1 px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold rounded-xl transition-all btn-hover"> Batal </button> <button type="submit" id="edit-submit-btn" class="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-semibold rounded-xl shadow-lg transition-all btn-hover flex items-center justify-center gap-2">
-       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-       </svg> Update </button>
-     </div>
-    </form>
-   </div>
-  </div><!-- Delete Confirmation Modal -->
-  <div id="delete-modal" class="fixed inset-0 z-50 hidden">
-   <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeDeleteModal()"></div>
-   <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden animate-scale-in">
-    <div class="bg-gradient-to-r from-red-500 to-rose-500 px-6 py-4">
-     <h3 class="text-xl font-bold text-white flex items-center gap-2">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-      </svg> Konfirmasi Hapus</h3>
-    </div>
-    <div class="p-6">
-     <div class="text-center mb-6">
-      <div class="w-20 h-20 mx-auto bg-red-100 rounded-full flex items-center justify-center mb-4">
-       <svg class="w-10 h-10 text-red-500" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-       </svg>
-      </div>
-      <p class="text-gray-700 font-medium">Apakah Anda yakin ingin menghapus data ini?</p>
-      <p class="text-gray-500 text-sm mt-1">Data yang dihapus tidak dapat dikembalikan.</p>
-     </div><input type="hidden" id="delete-row-index">
-     <div class="flex gap-3"><button onclick="closeDeleteModal()" class="flex-1 px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold rounded-xl transition-all btn-hover"> Batal </button> <button onclick="confirmDelete()" class="flex-1 px-6 py-3 bg-gradient-to-r from-red-500 to-rose-500 hover:from-red-600 hover:to-rose-600 text-white font-semibold rounded-xl shadow-lg transition-all btn-hover flex items-center justify-center gap-2">
-       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-       </svg> Hapus </button>
-     </div>
-    </div>
-   </div>
-  </div>
-  <script>
-    // API Configuration
-    const API_URL = 'https://script.google.com/macros/s/AKfycbzPZqXeioJ-JKx2WZHkligQ-CUOWDIgtLrbSmzC351lZDBpYUNul6i3RE9HvkgnOYT1/exec';
-    
-    // Global State
-    let allData = [];
-    let filteredData = [];
-    let treatmentRowCount = 0;
-    let editTreatmentRowCount = 0;
-    
-    // Default Config for Element SDK
-    const defaultConfig = {
-      app_title: 'Komisi Karyawan'
-    };
-    
-    // Initialize Element SDK
-    if (window.elementSdk) {
-      window.elementSdk.init({
-        defaultConfig,
-        onConfigChange: async (config) => {
-          document.getElementById('app-title').textContent = config.app_title || defaultConfig.app_title;
-        },
-        mapToCapabilities: (config) => ({
-          recolorables: [],
-          borderables: [],
-          fontEditable: undefined,
-          fontSizeable: undefined
-        }),
-        mapToEditPanelValues: (config) => new Map([
-          ['app_title', config.app_title || defaultConfig.app_title]
-        ])
-      });
-    }
-    
-    // Format number with thousand separator
-    function formatNumber(num) {
-      if (!num && num !== 0) return '0';
-      return new Intl.NumberFormat('id-ID').format(num);
-    }
-    
-    // Parse formatted number back to integer
-    function parseFormattedNumber(str) {
-      if (!str) return 0;
-      return parseInt(str.toString().replace(/\./g, '').replace(/,/g, '')) || 0;
-    }
-    
-    // Format number input while typing
-    function formatNumberInput(input) {
-      let value = input.value.replace(/[^\d]/g, '');
-      if (value) {
-        input.value = formatNumber(parseInt(value));
-      } else {
-        input.value = '';
-      }
-    }
-    
-    // Format date for display
-    function formatDate(dateStr) {
-      if (!dateStr) return '-';
-      try {
-        const date = new Date(dateStr);
-        return date.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
-      } catch {
-        return dateStr;
-      }
-    }
-    
-    // Get current date in YYYY-MM-DD format
-    function getCurrentDate() {
-      return new Date().toISOString().split('T')[0];
-    }
-    
-    // Get current time in HH:MM format
-    function getCurrentTime() {
-      return new Date().toTimeString().slice(0, 5);
-    }
-    
-    // Initialize month filter
-    function initMonthFilter() {
-      const select = document.getElementById('filter-month');
-      const months = [
-        'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-      ];
-      
-      const currentYear = new Date().getFullYear();
-      select.innerHTML = '<option value="">Semua Bulan</option>';
-      
-      months.forEach((month, index) => {
-        const value = `${currentYear}-${String(index + 1).padStart(2, '0')}`;
-        select.innerHTML += `<option value="${value}">${month} ${currentYear}</option>`;
-      });
-    }
-    
-    // Show toast notification
-    function showToast(message, type = 'success') {
-      const container = document.getElementById('toast-container');
-      const toast = document.createElement('div');
-      
-      const bgColor = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
-      const icon = type === 'success' 
-        ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>'
-        : type === 'error'
-        ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>'
-        : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>';
-      
-      toast.className = `toast ${bgColor} text-white px-4 py-3 rounded-xl shadow-lg flex items-center gap-3 min-w-[280px]`;
-      toast.innerHTML = `
-        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">${icon}</svg>
-        <span class="font-medium">${message}</span>
-      `;
-      
-      container.appendChild(toast);
-      
-      setTimeout(() => {
-        toast.classList.add('toast-exit');
-        setTimeout(() => toast.remove(), 300);
-      }, 3000);
-    }
-    
-    // Tab switching
-    function switchTab(tab) {
-      const komisiTab = document.getElementById('tab-komisi');
-      const infografisTab = document.getElementById('tab-infografis');
-      const komisiContent = document.getElementById('content-komisi');
-      const infografisContent = document.getElementById('content-infografis');
-      
-      if (tab === 'komisi') {
-        komisiTab.className = 'tab-btn flex-1 py-3 px-6 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 bg-pink-500 text-white shadow-md';
-        infografisTab.className = 'tab-btn flex-1 py-3 px-6 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 text-gray-500 hover:bg-pink-50';
-        komisiContent.classList.remove('hidden');
-        infografisContent.classList.add('hidden');
-      } else {
-        infografisTab.className = 'tab-btn flex-1 py-3 px-6 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 bg-pink-500 text-white shadow-md';
-        komisiTab.className = 'tab-btn flex-1 py-3 px-6 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 text-gray-500 hover:bg-pink-50';
-        infografisContent.classList.remove('hidden');
-        komisiContent.classList.add('hidden');
-        updateInfografis();
-      }
-    }
-    
-    // Load data from API
-    async function loadData() {
-      const loadingState = document.getElementById('loading-state');
-      const emptyState = document.getElementById('empty-state');
-      const tableBody = document.getElementById('table-body');
-      
-      loadingState.classList.remove('hidden');
-      emptyState.classList.add('hidden');
-      tableBody.innerHTML = '';
-      
-      try {
-        const response = await fetch(`${API_URL}?action=read`);
-        const result = await response.json();
-        
-        if (result.status === 'success' && result.data) {
-          allData = result.data;
-          applyFilters();
-        } else {
-          allData = [];
-          renderTable([]);
+
+        body {
+            background: linear-gradient(135deg, #fef5f5 0%, #fff5f5 50%, #ffe4e4 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
         }
-      } catch (error) {
-        console.error('Error loading data:', error);
-        showToast('Gagal memuat data', 'error');
-        allData = [];
-        renderTable([]);
-      } finally {
-        loadingState.classList.add('hidden');
-      }
-    }
-    
-    // Apply filters
-    function applyFilters() {
-      const monthFilter = document.getElementById('filter-month').value;
-      const dateFilter = document.getElementById('filter-date').value;
-      const employeeFilter = document.getElementById('filter-employee').value;
-      const searchFilter = document.getElementById('quick-search').value.toLowerCase();
-      
-      filteredData = allData.filter(row => {
-        // Month filter
-        if (monthFilter && row.Tanggal) {
-          const rowMonth = row.Tanggal.substring(0, 7);
-          if (rowMonth !== monthFilter) return false;
+
+        /* Header Styles */
+        .header {
+            background: linear-gradient(45deg, #ff9999, #ffb3b3, #ffcccc, #ffb3b3, #ff9999);
+            background-size: 400% 400%;
+            animation: gradientMove 8s ease infinite;
+            padding: 30px;
+            border-radius: 0 0 30px 30px;
+            box-shadow: 0 10px 40px rgba(255, 153, 153, 0.3);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
         }
-        
-        // Date filter
-        if (dateFilter && row.Tanggal !== dateFilter) return false;
-        
-        // Employee filter
-        if (employeeFilter && row['Nama Karyawan'] !== employeeFilter) return false;
-        
-        // Search filter
-        if (searchFilter) {
-          const searchableText = [
-            row.Tanggal,
-            row['Nama Karyawan'],
-            row['No:SR'],
-            row.Treatment
-          ].join(' ').toLowerCase();
-          if (!searchableText.includes(searchFilter)) return false;
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
-        
-        return true;
-      });
-      
-      renderTable(filteredData);
-      updateSummary(filteredData);
-    }
-    
-    // Reset filters
-    function resetFilters() {
-      document.getElementById('filter-month').value = '';
-      document.getElementById('filter-date').value = '';
-      document.getElementById('filter-employee').value = '';
-      document.getElementById('quick-search').value = '';
-      applyFilters();
-      showToast('Filter direset', 'info');
-    }
-    
-    // Render table
-    function renderTable(data) {
-      const tableBody = document.getElementById('table-body');
-      const emptyState = document.getElementById('empty-state');
-      const dataCount = document.getElementById('data-count');
-      
-      if (data.length === 0) {
-        tableBody.innerHTML = '';
-        emptyState.classList.remove('hidden');
-        dataCount.textContent = '0 data';
-        return;
-      }
-      
-      emptyState.classList.add('hidden');
-      dataCount.textContent = `${data.length} data`;
-      
-      // Group data by employee and date
-      const groupedData = {};
-      data.forEach((row, index) => {
-        const key = `${row.Tanggal}_${row['Nama Karyawan']}`;
-        if (!groupedData[key]) {
-          groupedData[key] = {
-            ...row,
-            rowIndex: row.rowIndex || index + 2,
-            treatments: []
-          };
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
         }
-        if (row['No:SR'] || row.Treatment || row.Nominal) {
-          groupedData[key].treatments.push({
-            noSR: row['No:SR'] || '',
-            treatment: row.Treatment || '',
-            nominal: row.Nominal || 0
-          });
+
+        @keyframes rotate {
+            100% { transform: rotate(360deg); }
         }
-      });
-      
-      let html = '';
-      Object.values(groupedData).forEach((group, groupIndex) => {
-        const treatmentCount = Math.max(group.treatments.length, 1);
-        const totalNominal = group.treatments.reduce((sum, t) => sum + parseFormattedNumber(t.nominal), 0);
-        const lembur = parseFormattedNumber(group['Nominal Lembur']);
-        const total = lembur + totalNominal;
-        
-        group.treatments.forEach((treatment, treatmentIndex) => {
-          html += `
-            <tr class="hover:bg-pink-50 transition-colors table-row-animate" style="animation-delay: ${groupIndex * 0.05}s">
-              ${treatmentIndex === 0 ? `
-                <td class="px-4 py-3 text-sm text-gray-700 font-medium" rowspan="${treatmentCount}">${formatDate(group.Tanggal)}</td>
-                <td class="px-4 py-3" rowspan="${treatmentCount}">
-                  <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 bg-gradient-to-br from-pink-400 to-rose-500 rounded-full flex items-center justify-center text-white font-bold text-xs">
-                      ${(group['Nama Karyawan'] || '?')[0]}
+
+        .header-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            animation: float 3s ease-in-out infinite;
+            z-index: 1;
+            position: relative;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .header h1 {
+            color: #fff;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            z-index: 1;
+            position: relative;
+            font-weight: 700;
+        }
+
+        /* Tab Navigation */
+        .tab-container {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+            z-index: 1;
+            position: relative;
+        }
+
+        .tab-btn {
+            background: white;
+            border: none;
+            padding: 15px 40px;
+            margin: 0 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            border-radius: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 153, 153, 0.3);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(45deg, #ff9999, #ffcccc);
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(255, 153, 153, 0.4);
+        }
+
+        /* Content Container */
+        .content {
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .filter-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-item label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .filter-item select,
+        .filter-item input {
+            padding: 10px 15px;
+            border: 2px solid #ffcccc;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            width: 150px;
+        }
+
+        .filter-item select:focus,
+        .filter-item input:focus {
+            outline: none;
+            border-color: #ff9999;
+            box-shadow: 0 0 0 3px rgba(255, 153, 153, 0.2);
+        }
+
+        .search-input {
+            width: 250px !important;
+        }
+
+        .btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #ff9999, #ffcccc);
+            color: white;
+            box-shadow: 0 5px 15px rgba(255, 153, 153, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 153, 153, 0.5);
+        }
+
+        .btn-danger {
+            background: linear-gradient(45deg, #ff6b6b, #ff8787);
+            color: white;
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.5);
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #51cf66, #69db7c);
+            color: white;
+            box-shadow: 0 5px 15px rgba(81, 207, 102, 0.4);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(81, 207, 102, 0.5);
+        }
+
+        /* Table Container */
+        .table-container {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .table-header h2 {
+            color: #333;
+            font-size: 1.5em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        thead {
+            background: linear-gradient(45deg, #ff6b6b, #ff8787);
+        }
+
+        thead th {
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        tbody td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: top;
+        }
+
+        tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background-color: rgba(255, 204, 204, 0.1);
+        }
+
+        .employee-row {
+            background: rgba(255, 204, 204, 0.15) !important;
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 5px 15px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .edit-btn {
+            background: linear-gradient(45deg, #ffd43b, #ffe066);
+            color: #333;
+        }
+
+        .delete-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ff8787);
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Popup Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 25px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #ffcccc;
+        }
+
+        .modal-header h2 {
+            color: #ff6b6b;
+            font-size: 1.8em;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 2em;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: #ff6b6b;
+        }
+
+        /* Form Styles */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #555;
+            font-size: 0.95em;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 12px 15px;
+            border: 2px solid #ffcccc;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #ff9999;
+            box-shadow: 0 0 0 3px rgba(255, 153, 153, 0.2);
+        }
+
+        .form-group input[readonly] {
+            background-color: #f5f5f5;
+            cursor: not-allowed;
+        }
+
+        /* Multiple Entries Section */
+        .multiple-entries {
+            border: 2px solid #ffcccc;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            background: rgba(255, 204, 204, 0.05);
+        }
+
+        .multiple-entries h3 {
+            color: #ff6b6b;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .entry-row {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr auto;
+            gap: 15px;
+            margin-bottom: 15px;
+            align-items: end;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .entry-row .form-group {
+            margin-bottom: 0;
+        }
+
+        .remove-entry {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .remove-entry:hover {
+            background: #ff5252;
+            transform: scale(1.05);
+        }
+
+        .add-entry {
+            background: linear-gradient(45deg, #51cf66, #69db7c);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .add-entry:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(81, 207, 102, 0.4);
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #ffcccc;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 50px;
+            border-top: 1px solid rgba(255, 153, 153, 0.2);
+            font-size: 0.9em;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .footer-logo {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        /* Infographic Styles */
+        .infographic-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            animation: fadeInUp 0.5s ease;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stat-card h3 {
+            color: #ff6b6b;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: 700;
+            background: linear-gradient(45deg, #ff9999, #ffcccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .ranking-list {
+            list-style: none;
+        }
+
+        .ranking-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .ranking-item:hover {
+            transform: translateX(10px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .rank-badge {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            color: white;
+            margin-right: 15px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .rank-1 { background: linear-gradient(45deg, #ffd700, #ffed4e); }
+        .rank-2 { background: linear-gradient(45deg, #c0c0c0, #e8e8e8); }
+        .rank-3 { background: linear-gradient(45deg, #cd7f32, #d4a574); }
+        .rank-other { background: linear-gradient(45deg, #ff9999, #ffcccc); }
+
+        .employee-info {
+            flex: 1;
+        }
+
+        .employee-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        .employee-commission {
+            color: #ff6b6b;
+            font-weight: 600;
+        }
+
+        .insight-box {
+            background: linear-gradient(135deg, rgba(255, 153, 153, 0.1), rgba(255, 204, 204, 0.1));
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 20px;
+            border-left: 4px solid #ff6b6b;
+        }
+
+        .insight-box h4 {
+            color: #ff6b6b;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .insight-box p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .filter-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .filter-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .filter-item select,
+            .filter-item input {
+                width: 100%;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .entry-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .table-container {
+                padding: 15px;
+            }
+            
+            thead th,
+            tbody td {
+                padding: 8px;
+                font-size: 0.9em;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2000;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #ff6b6b;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Toast Notification */
+        .toast {
+            display: none;
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 15px 30px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            z-index: 3000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .toast.active {
+            display: block;
+        }
+
+        .toast.success {
+            background: linear-gradient(45deg, #51cf66, #69db7c);
+        }
+
+        .toast.error {
+            background: linear-gradient(45deg, #ff6b6b, #ff8787);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <img src="https://lh3.googleusercontent.com/d/1rTcKE5xcEHCqgLIEK4eoep36Z0ZvRR3s" alt="Logo" class="header-logo">
+        <h1>Komisi Karyawan</h1>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="tab-container">
+        <button class="tab-btn active" onclick="switchTab('komisi')">Komisi Karyawan</button>
+        <button class="tab-btn" onclick="switchTab('infografis')">Infografis</button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <!-- Komisi Karyawan Tab -->
+        <div id="komisi-tab" class="tab-content active">
+            <!-- Filter Section -->
+            <div class="filter-section">
+                <div class="filter-item">
+                    <label>Periode Bulan:</label>
+                    <select id="monthFilter" onchange="applyFilters()">
+                        <option value="">Semua Bulan</option>
+                        <option value="1">Januari</option>
+                        <option value="2">Februari</option>
+                        <option value="3">Maret</option>
+                        <option value="4">April</option>
+                        <option value="5">Mei</option>
+                        <option value="6">Juni</option>
+                        <option value="7">Juli</option>
+                        <option value="8">Agustus</option>
+                        <option value="9">September</option>
+                        <option value="10">Oktober</option>
+                        <option value="11">November</option>
+                        <option value="12">Desember</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label>Nama Karyawan:</label>
+                    <select id="employeeFilter" onchange="applyFilters()">
+                        <option value="">Semua Karyawan</option>
+                        <option value="Nungki">Nungki</option>
+                        <option value="Risa">Risa</option>
+                        <option value="Bu Yanti">Bu Yanti</option>
+                        <option value="Ike">Ike</option>
+                        <option value="Abel">Abel</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label>Pencarian:</label>
+                    <input type="text" id="searchInput" class="search-input" placeholder="Cari data..." onkeyup="applyFilters()">
+                </div>
+                <button class="btn btn-primary" onclick="resetFilters()">
+                    🔄 Reset
+                </button>
+            </div>
+
+            <!-- Table Container -->
+            <div class="table-container">
+                <div class="table-header">
+                    <h2>📊 Data Komisi</h2>
+                    <button class="btn btn-primary" onclick="openModal()">
+                        ➕ Input Data
+                    </button>
+                </div>
+                <table id="dataTable">
+                    <thead>
+                        <tr>
+                            <th>Tanggal</th>
+                            <th>Nama Karyawan</th>
+                            <th>Berangkat</th>
+                            <th>Nominal Lembur</th>
+                            <th>No:SR</th>
+                            <th>Treatment</th>
+                            <th>Nominal</th>
+                            <th>Total</th>
+                            <th>Pulang</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Data akan di-load di sini -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Infografis Tab -->
+        <div id="infografis-tab" class="tab-content">
+            <div class="infographic-container">
+                <!-- Total Komisi Card -->
+                <div class="stat-card">
+                    <h3>💰 Total Komisi</h3>
+                    <div class="stat-value" id="totalCommission">Rp 0</div>
+                </div>
+
+                <!-- Top Performer Card -->
+                <div class="stat-card">
+                    <h3>🏆 Top Performer</h3>
+                    <div class="stat-value" id="topPerformer">-</div>
+                </div>
+
+                <!-- Total Transactions Card -->
+                <div class="stat-card">
+                    <h3>📈 Total Transaksi</h3>
+                    <div class="stat-value" id="totalTransactions">0</div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="chart-container">
+                <h3>📊 Grafik Komisi per Karyawan</h3>
+                <canvas id="commissionChart"></canvas>
+            </div>
+
+            <!-- Ranking -->
+            <div class="chart-container">
+                <h3>🥇 Peringkat Komisi Karyawan</h3>
+                <ul class="ranking-list" id="rankingList">
+                    <!-- Ranking akan di-load di sini -->
+                </ul>
+            </div>
+
+            <!-- Insight -->
+            <div class="insight-box">
+                <h4>💡 Insight</h4>
+                <p id="insightText">Data komisi akan dianalisis untuk memberikan insight yang berguna...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Input/Edit Data -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Input Data Komisi</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="dataForm" onsubmit="saveData(event)">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Tanggal:</label>
+                        <input type="date" id="tanggal" required>
                     </div>
-                    <span class="text-sm font-medium text-gray-800">${group['Nama Karyawan'] || '-'}</span>
-                  </div>
-                </td>
-                <td class="px-4 py-3 text-center text-sm text-gray-600" rowspan="${treatmentCount}">${group.Berangkat || '-'}</td>
-                <td class="px-4 py-3 text-right text-sm font-medium text-blue-600" rowspan="${treatmentCount}">Rp ${formatNumber(lembur)}</td>
-              ` : ''}
-              <td class="px-4 py-3 text-sm text-gray-600">${treatment.noSR || '-'}</td>
-              <td class="px-4 py-3 text-sm text-gray-700">${treatment.treatment || '-'}</td>
-              <td class="px-4 py-3 text-right text-sm font-medium text-green-600">Rp ${formatNumber(parseFormattedNumber(treatment.nominal))}</td>
-              ${treatmentIndex === 0 ? `
-                <td class="px-4 py-3 text-right text-sm font-bold text-purple-600" rowspan="${treatmentCount}">Rp ${formatNumber(total)}</td>
-                <td class="px-4 py-3 text-center text-sm text-gray-600" rowspan="${treatmentCount}">${group.Pulang || '-'}</td>
-                <td class="px-4 py-3 text-center" rowspan="${treatmentCount}">
-                  <div class="flex items-center justify-center gap-1">
-                    <button onclick="openEditModal(${group.rowIndex})" 
-                            class="p-2 text-blue-500 hover:bg-blue-100 rounded-lg transition-colors" title="Edit">
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                      </svg>
-                    </button>
-                    <button onclick="openDeleteModal(${group.rowIndex})" 
-                            class="p-2 text-red-500 hover:bg-red-100 rounded-lg transition-colors" title="Hapus">
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                      </svg>
-                    </button>
-                  </div>
-                </td>
-              ` : ''}
-            </tr>
-          `;
-        });
-        
-        if (group.treatments.length === 0) {
-          html += `
-            <tr class="hover:bg-pink-50 transition-colors table-row-animate" style="animation-delay: ${groupIndex * 0.05}s">
-              <td class="px-4 py-3 text-sm text-gray-700 font-medium">${formatDate(group.Tanggal)}</td>
-              <td class="px-4 py-3">
-                <div class="flex items-center gap-2">
-                  <div class="w-8 h-8 bg-gradient-to-br from-pink-400 to-rose-500 rounded-full flex items-center justify-center text-white font-bold text-xs">
-                    ${(group['Nama Karyawan'] || '?')[0]}
-                  </div>
-                  <span class="text-sm font-medium text-gray-800">${group['Nama Karyawan'] || '-'}</span>
+                    <div class="form-group">
+                        <label>Nama Karyawan:</label>
+                        <select id="namaKaryawan" required>
+                            <option value="">Pilih Karyawan</option>
+                            <option value="Nungki">Nungki</option>
+                            <option value="Risa">Risa</option>
+                            <option value="Bu Yanti">Bu Yanti</option>
+                            <option value="Ike">Ike</option>
+                            <option value="Abel">Abel</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Berangkat:</label>
+                        <input type="time" id="berangkat" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Nominal Lembur:</label>
+                        <input type="text" id="nominalLembur" placeholder="0" oninput="formatNumber(this)" onblur="calculateTotal()">
+                    </div>
+                    <div class="form-group">
+                        <label>Pulang:</label>
+                        <input type="time" id="pulang" required>
+                    </div>
                 </div>
-              </td>
-              <td class="px-4 py-3 text-center text-sm text-gray-600">${group.Berangkat || '-'}</td>
-              <td class="px-4 py-3 text-right text-sm font-medium text-blue-600">Rp ${formatNumber(lembur)}</td>
-              <td class="px-4 py-3 text-sm text-gray-600">-</td>
-              <td class="px-4 py-3 text-sm text-gray-700">-</td>
-              <td class="px-4 py-3 text-right text-sm font-medium text-green-600">Rp 0</td>
-              <td class="px-4 py-3 text-right text-sm font-bold text-purple-600">Rp ${formatNumber(total)}</td>
-              <td class="px-4 py-3 text-center text-sm text-gray-600">${group.Pulang || '-'}</td>
-              <td class="px-4 py-3 text-center">
-                <div class="flex items-center justify-center gap-1">
-                  <button onclick="openEditModal(${group.rowIndex})" 
-                          class="p-2 text-blue-500 hover:bg-blue-100 rounded-lg transition-colors" title="Edit">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                    </svg>
-                  </button>
-                  <button onclick="openDeleteModal(${group.rowIndex})" 
-                          class="p-2 text-red-500 hover:bg-red-100 rounded-lg transition-colors" title="Hapus">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                    </svg>
-                  </button>
+
+                <!-- Multiple Entries Section -->
+                <div class="multiple-entries">
+                    <h3>📝 Detail Treatment</h3>
+                    <div id="entriesContainer">
+                        <!-- Entries akan di-load di sini -->
+                    </div>
+                    <button type="button" class="add-entry" onclick="addEntry()">
+                        ➕ Tambah Treatment
+                    </button>
                 </div>
-              </td>
-            </tr>
-          `;
-        }
-      });
-      
-      tableBody.innerHTML = html;
-    }
-    
-    // Update summary cards
-    function updateSummary(data) {
-      let totalKomisi = 0;
-      let totalLembur = 0;
-      
-      data.forEach(row => {
-        totalKomisi += parseFormattedNumber(row.Nominal);
-        totalLembur += parseFormattedNumber(row['Nominal Lembur']);
-      });
-      
-      document.getElementById('total-komisi').textContent = `Rp ${formatNumber(totalKomisi)}`;
-      document.getElementById('total-lembur').textContent = `Rp ${formatNumber(totalLembur)}`;
-      document.getElementById('total-transaksi').textContent = formatNumber(data.length);
-    }
-    
-    // Add treatment row for input
-    function addTreatmentRow(noSR = '', treatment = '', nominal = '') {
-      const container = document.getElementById('treatment-container');
-      const rowId = treatmentRowCount++;
-      
-      const row = document.createElement('div');
-      row.className = 'treatment-row grid grid-cols-12 gap-3 animate-slide-up';
-      row.dataset.rowId = rowId;
-      row.innerHTML = `
-        <div class="col-span-3">
-          <input type="text" placeholder="No:SR" value="${noSR}"
-                 class="treatment-nosr w-full px-3 py-2.5 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-pink-400 focus:bg-white outline-none transition-all input-focus text-sm">
+
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label>Total:</label>
+                        <input type="text" id="total" readonly placeholder="Rp 0">
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-danger" onclick="closeModal()">
+                        Batal
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                        💾 Simpan Data
+                    </button>
+                </div>
+            </form>
         </div>
-        <div class="col-span-5">
-          <input type="text" placeholder="Treatment" value="${treatment}"
-                 class="treatment-name w-full px-3 py-2.5 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-pink-400 focus:bg-white outline-none transition-all input-focus text-sm">
+    </div>
+
+    <!-- Modal Konfirmasi Hapus -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h2>⚠️ Konfirmasi Hapus</h2>
+                <button class="close-btn" onclick="closeDeleteModal()">&times;</button>
+            </div>
+            <p style="margin-bottom: 20px; font-size: 1.1em; color: #555;">
+                Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan.
+            </p>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-primary" onclick="closeDeleteModal()">
+                    Batal
+                </button>
+                <button type="button" class="btn btn-danger" onclick="confirmDelete()">
+                    🗑️ Hapus
+                </button>
+            </div>
         </div>
-        <div class="col-span-3">
-          <input type="text" placeholder="Nominal" value="${nominal ? formatNumber(nominal) : ''}" oninput="formatNumberInput(this)"
-                 class="treatment-nominal w-full px-3 py-2.5 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-pink-400 focus:bg-white outline-none transition-all input-focus text-sm">
-        </div>
-        <div class="col-span-1 flex items-center justify-center">
-          <button type="button" onclick="removeTreatmentRow(${rowId})" 
-                  class="p-2 text-red-500 hover:bg-red-100 rounded-lg transition-colors">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-            </svg>
-          </button>
-        </div>
-      `;
-      
-      container.appendChild(row);
-    }
-    
-    // Remove treatment row
-    function removeTreatmentRow(rowId) {
-      const row = document.querySelector(`#treatment-container .treatment-row[data-row-id="${rowId}"]`);
-      if (row) {
-        row.classList.add('animate-fade-in');
-        row.style.animation = 'fadeIn 0.3s ease-out reverse forwards';
-        setTimeout(() => row.remove(), 300);
-      }
-    }
-    
-    // Add treatment row for edit
-    function addEditTreatmentRow(noSR = '', treatment = '', nominal = '') {
-      const container = document.getElementById('edit-treatment-container');
-      const rowId = editTreatmentRowCount++;
-      
-      const row = document.createElement('div');
-      row.className = 'treatment-row grid grid-cols-12 gap-3 animate-slide-up';
-      row.dataset.rowId = rowId;
-      row.innerHTML = `
-        <div class="col-span-3">
-          <input type="text" placeholder="No:SR" value="${noSR}"
-                 class="treatment-nosr w-full px-3 py-2.5 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-blue-400 focus:bg-white outline-none transition-all input-focus text-sm">
-        </div>
-        <div class="col-span-5">
-          <input type="text" placeholder="Treatment" value="${treatment}"
-                 class="treatment-name w-full px-3 py-2.5 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-blue-400 focus:bg-white outline-none transition-all input-focus text-sm">
-        </div>
-        <div class="col-span-3">
-          <input type="text" placeholder="Nominal" value="${nominal ? formatNumber(parseFormattedNumber(nominal)) : ''}" oninput="formatNumberInput(this)"
-                 class="treatment-nominal w-full px-3 py-2.5 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-blue-400 focus:bg-white outline-none transition-all input-focus text-sm">
-        </div>
-        <div class="col-span-1 flex items-center justify-center">
-          <button type="button" onclick="removeEditTreatmentRow(${rowId})" 
-                  class="p-2 text-red-500 hover:bg-red-100 rounded-lg transition-colors">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-            </svg>
-          </button>
-        </div>
-      `;
-      
-      container.appendChild(row);
-    }
-    
-    // Remove edit treatment row
-    function removeEditTreatmentRow(rowId) {
-      const row = document.querySelector(`#edit-treatment-container .treatment-row[data-row-id="${rowId}"]`);
-      if (row) {
-        row.style.animation = 'fadeIn 0.3s ease-out reverse forwards';
-        setTimeout(() => row.remove(), 300);
-      }
-    }
-    
-    // Open input modal
-    function openInputModal() {
-      document.getElementById('input-modal').classList.remove('hidden');
-      document.getElementById('input-tanggal').value = getCurrentDate();
-      document.getElementById('input-berangkat').value = getCurrentTime();
-      document.getElementById('input-pulang').value = getCurrentTime();
-      document.getElementById('input-nama').value = '';
-      document.getElementById('input-lembur').value = '';
-      
-      // Reset treatment container
-      document.getElementById('treatment-container').innerHTML = '';
-      treatmentRowCount = 0;
-      addTreatmentRow();
-    }
-    
-    // Close input modal
-    function closeInputModal() {
-      document.getElementById('input-modal').classList.add('hidden');
-    }
-    
-    // Submit data
-    async function submitData(e) {
-      e.preventDefault();
-      
-      const submitBtn = document.getElementById('submit-btn');
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = `
-        <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-        Menyimpan...
-      `;
-      
-      try {
-        const tanggal = document.getElementById('input-tanggal').value;
-        const nama = document.getElementById('input-nama').value;
-        const berangkat = document.getElementById('input-berangkat').value;
-        const lembur = parseFormattedNumber(document.getElementById('input-lembur').value);
-        const pulang = document.getElementById('input-pulang').value;
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <img src="https://lh3.googleusercontent.com/d/1AcUPbZdtoKhbAEDhLgg4102LwKpQeRBn" alt="Logo" class="footer-logo">
+        <span>IkeBagus 2026</span>
+    </div>
+
+    <script>
+        // ============================================
+        // GOOGLE APPS SCRIPT CONFIGURATION
+        // ============================================
         
-        // Get all treatments
-        const treatmentRows = document.querySelectorAll('#treatment-container .treatment-row');
-        const treatments = [];
+        // Ganti dengan URL Web App Anda setelah deploy
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxtwGxqZnXzKCY9O8gNz9xHWOZfwZpJvg-2I7d9Y0GehrRKH1-Y0_5xPinGPTtBxhTL/exec';
         
-        treatmentRows.forEach(row => {
-          const noSR = row.querySelector('.treatment-nosr').value;
-          const treatment = row.querySelector('.treatment-name').value;
-          const nominal = parseFormattedNumber(row.querySelector('.treatment-nominal').value);
-          
-          if (noSR || treatment || nominal) {
-            treatments.push({ noSR, treatment, nominal });
-          }
+        // Mode: 'local' untuk localStorage, 'sheets' untuk Google Sheets
+        const DATA_MODE = 'sheets'; // Ubah ke 'sheets' setelah deploy
+
+        // Data storage
+        let komisiData = [];
+        let editingIndex = -1;
+        let deleteIndex = -1;
+        let commissionChart = null;
+
+        // Initialize application
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            initializeDateTime();
+            addEntry(); // Add first entry row
         });
-        
-        // If no treatments, add one empty row
-        if (treatments.length === 0) {
-          treatments.push({ noSR: '', treatment: '', nominal: 0 });
+
+        // ============================================
+        // DATA OPERATIONS
+        // ============================================
+
+        // Load data
+        async function loadData() {
+            showLoading(true);
+            try {
+                if (DATA_MODE === 'sheets') {
+                    // Load from Google Sheets
+                    const response = await fetch(`${SCRIPT_URL}?action=getAll`);
+                    const result = await response.json();
+                    
+                    if (result.status === 'success') {
+                        komisiData = result.data;
+                    } else {
+                        throw new Error(result.message);
+                    }
+                } else {
+                    // Load from localStorage
+                    const storedData = localStorage.getItem('komisiData');
+                    if (storedData) {
+                        komisiData = JSON.parse(storedData);
+                    } else {
+                        komisiData = getSampleData();
+                        saveToStorage();
+                    }
+                }
+                
+                renderTable();
+                updateInfographics();
+                showToast('Data berhasil dimuat!', 'success');
+            } catch (error) {
+                console.error('Error loading data:', error);
+                showToast('Gagal memuat data! Menggunakan data lokal.', 'error');
+                
+                // Fallback to local data
+                const storedData = localStorage.getItem('komisiData');
+                if (storedData) {
+                    komisiData = JSON.parse(storedData);
+                } else {
+                    komisiData = getSampleData();
+                }
+                renderTable();
+                updateInfographics();
+            }
+            showLoading(false);
         }
-        
-        // Send each treatment as a separate row
-        for (const t of treatments) {
-          const total = lembur + t.nominal;
-          
-          const formData = new URLSearchParams();
-          formData.append('action', 'create');
-          formData.append('Tanggal', tanggal);
-          formData.append('Nama Karyawan', nama);
-          formData.append('Berangkat', berangkat);
-          formData.append('Nominal Lembur', lembur);
-          formData.append('No:SR', t.noSR);
-          formData.append('Treatment', t.treatment);
-          formData.append('Nominal', t.nominal);
-          formData.append('Total', total);
-          formData.append('Pulang', pulang);
-          
-          await fetch(API_URL, {
-            method: 'POST',
-            body: formData
-          });
+
+        // Save data
+        async function saveDataToBackend(data, action = 'create') {
+            if (DATA_MODE === 'sheets') {
+                const payload = {
+                    action: action,
+                    ...data
+                };
+                
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                return response.ok;
+            }
+            return true;
         }
-        
-        showToast('Data berhasil disimpan!', 'success');
-        closeInputModal();
-        loadData();
-        
-      } catch (error) {
-        console.error('Error submitting data:', error);
-        showToast('Gagal menyimpan data', 'error');
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = `
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-          </svg>
-          Simpan
-        `;
-      }
-    }
-    
-    // Open edit modal
-    async function openEditModal(rowIndex) {
-      const modal = document.getElementById('edit-modal');
-      modal.classList.remove('hidden');
-      
-      // Find the data
-      const rowData = allData.find(d => d.rowIndex === rowIndex);
-      if (!rowData) {
-        showToast('Data tidak ditemukan', 'error');
-        return;
-      }
-      
-      document.getElementById('edit-row-index').value = rowIndex;
-      document.getElementById('edit-tanggal').value = rowData.Tanggal || '';
-      document.getElementById('edit-nama').value = rowData['Nama Karyawan'] || '';
-      document.getElementById('edit-berangkat').value = rowData.Berangkat || '';
-      document.getElementById('edit-lembur').value = rowData['Nominal Lembur'] ? formatNumber(parseFormattedNumber(rowData['Nominal Lembur'])) : '';
-      document.getElementById('edit-pulang').value = rowData.Pulang || '';
-      
-      // Reset treatment container
-      document.getElementById('edit-treatment-container').innerHTML = '';
-      editTreatmentRowCount = 0;
-      
-      // Add treatment row with existing data
-      addEditTreatmentRow(rowData['No:SR'] || '', rowData.Treatment || '', rowData.Nominal || '');
-    }
-    
-    // Close edit modal
-    function closeEditModal() {
-      document.getElementById('edit-modal').classList.add('hidden');
-    }
-    
-    // Update data
-    async function updateData(e) {
-      e.preventDefault();
-      
-      const submitBtn = document.getElementById('edit-submit-btn');
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = `
-        <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-        Mengupdate...
-      `;
-      
-      try {
-        const rowIndex = document.getElementById('edit-row-index').value;
-        const tanggal = document.getElementById('edit-tanggal').value;
-        const nama = document.getElementById('edit-nama').value;
-        const berangkat = document.getElementById('edit-berangkat').value;
-        const lembur = parseFormattedNumber(document.getElementById('edit-lembur').value);
-        const pulang = document.getElementById('edit-pulang').value;
-        
-        // Get treatment data
-        const treatmentRow = document.querySelector('#edit-treatment-container .treatment-row');
-        const noSR = treatmentRow ? treatmentRow.querySelector('.treatment-nosr').value : '';
-        const treatment = treatmentRow ? treatmentRow.querySelector('.treatment-name').value : '';
-        const nominal = treatmentRow ? parseFormattedNumber(treatmentRow.querySelector('.treatment-nominal').value) : 0;
-        const total = lembur + nominal;
-        
-        const formData = new URLSearchParams();
-        formData.append('action', 'update');
-        formData.append('rowIndex', rowIndex);
-        formData.append('Tanggal', tanggal);
-        formData.append('Nama Karyawan', nama);
-        formData.append('Berangkat', berangkat);
-        formData.append('Nominal Lembur', lembur);
-        formData.append('No:SR', noSR);
-        formData.append('Treatment', treatment);
-        formData.append('Nominal', nominal);
-        formData.append('Total', total);
-        formData.append('Pulang', pulang);
-        
-        await fetch(API_URL, {
-          method: 'POST',
-          body: formData
-        });
-        
-        showToast('Data berhasil diupdate!', 'success');
-        closeEditModal();
-        loadData();
-        
-      } catch (error) {
-        console.error('Error updating data:', error);
-        showToast('Gagal mengupdate data', 'error');
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = `
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-          </svg>
-          Update
-        `;
-      }
-    }
-    
-    // Open delete modal
-    function openDeleteModal(rowIndex) {
-      document.getElementById('delete-modal').classList.remove('hidden');
-      document.getElementById('delete-row-index').value = rowIndex;
-    }
-    
-    // Close delete modal
-    function closeDeleteModal() {
-      document.getElementById('delete-modal').classList.add('hidden');
-    }
-    
-    // Confirm delete
-    async function confirmDelete() {
-      const rowIndex = document.getElementById('delete-row-index').value;
-      
-      try {
-        const formData = new URLSearchParams();
-        formData.append('action', 'delete');
-        formData.append('rowIndex', rowIndex);
-        
-        await fetch(API_URL, {
-          method: 'POST',
-          body: formData
-        });
-        
-        showToast('Data berhasil dihapus!', 'success');
-        closeDeleteModal();
-        loadData();
-        
-      } catch (error) {
-        console.error('Error deleting data:', error);
-        showToast('Gagal menghapus data', 'error');
-      }
-    }
-    
-    // Update infografis tab
-    function updateInfografis() {
-      // Calculate stats per employee
-      const employeeStats = {};
-      const treatmentStats = {};
-      
-      allData.forEach(row => {
-        const name = row['Nama Karyawan'];
-        if (!name) return;
-        
-        if (!employeeStats[name]) {
-          employeeStats[name] = {
-            name,
-            totalKomisi: 0,
-            totalLembur: 0,
-            transactions: 0
-          };
+
+        // Save to localStorage
+        function saveToStorage() {
+            localStorage.setItem('komisiData', JSON.stringify(komisiData));
         }
-        
-        employeeStats[name].totalKomisi += parseFormattedNumber(row.Nominal);
-        employeeStats[name].totalLembur += parseFormattedNumber(row['Nominal Lembur']);
-        employeeStats[name].transactions++;
-        
-        // Treatment stats
-        const treatment = row.Treatment;
-        if (treatment) {
-          if (!treatmentStats[treatment]) {
-            treatmentStats[treatment] = { name: treatment, count: 0, total: 0 };
-          }
-          treatmentStats[treatment].count++;
-          treatmentStats[treatment].total += parseFormattedNumber(row.Nominal);
+
+        // Get sample data
+        function getSampleData() {
+            return [
+                {
+                    id: 1,
+                    tanggal: '2024-01-15',
+                    namaKaryawan: 'Nungki',
+                    berangkat: '08:00',
+                    nominalLembur: 50000,
+                    pulang: '17:00',
+                    entries: [
+                        { noSR: 'SR001', treatment: 'Facial Treatment', nominal: 150000 },
+                        { noSR: 'SR002', treatment: 'Hair Spa', nominal: 200000 }
+                    ],
+                    total: 400000
+                },
+                {
+                    id: 2,
+                    tanggal: '2024-01-15',
+                    namaKaryawan: 'Risa',
+                    berangkat: '09:00',
+                    nominalLembur: 0,
+                    pulang: '17:00',
+                    entries: [
+                        { noSR: 'SR003', treatment: 'Manicure', nominal: 75000 }
+                    ],
+                    total: 75000
+                },
+                {
+                    id: 3,
+                    tanggal: '2024-01-16',
+                    namaKaryawan: 'Bu Yanti',
+                    berangkat: '08:30',
+                    nominalLembur: 75000,
+                    pulang: '18:00',
+                    entries: [
+                        { noSR: 'SR004', treatment: 'Pedicure', nominal: 80000 },
+                        { noSR: 'SR005', treatment: 'Facial', nominal: 180000 }
+                    ],
+                    total: 335000
+                }
+            ];
         }
-      });
-      
-      // Sort by total commission
-      const sortedEmployees = Object.values(employeeStats).sort((a, b) => 
-        (b.totalKomisi + b.totalLembur) - (a.totalKomisi + a.totalLembur)
-      );
-      
-      // Update top performer
-      if (sortedEmployees.length > 0) {
-        const top = sortedEmployees[0];
-        document.getElementById('top-name').textContent = top.name;
-        document.getElementById('top-amount').textContent = `Rp ${formatNumber(top.totalKomisi + top.totalLembur)}`;
-      }
-      
-      // Update ranking list
-      const rankingList = document.getElementById('ranking-list');
-      const medals = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'];
-      const colors = ['from-yellow-400 to-amber-500', 'from-gray-300 to-gray-400', 'from-amber-600 to-orange-700', 'from-blue-400 to-indigo-500', 'from-purple-400 to-pink-500'];
-      
-      rankingList.innerHTML = sortedEmployees.slice(0, 5).map((emp, index) => `
-        <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-xl animate-slide-up card-hover" style="animation-delay: ${index * 0.1}s">
-          <div class="w-12 h-12 bg-gradient-to-br ${colors[index]} rounded-xl flex items-center justify-center text-2xl shadow-lg rank-badge">
-            ${medals[index]}
-          </div>
-          <div class="flex-1">
-            <p class="font-semibold text-gray-800">${emp.name}</p>
-            <p class="text-sm text-gray-500">${emp.transactions} transaksi</p>
-          </div>
-          <div class="text-right">
-            <p class="font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-rose-500">Rp ${formatNumber(emp.totalKomisi + emp.totalLembur)}</p>
-          </div>
-        </div>
-      `).join('');
-      
-      // Update chart
-      const chartContainer = document.getElementById('chart-container');
-      const maxTotal = sortedEmployees.length > 0 ? sortedEmployees[0].totalKomisi + sortedEmployees[0].totalLembur : 1;
-      const barColors = ['bg-gradient-to-r from-pink-500 to-rose-500', 'bg-gradient-to-r from-blue-500 to-indigo-500', 'bg-gradient-to-r from-green-500 to-emerald-500', 'bg-gradient-to-r from-purple-500 to-violet-500', 'bg-gradient-to-r from-orange-500 to-amber-500'];
-      
-      chartContainer.innerHTML = sortedEmployees.map((emp, index) => {
-        const total = emp.totalKomisi + emp.totalLembur;
-        const percentage = (total / maxTotal * 100).toFixed(0);
-        return `
-          <div class="animate-slide-up" style="animation-delay: ${index * 0.15}s">
-            <div class="flex items-center justify-between mb-2">
-              <span class="font-medium text-gray-700">${emp.name}</span>
-              <span class="text-sm font-bold text-gray-600">Rp ${formatNumber(total)}</span>
-            </div>
-            <div class="h-8 bg-gray-100 rounded-full overflow-hidden">
-              <div class="h-full ${barColors[index % barColors.length]} rounded-full bar-animate flex items-center justify-end pr-3"
-                   style="width: ${percentage}%">
-                <span class="text-white text-xs font-bold">${percentage}%</span>
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
-      
-      // Update insights
-      const insights = document.getElementById('insights');
-      const totalAllKomisi = sortedEmployees.reduce((sum, e) => sum + e.totalKomisi, 0);
-      const totalAllLembur = sortedEmployees.reduce((sum, e) => sum + e.totalLembur, 0);
-      const avgTransaction = sortedEmployees.length > 0 ? totalAllKomisi / allData.length : 0;
-      
-      insights.innerHTML = `
-        <div class="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-100 animate-slide-up">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
-              <span class="text-xl">💰</span>
-            </div>
-            <div>
-              <p class="text-sm text-green-600 font-medium">Total Pendapatan</p>
-              <p class="text-lg font-bold text-green-700">Rp ${formatNumber(totalAllKomisi + totalAllLembur)}</p>
-            </div>
-          </div>
-        </div>
-        <div class="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100 animate-slide-up stagger-1">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
-              <span class="text-xl">📊</span>
-            </div>
-            <div>
-              <p class="text-sm text-blue-600 font-medium">Rata-rata per Transaksi</p>
-              <p class="text-lg font-bold text-blue-700">Rp ${formatNumber(Math.round(avgTransaction))}</p>
-            </div>
-          </div>
-        </div>
-        <div class="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-100 animate-slide-up stagger-2">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center">
-              <span class="text-xl">👥</span>
-            </div>
-            <div>
-              <p class="text-sm text-purple-600 font-medium">Total Karyawan Aktif</p>
-              <p class="text-lg font-bold text-purple-700">${sortedEmployees.length} orang</p>
-            </div>
-          </div>
-        </div>
-      `;
-      
-      // Update treatment stats
-      const treatmentList = document.getElementById('treatment-stats');
-      const sortedTreatments = Object.values(treatmentStats).sort((a, b) => b.count - a.count).slice(0, 5);
-      
-      treatmentList.innerHTML = sortedTreatments.map((t, index) => `
-        <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl animate-slide-up" style="animation-delay: ${index * 0.1}s">
-          <div class="w-8 h-8 bg-gradient-to-br from-emerald-400 to-green-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">
-            ${index + 1}
-          </div>
-          <div class="flex-1">
-            <p class="font-medium text-gray-800 text-sm">${t.name}</p>
-            <p class="text-xs text-gray-500">${t.count} kali</p>
-          </div>
-          <div class="text-right">
-            <p class="text-sm font-bold text-emerald-600">Rp ${formatNumber(t.total)}</p>
-          </div>
-        </div>
-      `).join('') || '<p class="text-gray-500 text-center py-4">Belum ada data treatment</p>';
-    }
-    
-    // Initialize
-    document.addEventListener('DOMContentLoaded', () => {
-      initMonthFilter();
-      loadData();
-      
-      // Set today's date for filter
-      document.getElementById('filter-date').value = getCurrentDate();
-    });
-  </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d298ab1e65ea02f',t:'MTc3MTg3OTI2My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+
+        // ============================================
+        // UI FUNCTIONS
+        // ============================================
+
+        // Initialize date and time
+        function initializeDateTime() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('tanggal').value = today;
+            document.getElementById('berangkat').value = '08:00';
+            document.getElementById('pulang').value = '17:00';
+        }
+
+        // Render table
+        function renderTable(data = komisiData) {
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = '';
+
+            if (data.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="10" style="text-align: center; color: #999;">Tidak ada data tersedia</td></tr>';
+                return;
+            }
+
+            // Group data by employee and date
+            const groupedData = {};
+            data.forEach((item, index) => {
+                const key = `${item.namaKaryawan}-${item.tanggal}`;
+                if (!groupedData[key]) {
+                    groupedData[key] = {
+                        employee: item.namaKaryawan,
+                        date: item.tanggal,
+                        berangkat: item.berangkat,
+                        nominalLembur: item.nominalLembur,
+                        pulang: item.pulang,
+                        entries: [],
+                        total: 0,
+                        originalIndices: []
+                    };
+                }
+                groupedData[key].entries.push(...item.entries);
+                groupedData[key].total += item.total;
+                groupedData[key].originalIndices.push(index);
+            });
+
+            // Render grouped data
+            Object.keys(groupedData).forEach(key => {
+                const group = groupedData[key];
+                const rowIndex = data.findIndex(d => d.namaKaryawan === group.employee && d.tanggal === group.date);
+
+                // Employee row
+                const employeeRow = document.createElement('tr');
+                employeeRow.className = 'employee-row';
+                employeeRow.innerHTML = `
+                    <td>${formatDate(group.date)}</td>
+                    <td>👤 ${group.employee}</td>
+                    <td>${group.berangkat}</td>
+                    <td>${formatCurrency(group.nominalLembur)}</td>
+                    <td colspan="3"></td>
+                    <td><strong>${formatCurrency(group.total)}</strong></td>
+                    <td>${group.pulang}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="action-btn edit-btn" onclick="editData(${rowIndex})">✏️ Edit</button>
+                            <button class="action-btn delete-btn" onclick="deleteData(${rowIndex})">🗑️ Hapus</button>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(employeeRow);
+
+                // Entry rows
+                group.entries.forEach(entry => {
+                    const entryRow = document.createElement('tr');
+                    entryRow.innerHTML = `
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>${entry.noSR}</td>
+                        <td>${entry.treatment}</td>
+                        <td>${formatCurrency(entry.nominal)}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    `;
+                    tableBody.appendChild(entryRow);
+                });
+            });
+        }
+
+        // Open modal
+        function openModal() {
+            document.getElementById('modal').classList.add('active');
+            document.getElementById('modalTitle').textContent = 'Input Data Komisi';
+            editingIndex = -1;
+            resetForm();
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+            resetForm();
+        }
+
+        // Reset form
+        function resetForm() {
+            document.getElementById('dataForm').reset();
+            initializeDateTime();
+            document.getElementById('entriesContainer').innerHTML = '';
+            addEntry();
+            document.getElementById('total').value = '';
+        }
+
+        // Add entry row
+        function addEntry(data = {}) {
+            const container = document.getElementById('entriesContainer');
+            const entryDiv = document.createElement('div');
+            entryDiv.className = 'entry-row';
+            entryDiv.innerHTML = `
+                <div class="form-group">
+                    <label>No:SR</label>
+                    <input type="text" name="noSR" value="${data.noSR || ''}" placeholder="SRXXX" required>
+                </div>
+                <div class="form-group">
+                    <label>Treatment</label>
+                    <input type="text" name="treatment" value="${data.treatment || ''}" placeholder="Nama treatment" required>
+                </div>
+                <div class="form-group">
+                    <label>Nominal</label>
+                    <input type="text" name="nominal" value="${data.nominal ? formatNumberDisplay(data.nominal) : ''}" placeholder="0" oninput="formatNumber(this)" onblur="calculateTotal()" required>
+                </div>
+                <button type="button" class="remove-entry" onclick="removeEntry(this)">🗑️</button>
+            `;
+            container.appendChild(entryDiv);
+        }
+
+        // Remove entry
+        function removeEntry(button) {
+            const container = document.getElementById('entriesContainer');
+            if (container.children.length > 1) {
+                button.parentElement.remove();
+                calculateTotal();
+            } else {
+                showToast('Minimal harus ada satu treatment!', 'error');
+            }
+        }
+
+        // Calculate total
+        function calculateTotal() {
+            const nominalLembur = parseCurrency(document.getElementById('nominalLembur').value);
+            const entries = document.querySelectorAll('.entry-row');
+            let totalNominal = 0;
+
+            entries.forEach(entry => {
+                const nominalInput = entry.querySelector('[name="nominal"]');
+                const nominal = parseCurrency(nominalInput.value);
+                totalNominal += nominal;
+            });
+
+            const total = nominalLembur + totalNominal;
+            document.getElementById('total').value = formatCurrency(total);
+        }
+
+        // Save data
+        async function saveData(event) {
+            event.preventDefault();
+
+            const tanggal = document.getElementById('tanggal').value;
+            const namaKaryawan = document.getElementById('namaKaryawan').value;
+            const berangkat = document.getElementById('berangkat').value;
+            const nominalLembur = parseCurrency(document.getElementById('nominalLembur').value);
+            const pulang = document.getElementById('pulang').value;
+
+            // Get entries
+            const entries = [];
+            const entryRows = document.querySelectorAll('.entry-row');
+            entryRows.forEach(row => {
+                const noSR = row.querySelector('[name="noSR"]').value;
+                const treatment = row.querySelector('[name="treatment"]').value;
+                const nominal = parseCurrency(row.querySelector('[name="nominal"]').value);
+                entries.push({ noSR, treatment, nominal });
+            });
+
+            const total = parseCurrency(document.getElementById('total').value);
+
+            const newData = {
+                id: editingIndex >= 0 ? komisiData[editingIndex].id : Date.now(),
+                tanggal,
+                namaKaryawan,
+                berangkat,
+                nominalLembur,
+                pulang,
+                entries,
+                total
+            };
+
+            showLoading(true);
+
+            try {
+                const action = editingIndex >= 0 ? 'update' : 'create';
+                await saveDataToBackend(newData, action);
+
+                if (editingIndex >= 0) {
+                    komisiData[editingIndex] = newData;
+                } else {
+                    komisiData.push(newData);
+                }
+
+                saveToStorage();
+                renderTable();
+                updateInfographics();
+                closeModal();
+                showToast('Data berhasil disimpan!', 'success');
+            } catch (error) {
+                console.error('Error saving data:', error);
+                showToast('Gagal menyimpan data!', 'error');
+            }
+
+            showLoading(false);
+        }
+
+        // Edit data
+        function editData(index) {
+            editingIndex = index;
+            const data = komisiData[index];
+
+            document.getElementById('modal').classList.add('active');
+            document.getElementById('modalTitle').textContent = 'Edit Data Komisi';
+            document.getElementById('tanggal').value = data.tanggal;
+            document.getElementById('namaKaryawan').value = data.namaKaryawan;
+            document.getElementById('berangkat').value = data.berangkat;
+            document.getElementById('nominalLembur').value = formatNumberDisplay(data.nominalLembur);
+            document.getElementById('pulang').value = data.pulang;
+
+            // Load entries
+            const container = document.getElementById('entriesContainer');
+            container.innerHTML = '';
+            data.entries.forEach(entry => addEntry(entry));
+
+            calculateTotal();
+        }
+
+        // Delete data
+        function deleteData(index) {
+            deleteIndex = index;
+            document.getElementById('deleteModal').classList.add('active');
+        }
+
+        // Close delete modal
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('active');
+            deleteIndex = -1;
+        }
+
+        // Confirm delete
+        async function confirmDelete() {
+            if (deleteIndex >= 0) {
+                showLoading(true);
+                try {
+                    const data = komisiData[deleteIndex];
+                    await saveDataToBackend({ id: data.id }, 'delete');
+                    
+                    komisiData.splice(deleteIndex, 1);
+                    saveToStorage();
+                    renderTable();
+                    updateInfographics();
+                    closeDeleteModal();
+                    showToast('Data berhasil dihapus!', 'success');
+                } catch (error) {
+                    console.error('Error deleting data:', error);
+                    showToast('Gagal menghapus data!', 'error');
+                }
+                showLoading(false);
+            }
+        }
+
+        // Apply filters
+        function applyFilters() {
+            const monthFilter = document.getElementById('monthFilter').value;
+            const employeeFilter = document.getElementById('employeeFilter').value;
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+
+            let filteredData = komisiData.filter(item => {
+                // Month filter
+                if (monthFilter) {
+                    const month = new Date(item.tanggal).getMonth() + 1;
+                    if (month.toString() !== monthFilter) return false;
+                }
+
+                // Employee filter
+                if (employeeFilter && item.namaKaryawan !== employeeFilter) {
+                    return false;
+                }
+
+                // Search filter
+                if (searchInput) {
+                    const searchTerm = searchInput.toLowerCase();
+                    const matchText = `${item.tanggal} ${item.namaKaryawan} ${item.entries.map(e => `${e.noSR} ${e.treatment}`).join(' ')}`.toLowerCase();
+                    if (!matchText.includes(searchTerm)) return false;
+                }
+
+                return true;
+            });
+
+            renderTable(filteredData);
+        }
+
+        // Reset filters
+        function resetFilters() {
+            document.getElementById('monthFilter').value = '';
+            document.getElementById('employeeFilter').value = '';
+            document.getElementById('searchInput').value = '';
+            renderTable();
+        }
+
+        // Switch tab
+        function switchTab(tab) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(`${tab}-tab`).classList.add('active');
+            event.target.classList.add('active');
+
+            if (tab === 'infografis') {
+                updateInfographics();
+            }
+        }
+
+        // Update infographics
+        function updateInfographics() {
+            // Calculate statistics
+            const totalCommission = komisiData.reduce((sum, item) => sum + item.total, 0);
+            document.getElementById('totalCommission').textContent = formatCurrency(totalCommission);
+
+            const totalTransactions = komisiData.reduce((sum, item) => sum + item.entries.length, 0);
+            document.getElementById('totalTransactions').textContent = totalTransactions;
+
+            // Calculate per employee
+            const employeeStats = {};
+            komisiData.forEach(item => {
+                if (!employeeStats[item.namaKaryawan]) {
+                    employeeStats[item.namaKaryawan] = 0;
+                }
+                employeeStats[item.namaKaryawan] += item.total;
+            });
+
+            // Find top performer
+            let topPerformer = '-';
+            let maxCommission = 0;
+            Object.keys(employeeStats).forEach(employee => {
+                if (employeeStats[employee] > maxCommission) {
+                    maxCommission = employeeStats[employee];
+                    topPerformer = employee;
+                }
+            });
+            document.getElementById('topPerformer').textContent = topPerformer;
+
+            // Update chart
+            updateChart(employeeStats);
+
+            // Update ranking
+            updateRanking(employeeStats);
+
+            // Update insight
+            updateInsight(employeeStats, totalCommission);
+        }
+
+        // Update chart
+        function updateChart(employeeStats) {
+            const ctx = document.getElementById('commissionChart').getContext('2d');
+            
+            if (commissionChart) {
+                commissionChart.destroy();
+            }
+
+            const labels = Object.keys(employeeStats);
+            const data = Object.values(employeeStats);
+
+            commissionChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Komisi',
+                        data: data,
+                        backgroundColor: [
+                            'rgba(255, 153, 153, 0.8)',
+                            'rgba(255, 204, 204, 0.8)',
+                            'rgba(255, 107, 107, 0.8)',
+                            'rgba(255, 179, 179, 0.8)',
+                            'rgba(255, 131, 131, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 153, 153, 1)',
+                            'rgba(255, 204, 204, 1)',
+                            'rgba(255, 107, 107, 1)',
+                            'rgba(255, 179, 179, 1)',
+                            'rgba(255, 131, 131, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return formatCurrency(value);
+                                }
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 1500,
+                        easing: 'easeInOutQuart'
+                    }
+                }
+            });
+        }
+
+        // Update ranking
+        function updateRanking(employeeStats) {
+            const rankingList = document.getElementById('rankingList');
+            rankingList.innerHTML = '';
+
+            // Sort by commission
+            const sorted = Object.entries(employeeStats).sort((a, b) => b[1] - a[1]);
+
+            sorted.forEach(([employee, commission], index) => {
+                const rank = index + 1;
+                const rankClass = rank <= 3 ? `rank-${rank}` : 'rank-other';
+                
+                const li = document.createElement('li');
+                li.className = 'ranking-item';
+                li.style.animationDelay = `${index * 0.1}s`;
+                li.innerHTML = `
+                    <div class="rank-badge ${rankClass}">${rank}</div>
+                    <div class="employee-info">
+                        <div class="employee-name">${employee}</div>
+                        <div class="employee-commission">${formatCurrency(commission)}</div>
+                    </div>
+                `;
+                rankingList.appendChild(li);
+            });
+        }
+
+        // Update insight
+        function updateInsight(employeeStats, totalCommission) {
+            const insightText = document.getElementById('insightText');
+            
+            if (Object.keys(employeeStats).length === 0) {
+                insightText.textContent = 'Belum ada data untuk dianalisis.';
+                return;
+            }
+
+            const topEmployee = Object.entries(employeeStats).sort((a, b) => b[1] - a[1])[0];
+            const avgCommission = totalCommission / komisiData.length;
+
+            let insight = `
+                📊 <strong>Total komisi keseluruhan:</strong> ${formatCurrency(totalCommission)}<br><br>
+                🏆 <strong>Top performer:</strong> ${topEmployee[0]} dengan total komisi ${formatCurrency(topEmployee[1])}<br><br>
+                📈 <strong>Rata-rata komisi per transaksi:</strong> ${formatCurrency(avgCommission)}<br><br>
+            `;
+
+            if (Object.keys(employeeStats).length > 1) {
+                const second = Object.entries(employeeStats).sort((a, b) => b[1] - a[1])[1];
+                const diff = topEmployee[1] - second[1];
+                insight += `💡 <strong>Insight:</strong> ${topEmployee[0]} unggul ${formatCurrency(diff)} dari peringkat kedua (${second[0]}).`;
+            } else {
+                insight += '💡 <strong>Insight:</strong> Butuh lebih banyak data untuk analisis yang lebih akurat.';
+            }
+
+            insightText.innerHTML = insight;
+        }
+
+        // ============================================
+        // HELPER FUNCTIONS
+        // ============================================
+
+        function formatNumber(input) {
+            let value = input.value.replace(/[^0-9]/g, '');
+            input.value = formatNumberDisplay(value);
+        }
+
+        function formatNumberDisplay(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+
+        function parseCurrency(str) {
+            return parseInt(str.replace(/\./g, '')) || 0;
+        }
+
+        function formatCurrency(num) {
+            return 'Rp ' + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            return date.toLocaleDateString('id-ID', options);
+        }
+
+        function showLoading(show) {
+            const loading = document.getElementById('loading');
+            if (show) {
+                loading.classList.add('active');
+            } else {
+                loading.classList.remove('active');
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type} active`;
+            
+            setTimeout(() => {
+                toast.classList.remove('active');
+            }, 3000);
+        }
+    </script>
+</body>
 </html>
