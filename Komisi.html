@@ -559,12 +559,63 @@
             border-color: var(--primary-pink);
         }
 
-        .total-preview {
-            background: var(--light-pink);
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 25px;
+        /* Total Komisi Box Below Table */
+        .total-komisi-box {
+            background: var(--gradient-primary);
+            background-size: 200% 200%;
+            animation: gradientMove 5s ease infinite;
+            border-radius: 20px;
+            padding: 25px 30px;
+            margin-top: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            box-shadow: var(--shadow-soft);
+            transition: all 0.3s ease;
+        }
+
+        .total-komisi-box:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .total-komisi-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: white;
+            padding: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            flex-shrink: 0;
+        }
+
+        .total-komisi-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .total-komisi-content {
             text-align: center;
+        }
+
+        .total-komisi-label {
+            font-size: 1rem;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .total-komisi-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .total-preview {
+            display: none;
         }
 
         .total-label {
@@ -860,14 +911,21 @@
             border-top: 2px solid var(--light-pink);
         }
 
+        .footer-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
         .footer-logo {
             width: 50px;
             height: 50px;
-            margin-bottom: 15px;
             border-radius: 50%;
             background: white;
             padding: 8px;
             box-shadow: var(--shadow-soft);
+            flex-shrink: 0;
         }
 
         .footer-logo img {
@@ -1048,6 +1106,17 @@
                         </tbody>
                     </table>
                 </div>
+
+                <!-- Total Komisi Box -->
+                <div class="total-komisi-box scroll-reveal">
+                    <div class="total-komisi-logo">
+                        <img src="https://lh3.googleusercontent.com/d/1rTcKE5xcEHCqgLIEK4eoep36Z0ZvRR3s" alt="Logo">
+                    </div>
+                    <div class="total-komisi-content">
+                        <div class="total-komisi-label">💰 Total Komisi</div>
+                        <div class="total-komisi-value" id="totalKomisiTable">Rp 0</div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -1095,10 +1164,12 @@
 
         <!-- Footer -->
         <footer class="footer scroll-reveal">
-            <div class="footer-logo">
-                <img src="https://lh3.googleusercontent.com/d/1AcUPbZdtoKhbAEDhLgg4102LwKpQeRBn" alt="Footer Logo">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="https://lh3.googleusercontent.com/d/1AcUPbZdtoKhbAEDhLgg4102LwKpQeRBn" alt="Footer Logo">
+                </div>
+                <p class="footer-text">IkeBagus2026</p>
             </div>
-            <p class="footer-text">IkeBagus 2025</p>
         </footer>
     </div>
 
@@ -1152,11 +1223,6 @@
                     </button>
                 </div>
 
-                <div class="total-preview">
-                    <div class="total-label">Total Komisi</div>
-                    <div class="total-value" id="totalPreview">Rp 0</div>
-                </div>
-
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" id="cancelBtn">Batal</button>
                     <button type="submit" class="btn btn-primary" id="submitBtn">Simpan Data</button>
@@ -1195,7 +1261,7 @@
         // =====================================================
         // PENTING: Ganti URL di bawah ini dengan URL deployment Apps Script Anda
         // Setelah deploy, copy URL dari Google Apps Script Web App
-        const API_URL = 'https://script.google.com/macros/s/AKfycbxdPb5LkTELLMY_OxNojI4SQ56UkTWI-gWTnDedVqnYVuWOIDJnpSuI-BW6dBaBCtk/exec';
+        const API_URL = 'https://script.google.com/macros/s/AKfycbzlgTdkLs-ywE3yVBUhiQjj9QV_EqmpKdISiuEycph2WAepgQEdgiQ7ZIc15EVI1bYR/exec';
 
         // State Management
         let allData = [];
@@ -1264,13 +1330,7 @@
             document.getElementById('searchInput').addEventListener('input', applyFilters);
             document.getElementById('resetFilters').addEventListener('click', resetFilters);
 
-            // Auto-calculate total
-            document.getElementById('nominalLembur').addEventListener('input', calculateTotal);
-            dynamicRows.addEventListener('input', (e) => {
-                if (e.target.classList.contains('nominal-input')) {
-                    calculateTotal();
-                }
-            });
+            // Note: Total calculation removed from form - now shown below table
 
             // Auto set current time on click
             document.getElementById('berangkat').addEventListener('click', function() {
@@ -1545,7 +1605,6 @@
                 addDynamicRow();
             }
             
-            calculateTotal();
         }
 
         function closeModal() {
@@ -1606,23 +1665,9 @@
             const rows = dynamicRows.querySelectorAll('.dynamic-row');
             if (rows.length > 1) {
                 btn.closest('.dynamic-row').remove();
-                calculateTotal();
             } else {
                 showToast('Minimal harus ada satu treatment!', 'error');
             }
-        }
-
-        // Calculate Total
-        function calculateTotal() {
-            const nominalLembur = parseNumber(document.getElementById('nominalLembur').value) || 0;
-            let totalDetails = 0;
-
-            dynamicRows.querySelectorAll('.nominal-input').forEach(input => {
-                totalDetails += parseNumber(input.value) || 0;
-            });
-
-            const total = nominalLembur + totalDetails;
-            document.getElementById('totalPreview').textContent = formatCurrency(total);
         }
 
         // Form Submission
@@ -1804,9 +1849,16 @@
             const totalKomisi = allData.reduce((sum, item) => sum + (item.total || 0), 0);
             const totalLembur = allData.reduce((sum, item) => sum + (item.nominalLembur || 0), 0);
             
+            // Update infografis tab
             document.getElementById('totalKomisi').textContent = formatCurrency(totalKomisi);
             document.getElementById('totalLembur').textContent = formatCurrency(totalLembur);
             document.getElementById('totalTransaksi').textContent = allData.length;
+            
+            // Update total komisi below table
+            const totalKomisiTable = document.getElementById('totalKomisiTable');
+            if (totalKomisiTable) {
+                totalKomisiTable.textContent = formatCurrency(totalKomisi);
+            }
 
             // Update ranking and monthly chart
             updateRanking();
