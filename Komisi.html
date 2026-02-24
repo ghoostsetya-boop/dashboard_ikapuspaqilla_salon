@@ -822,7 +822,7 @@
         }
 
         .bar-label {
-            width: 100px;
+            width: 120px;
             font-weight: 600;
             color: #333;
             font-size: 0.9rem;
@@ -972,7 +972,6 @@
             transform: translateY(0);
         }
     </style>
-<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
 </head>
 <body>
     <div class="container">
@@ -1099,7 +1098,7 @@
             <div class="footer-logo">
                 <img src="https://lh3.googleusercontent.com/d/1AcUPbZdtoKhbAEDhLgg4102LwKpQeRBn" alt="Footer Logo">
             </div>
-            <p class="footer-text">IkeBagus 2026</p>
+            <p class="footer-text">IkeBagus 2025</p>
         </footer>
     </div>
 
@@ -1191,8 +1190,12 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <script>
-        // API Configuration
-        const API_URL = 'https://script.google.com/macros/s/AKfycbxzkRcJ7qbtns_jlZUSDBKdvIB1OTR6oA7GBJxQRVNUqRdw5dVONDGowf_FXFU53Rgq/exec'; // Replace with your Google Apps Script Web App URL
+        // =====================================================
+        // API CONFIGURATION
+        // =====================================================
+        // PENTING: Ganti URL di bawah ini dengan URL deployment Apps Script Anda
+        // Setelah deploy, copy URL dari Google Apps Script Web App
+        const API_URL = 'https://script.google.com/macros/s/AKfycbxdPb5LkTELLMY_OxNojI4SQ56UkTWI-gWTnDedVqnYVuWOIDJnpSuI-BW6dBaBCtk/exec';
 
         // State Management
         let allData = [];
@@ -1208,7 +1211,9 @@
         const toastContainer = document.getElementById('toastContainer');
         const dynamicRows = document.getElementById('dynamicRows');
 
-        // Initialize Application
+        // =====================================================
+        // INITIALIZATION
+        // =====================================================
         document.addEventListener('DOMContentLoaded', () => {
             initializeApp();
         });
@@ -1216,10 +1221,23 @@
         async function initializeApp() {
             setupEventListeners();
             setupScrollAnimations();
+            
+            // Check if API_URL is configured
+            if (API_URL === 'PASTE_URL_APPS_SCRIPT_ANDA_DISINI') {
+                showToast('⚠️ API URL belum dikonfigurasi! Silakan baca komentar di kode.', 'error');
+                console.warn('=== KONFIGURASI API ===');
+                console.warn('1. Deploy file KomisiKaryawan_AppScript.gs ke Google Apps Script');
+                console.warn('2. Copy URL deployment');
+                console.warn('3. Ganti nilai API_URL dengan URL tersebut');
+                return;
+            }
+            
             await loadData();
         }
 
-        // Event Listeners
+        // =====================================================
+        // EVENT LISTENERS
+        // =====================================================
         function setupEventListeners() {
             // Tab Navigation
             document.querySelectorAll('.nav-tab').forEach(tab => {
@@ -1275,6 +1293,125 @@
             });
         }
 
+        // =====================================================
+        // API FUNCTIONS
+        // =====================================================
+        
+        /**
+         * Fetch data dari API dengan error handling
+         */
+        async function fetchAPI(action, params = {}, method = 'GET') {
+            let url = API_URL;
+            const options = {
+                method: method,
+                mode: 'cors',
+                headers: {}
+            };
+
+            if (method === 'GET') {
+                const queryParams = new URLSearchParams({ action, ...params });
+                url += '?' + queryParams.toString();
+            } else {
+                options.headers['Content-Type'] = 'text/plain;charset=utf-8';
+                options.body = JSON.stringify({ action, payload: params });
+            }
+
+            const response = await fetch(url, options);
+            const text = await response.text();
+            
+            try {
+                return JSON.parse(text);
+            } catch (e) {
+                console.error('Response text:', text);
+                throw new Error('Invalid JSON response from server');
+            }
+        }
+
+        /**
+         * Load semua data dari server
+         */
+        async function loadData() {
+            showLoading();
+            try {
+                const result = await fetchAPI('read');
+                
+                if (result.success) {
+                    allData = result.data || [];
+                    filteredData = [...allData];
+                    renderTable();
+                    updateFilterOptions();
+                    updateInfografis();
+                    showToast('Data berhasil dimuat!', 'success');
+                } else {
+                    throw new Error(result.message || 'Gagal memuat data');
+                }
+            } catch (error) {
+                console.error('Error loading data:', error);
+                showToast('Gagal memuat data: ' + error.message, 'error');
+                allData = [];
+                filteredData = [];
+                renderTable();
+            } finally {
+                hideLoading();
+            }
+        }
+
+        /**
+         * Load data by ID
+         */
+        async function loadDataById(id) {
+            try {
+                const result = await fetchAPI('readById', { id });
+                return result;
+            } catch (error) {
+                console.error('Error loading data:', error);
+                return { success: false, message: error.message };
+            }
+        }
+
+        /**
+         * Create new data
+         */
+        async function createDataAPI(data) {
+            try {
+                const result = await fetchAPI('create', data, 'POST');
+                return result;
+            } catch (error) {
+                console.error('Error creating data:', error);
+                return { success: false, message: error.message };
+            }
+        }
+
+        /**
+         * Update existing data
+         */
+        async function updateDataAPI(data) {
+            try {
+                const result = await fetchAPI('update', data, 'POST');
+                return result;
+            } catch (error) {
+                console.error('Error updating data:', error);
+                return { success: false, message: error.message };
+            }
+        }
+
+        /**
+         * Delete data
+         */
+        async function deleteDataAPI(id) {
+            try {
+                const result = await fetchAPI('delete', { id }, 'POST');
+                return result;
+            } catch (error) {
+                console.error('Error deleting data:', error);
+                return { success: false, message: error.message };
+            }
+        }
+
+        // =====================================================
+        // UI FUNCTIONS
+        // =====================================================
+
         // Tab Switching
         function switchTab(tabName) {
             document.querySelectorAll('.nav-tab').forEach(tab => {
@@ -1295,100 +1432,6 @@
             }
         }
 
-        // Data Loading
-        async function loadData() {
-            showLoading();
-            try {
-                // Simulate API call - replace with actual fetch
-                // const response = await fetch(API_URL);
-                // const data = await response.json();
-                
-                // For demo, using sample data
-                allData = getSampleData();
-                filteredData = [...allData];
-                
-                renderTable();
-                updateFilterOptions();
-                updateInfografis();
-                showToast('Data berhasil dimuat!', 'success');
-            } catch (error) {
-                console.error('Error loading data:', error);
-                showToast('Gagal memuat data!', 'error');
-            } finally {
-                hideLoading();
-            }
-        }
-
-        // Sample Data (Replace with actual API data)
-        function getSampleData() {
-            return [
-                {
-                    id: 1,
-                    tanggal: '2024-01-15',
-                    namaKaryawan: 'Nungki',
-                    berangkat: '08:00',
-                    nominalLembur: 150000,
-                    details: [
-                        { noSR: 'SR001', treatment: 'Facial', nominal: 200000 },
-                        { noSR: 'SR002', treatment: 'Massage', nominal: 150000 }
-                    ],
-                    pulang: '17:00',
-                    total: 500000
-                },
-                {
-                    id: 2,
-                    tanggal: '2024-01-16',
-                    namaKaryawan: 'Risa',
-                    berangkat: '09:00',
-                    nominalLembur: 100000,
-                    details: [
-                        { noSR: 'SR003', treatment: 'Haircut', nominal: 100000 }
-                    ],
-                    pulang: '16:00',
-                    total: 200000
-                },
-                {
-                    id: 3,
-                    tanggal: '2024-01-17',
-                    namaKaryawan: 'Bu Yanti',
-                    berangkat: '08:30',
-                    nominalLembur: 120000,
-                    details: [
-                        { noSR: 'SR004', treatment: 'Manicure', nominal: 80000 },
-                        { noSR: 'SR005', treatment: 'Pedicure', nominal: 80000 },
-                        { noSR: 'SR006', treatment: 'Spa', nominal: 250000 }
-                    ],
-                    pulang: '18:00',
-                    total: 530000
-                },
-                {
-                    id: 4,
-                    tanggal: '2024-02-10',
-                    namaKaryawan: 'Ike',
-                    berangkat: '08:00',
-                    nominalLembur: 180000,
-                    details: [
-                        { noSR: 'SR007', treatment: 'Facial Premium', nominal: 350000 }
-                    ],
-                    pulang: '19:00',
-                    total: 530000
-                },
-                {
-                    id: 5,
-                    tanggal: '2024-02-15',
-                    namaKaryawan: 'Abel',
-                    berangkat: '09:00',
-                    nominalLembur: 90000,
-                    details: [
-                        { noSR: 'SR008', treatment: 'Hair Treatment', nominal: 120000 },
-                        { noSR: 'SR009', treatment: 'Creambath', nominal: 100000 }
-                    ],
-                    pulang: '17:00',
-                    total: 310000
-                }
-            ];
-        }
-
         // Render Table
         function renderTable() {
             tableBody.innerHTML = '';
@@ -1407,7 +1450,7 @@
                 return;
             }
 
-            filteredData.forEach((item, index) => {
+            filteredData.forEach((item) => {
                 const mainRow = document.createElement('tr');
                 mainRow.innerHTML = `
                     <td>${formatDate(item.tanggal)}</td>
@@ -1415,7 +1458,7 @@
                     <td>${item.berangkat}</td>
                     <td>${formatCurrency(item.nominalLembur)}</td>
                     <td>
-                        <button class="btn btn-sm btn-secondary" onclick="toggleDetails(${item.id})">
+                        <button class="btn btn-sm btn-secondary" onclick="toggleDetails('${item.id}')">
                             👁️ Lihat Detail
                         </button>
                     </td>
@@ -1423,10 +1466,10 @@
                     <td>${item.pulang}</td>
                     <td>
                         <div class="action-buttons">
-                            <button class="btn btn-sm btn-success" onclick="editData(${item.id})">
+                            <button class="btn btn-sm btn-success" onclick="editData('${item.id}')">
                                 ✏️
                             </button>
-                            <button class="btn btn-sm btn-danger" onclick="deleteData(${item.id})">
+                            <button class="btn btn-sm btn-danger" onclick="confirmDeleteData('${item.id}')">
                                 🗑️
                             </button>
                         </div>
@@ -1434,24 +1477,23 @@
                 `;
                 tableBody.appendChild(mainRow);
 
-                // Detail rows
+                // Detail row
                 const detailRow = document.createElement('tr');
                 detailRow.id = `detail-${item.id}`;
                 detailRow.className = 'detail-row';
                 detailRow.style.display = 'none';
                 
-                let detailsHTML = '<td colspan="8"><div style="padding: 10px;"><strong>Detail Treatment:</strong><br>';
-                item.details.forEach((detail, idx) => {
-                    detailsHTML += `
-                        <div style="margin-top: 8px; padding: 10px; background: white; border-radius: 8px;">
-                            <strong>No:SR:</strong> ${detail.noSR} | 
-                            <strong>Treatment:</strong> ${detail.treatment} | 
-                            <strong>Nominal:</strong> ${formatCurrency(detail.nominal)}
-                        </div>
-                    `;
-                });
-                detailsHTML += '</div></td>';
-                detailRow.innerHTML = detailsHTML;
+                // Parse detail treatment
+                let detailHTML = '<td colspan="8"><div style="padding: 10px;"><strong>Detail Treatment:</strong><br>';
+                if (item.detailTreatment) {
+                    detailHTML += `<div style="margin-top: 8px; padding: 10px; background: white; border-radius: 8px;">
+                        ${item.detailTreatment}
+                    </div>`;
+                } else {
+                    detailHTML += '<div style="margin-top: 8px; padding: 10px; background: white; border-radius: 8px; color: #999;">Tidak ada detail</div>';
+                }
+                detailHTML += '</div></td>';
+                detailRow.innerHTML = detailHTML;
                 tableBody.appendChild(detailRow);
             });
         }
@@ -1467,30 +1509,40 @@
         }
 
         // Modal Functions
-        function openModal(editData = null) {
+        function openModal(editItem = null) {
             modalOverlay.classList.add('active');
             
-            if (editData) {
+            if (editItem) {
                 document.getElementById('modalTitle').textContent = 'Edit Data Komisi';
-                document.getElementById('editId').value = editData.id;
-                document.getElementById('tanggal').value = editData.tanggal;
-                document.getElementById('namaKaryawan').value = editData.namaKaryawan;
-                document.getElementById('berangkat').value = editData.berangkat;
-                document.getElementById('nominalLembur').value = editData.nominalLembur;
-                document.getElementById('pulang').value = editData.pulang;
+                document.getElementById('editId').value = editItem.id;
+                document.getElementById('tanggal').value = editItem.tanggal;
+                document.getElementById('namaKaryawan').value = editItem.namaKaryawan;
+                document.getElementById('berangkat').value = editItem.berangkat;
+                document.getElementById('nominalLembur').value = formatNumberInput(editItem.nominalLembur);
+                document.getElementById('pulang').value = editItem.pulang;
                 
-                // Load dynamic rows
+                // Parse detail treatment
                 dynamicRows.innerHTML = '';
-                editData.details.forEach(detail => {
-                    addDynamicRow(detail.noSR, detail.treatment, detail.nominal);
-                });
+                if (editItem.detailTreatment) {
+                    // Parse format "No:SR: xxx, Treatment: xxx, Nominal: xxx | ..."
+                    const treatments = parseDetailTreatment(editItem.detailTreatment);
+                    if (treatments.length > 0) {
+                        treatments.forEach(t => {
+                            addDynamicRow(t.noSR, t.treatment, t.nominal);
+                        });
+                    } else {
+                        addDynamicRow();
+                    }
+                } else {
+                    addDynamicRow();
+                }
             } else {
                 document.getElementById('modalTitle').textContent = 'Tambah Data Komisi';
                 document.getElementById('editId').value = '';
                 dataForm.reset();
                 document.getElementById('tanggal').value = getCurrentDate();
                 dynamicRows.innerHTML = '';
-                addDynamicRow(); // Add one empty row
+                addDynamicRow();
             }
             
             calculateTotal();
@@ -1499,6 +1551,36 @@
         function closeModal() {
             modalOverlay.classList.remove('active');
             dataForm.reset();
+            dynamicRows.innerHTML = '';
+        }
+
+        // Parse detail treatment string
+        function parseDetailTreatment(str) {
+            if (!str) return [];
+            
+            const treatments = [];
+            const items = str.split('|');
+            
+            items.forEach(item => {
+                const parts = item.split(',').map(p => p.trim());
+                let noSR = '', treatment = '', nominal = '';
+                
+                parts.forEach(part => {
+                    if (part.startsWith('No:SR:')) {
+                        noSR = part.replace('No:SR:', '').trim();
+                    } else if (part.startsWith('Treatment:')) {
+                        treatment = part.replace('Treatment:', '').trim();
+                    } else if (part.startsWith('Nominal:')) {
+                        nominal = part.replace('Nominal:', '').trim();
+                    }
+                });
+                
+                if (noSR || treatment || nominal) {
+                    treatments.push({ noSR, treatment, nominal });
+                }
+            });
+            
+            return treatments;
         }
 
         // Dynamic Rows
@@ -1507,13 +1589,13 @@
             row.className = 'dynamic-row';
             row.innerHTML = `
                 <div class="form-group">
-                    <input type="text" class="form-input no-sr-input" placeholder="No:SR" value="${noSR}" required>
+                    <input type="text" class="form-input no-sr-input" placeholder="No:SR" value="${noSR}">
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-input treatment-input" placeholder="Treatment" value="${treatment}" required>
+                    <input type="text" class="form-input treatment-input" placeholder="Treatment" value="${treatment}">
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-input nominal-input" placeholder="Nominal" value="${nominal}" oninput="formatNumber(this)" required>
+                    <input type="text" class="form-input nominal-input" placeholder="Nominal" value="${nominal ? formatNumberInput(nominal) : ''}" oninput="formatNumber(this)">
                 </div>
                 <button type="button" class="remove-row-btn" onclick="removeDynamicRow(this)">✕</button>
             `;
@@ -1550,63 +1632,78 @@
             showLoading();
             
             const editId = document.getElementById('editId').value;
+            
+            // Collect dynamic rows for detail treatment
+            const details = [];
+            dynamicRows.querySelectorAll('.dynamic-row').forEach(row => {
+                const noSR = row.querySelector('.no-sr-input').value;
+                const treatment = row.querySelector('.treatment-input').value;
+                const nominal = parseNumber(row.querySelector('.nominal-input').value) || 0;
+                if (noSR || treatment || nominal > 0) {
+                    details.push({ noSR, treatment, nominal });
+                }
+            });
+
+            // Format detail treatment string
+            const detailTreatment = details.map(d => 
+                `No:SR: ${d.noSR}, Treatment: ${d.treatment}, Nominal: ${formatCurrency(d.nominal)}`
+            ).join(' | ');
+
+            const nominalLembur = parseNumber(document.getElementById('nominalLembur').value) || 0;
+            const totalDetails = details.reduce((sum, d) => sum + d.nominal, 0);
+            const total = nominalLembur + totalDetails;
+
             const formData = {
                 tanggal: document.getElementById('tanggal').value,
                 namaKaryawan: document.getElementById('namaKaryawan').value,
                 berangkat: document.getElementById('berangkat').value,
-                nominalLembur: parseNumber(document.getElementById('nominalLembur').value) || 0,
+                nominalLembur: nominalLembur,
+                detailTreatment: detailTreatment,
                 pulang: document.getElementById('pulang').value,
-                details: []
+                total: total
             };
 
-            // Collect dynamic rows
-            dynamicRows.querySelectorAll('.dynamic-row').forEach(row => {
-                formData.details.push({
-                    noSR: row.querySelector('.no-sr-input').value,
-                    treatment: row.querySelector('.treatment-input').value,
-                    nominal: parseNumber(row.querySelector('.nominal-input').value) || 0
-                });
-            });
-
-            // Calculate total
-            formData.total = formData.nominalLembur + formData.details.reduce((sum, d) => sum + d.nominal, 0);
-
             try {
+                let result;
+                
                 if (editId) {
                     // Update existing data
-                    const index = allData.findIndex(item => item.id === parseInt(editId));
-                    if (index !== -1) {
-                        allData[index] = { ...allData[index], ...formData, id: parseInt(editId) };
-                    }
-                    showToast('Data berhasil diperbarui!', 'success');
+                    formData.id = editId;
+                    result = await updateDataAPI(formData);
                 } else {
-                    // Add new data
-                    const newId = Math.max(...allData.map(d => d.id), 0) + 1;
-                    allData.push({ ...formData, id: newId });
-                    showToast('Data berhasil ditambahkan!', 'success');
+                    // Create new data
+                    result = await createDataAPI(formData);
                 }
 
-                closeModal();
-                applyFilters();
-                updateInfografis();
+                if (result.success) {
+                    showToast(result.message || 'Data berhasil disimpan!', 'success');
+                    closeModal();
+                    await loadData();
+                } else {
+                    throw new Error(result.message || 'Gagal menyimpan data');
+                }
             } catch (error) {
                 console.error('Error saving data:', error);
-                showToast('Gagal menyimpan data!', 'error');
+                showToast('Gagal menyimpan data: ' + error.message, 'error');
             } finally {
                 hideLoading();
             }
         }
 
         // Edit Data
-        function editData(id) {
+        async function editData(id) {
+            showLoading();
             const item = allData.find(d => d.id === id);
             if (item) {
                 openModal(item);
+            } else {
+                showToast('Data tidak ditemukan', 'error');
             }
+            hideLoading();
         }
 
         // Delete Data
-        function deleteData(id) {
+        function confirmDeleteData(id) {
             deleteId = id;
             deleteModalOverlay.classList.add('active');
         }
@@ -1620,13 +1717,17 @@
             if (deleteId) {
                 showLoading();
                 try {
-                    allData = allData.filter(item => item.id !== deleteId);
-                    applyFilters();
-                    updateInfografis();
-                    showToast('Data berhasil dihapus!', 'success');
+                    const result = await deleteDataAPI(deleteId);
+                    
+                    if (result.success) {
+                        showToast(result.message || 'Data berhasil dihapus!', 'success');
+                        await loadData();
+                    } else {
+                        throw new Error(result.message || 'Gagal menghapus data');
+                    }
                 } catch (error) {
                     console.error('Error deleting data:', error);
-                    showToast('Gagal menghapus data!', 'error');
+                    showToast('Gagal menghapus data: ' + error.message, 'error');
                 } finally {
                     hideLoading();
                     closeDeleteModal();
@@ -1641,12 +1742,24 @@
             const search = document.getElementById('searchInput').value.toLowerCase();
 
             filteredData = allData.filter(item => {
-                const matchPeriod = !period || item.tanggal.startsWith(period);
+                // Filter by period (bulan-tahun)
+                let matchPeriod = true;
+                if (period) {
+                    const itemDate = new Date(item.tanggal);
+                    const itemMonth = String(itemDate.getMonth() + 1).padStart(2, '0');
+                    const itemYear = itemDate.getFullYear();
+                    const itemPeriod = `${itemYear}-${itemMonth}`;
+                    matchPeriod = itemPeriod === period;
+                }
+                
+                // Filter by name
                 const matchName = !name || item.namaKaryawan === name;
+                
+                // Filter by search
                 const matchSearch = !search || 
-                    item.namaKaryawan.toLowerCase().includes(search) ||
-                    item.details.some(d => d.treatment.toLowerCase().includes(search)) ||
-                    item.details.some(d => d.noSR.toLowerCase().includes(search));
+                    (item.namaKaryawan && item.namaKaryawan.toLowerCase().includes(search)) ||
+                    (item.detailTreatment && item.detailTreatment.toLowerCase().includes(search)) ||
+                    (item.tanggal && item.tanggal.toString().includes(search));
 
                 return matchPeriod && matchName && matchSearch;
             });
@@ -1658,15 +1771,26 @@
             document.getElementById('filterPeriod').value = '';
             document.getElementById('filterName').value = '';
             document.getElementById('searchInput').value = '';
-            applyFilters();
+            filteredData = [...allData];
+            renderTable();
         }
 
         function updateFilterOptions() {
-            const periods = [...new Set(allData.map(item => item.tanggal.substring(0, 7)))].sort().reverse();
-            const periodSelect = document.getElementById('filterPeriod');
+            // Get unique periods (bulan-tahun)
+            const periods = new Set();
+            allData.forEach(item => {
+                if (item.tanggal) {
+                    const date = new Date(item.tanggal);
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const year = date.getFullYear();
+                    periods.add(`${year}-${month}`);
+                }
+            });
             
+            const periodSelect = document.getElementById('filterPeriod');
             periodSelect.innerHTML = '<option value="">Semua Periode</option>';
-            periods.forEach(period => {
+            
+            Array.from(periods).sort().reverse().forEach(period => {
                 const option = document.createElement('option');
                 option.value = period;
                 option.textContent = formatPeriod(period);
@@ -1677,17 +1801,15 @@
         // Infografis Functions
         function updateInfografis() {
             // Calculate totals
-            const totalKomisi = allData.reduce((sum, item) => sum + item.total, 0);
-            const totalLembur = allData.reduce((sum, item) => sum + item.nominalLembur, 0);
+            const totalKomisi = allData.reduce((sum, item) => sum + (item.total || 0), 0);
+            const totalLembur = allData.reduce((sum, item) => sum + (item.nominalLembur || 0), 0);
             
             document.getElementById('totalKomisi').textContent = formatCurrency(totalKomisi);
             document.getElementById('totalLembur').textContent = formatCurrency(totalLembur);
             document.getElementById('totalTransaksi').textContent = allData.length;
 
-            // Ranking per employee
+            // Update ranking and monthly chart
             updateRanking();
-            
-            // Monthly chart
             updateMonthlyChart();
         }
 
@@ -1698,7 +1820,7 @@
                 if (!rankingData[item.namaKaryawan]) {
                     rankingData[item.namaKaryawan] = 0;
                 }
-                rankingData[item.namaKaryawan] += item.total;
+                rankingData[item.namaKaryawan] += item.total || 0;
             });
 
             const sorted = Object.entries(rankingData)
@@ -1708,6 +1830,11 @@
             const maxTotal = sorted[0]?.total || 1;
             const rankingList = document.getElementById('rankingList');
             rankingList.innerHTML = '';
+
+            if (sorted.length === 0) {
+                rankingList.innerHTML = '<div class="empty-state"><div class="empty-state-text">Belum ada data</div></div>';
+                return;
+            }
 
             sorted.forEach((item, index) => {
                 const percentage = (item.total / maxTotal) * 100;
@@ -1734,11 +1861,17 @@
             const monthlyData = {};
             
             allData.forEach(item => {
-                const month = item.tanggal.substring(0, 7);
-                if (!monthlyData[month]) {
-                    monthlyData[month] = 0;
+                if (item.tanggal) {
+                    const date = new Date(item.tanggal);
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const year = date.getFullYear();
+                    const key = `${year}-${month}`;
+                    
+                    if (!monthlyData[key]) {
+                        monthlyData[key] = 0;
+                    }
+                    monthlyData[key] += item.total || 0;
                 }
-                monthlyData[month] += item.total;
             });
 
             const sorted = Object.entries(monthlyData).sort((a, b) => a[0].localeCompare(b[0]));
@@ -1746,6 +1879,11 @@
 
             const monthlyChart = document.getElementById('monthlyChart');
             monthlyChart.innerHTML = '';
+
+            if (sorted.length === 0) {
+                monthlyChart.innerHTML = '<div class="empty-state"><div class="empty-state-text">Belum ada data</div></div>';
+                return;
+            }
 
             sorted.forEach(([month, total], index) => {
                 const percentage = (total / maxTotal) * 100;
@@ -1764,13 +1902,19 @@
             });
         }
 
-        // Utility Functions
+        // =====================================================
+        // UTILITY FUNCTIONS
+        // =====================================================
+
         function formatCurrency(num) {
-            return 'Rp ' + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            if (num === null || num === undefined) return 'Rp 0';
+            return 'Rp ' + Number(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
         }
 
         function parseNumber(str) {
-            return parseInt(str.replace(/\./g, '').replace(/[^0-9]/g, '')) || 0;
+            if (typeof str === 'number') return str;
+            if (!str) return 0;
+            return parseInt(String(str).replace(/\./g, '').replace(/[^0-9]/g, '')) || 0;
         }
 
         function formatNumber(input) {
@@ -1780,31 +1924,43 @@
             }
         }
 
+        function formatNumberInput(num) {
+            if (!num) return '';
+            return String(num).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
         function formatDate(dateStr) {
+            if (!dateStr) return '-';
             const date = new Date(dateStr);
-            return date.toLocaleDateString('id-ID', { 
-                day: 'numeric', 
-                month: 'long', 
-                year: 'numeric' 
-            });
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
         }
 
         function formatPeriod(periodStr) {
+            const months = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+                           'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
             const [year, month] = periodStr.split('-');
-            const date = new Date(year, month - 1);
-            return date.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+            return `${months[parseInt(month)]} ${year}`;
         }
 
         function getCurrentDate() {
-            return new Date().toISOString().split('T')[0];
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
         }
 
         function getCurrentTime() {
             const now = new Date();
-            return now.toTimeString().slice(0, 5);
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            return `${hours}:${minutes}`;
         }
 
-        // Loading Functions
+        // Show/Hide Loading
         function showLoading() {
             loadingOverlay.classList.add('active');
         }
@@ -1813,7 +1969,7 @@
             loadingOverlay.classList.remove('active');
         }
 
-        // Toast Notification
+        // Toast Notifications
         function showToast(message, type = 'success') {
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
@@ -1824,9 +1980,10 @@
             toastContainer.appendChild(toast);
 
             setTimeout(() => {
-                toast.style.animation = 'slideInRight 0.4s ease reverse';
-                setTimeout(() => toast.remove(), 400);
-            }, 3000);
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
         }
 
         // Scroll Animations
@@ -1843,13 +2000,6 @@
                 observer.observe(el);
             });
         }
-
-        // Make functions globally accessible
-        window.toggleDetails = toggleDetails;
-        window.editData = editData;
-        window.deleteData = deleteData;
-        window.formatNumber = formatNumber;
-        window.removeDynamicRow = removeDynamicRow;
     </script>
 </body>
 </html>
