@@ -1504,15 +1504,36 @@
                 detailRow.style.display = 'none';
                 
                 // Parse detail treatment
-                let detailHTML = '<td colspan="8"><div style="padding: 10px;"><strong>Detail Treatment:</strong><br>';
-                if (item.detailTreatment) {
-                    detailHTML += `<div style="margin-top: 8px; padding: 10px; background: white; border-radius: 8px;">
-                        ${item.detailTreatment}
-                    </div>`;
-                } else {
-                    detailHTML += '<div style="margin-top: 8px; padding: 10px; background: white; border-radius: 8px; color: #999;">Tidak ada detail</div>';
-                }
-                detailHTML += '</div></td>';
+                   let detailHTML = '<td colspan="8"><div style="padding: 10px;"><strong>Detail Treatment:</strong><br>';
+                   if (item.detailTreatment) {
+                       // Parse and format each treatment on separate line
+                       const treatments = parseDetailTreatment(item.detailTreatment);
+                       let treatmentList = '';
+                       treatments.forEach((t, index) => {
+                           treatmentList += `
+                               <div style="padding: 8px 12px; margin-bottom: 8px; background: #fff; border-left: 3px solid var(--primary-pink); border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                                   <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                                       <div style="flex: 1; min-width: 120px;">
+                                           <span style="color: #999; font-size: 0.85rem;">No. SR:</span>
+                                           <span style="font-weight: 600; color: #333;">${t.noSR || '-'}</span>
+                                       </div>
+                                       <div style="flex: 2; min-width: 200px;">
+                                           <span style="color: #999; font-size: 0.85rem;">Treatment:</span>
+                                           <span style="font-weight: 600; color: #333;">${t.treatment || '-'}</span>
+                                       </div>
+                                       <div style="flex: 1; min-width: 120px;">
+                                           <span style="color: #999; font-size: 0.85rem;">Nominal:</span>
+                                           <span style="font-weight: 600; color: var(--dark-pink);">${formatCurrency(t.nominal)}</span>
+                                       </div>
+                                   </div>
+                               </div>
+                           `;
+                       });
+                       detailHTML += `<div style="margin-top: 8px; padding: 10px; background: white; border-radius: 8px;">${treatmentList}</div>`;
+                   } else {
+                       detailHTML += '<div style="margin-top: 8px; padding: 10px; background: white; border-radius: 8px; color: #999;">Tidak ada detail</div>';
+                   }
+                   detailHTML += '</div></td>';
                 detailRow.innerHTML = detailHTML;
                 tableBody.appendChild(detailRow);
             });
@@ -1590,7 +1611,11 @@
                     } else if (part.startsWith('Treatment:')) {
                         treatment = part.replace('Treatment:', '').trim();
                     } else if (part.startsWith('Nominal:')) {
-                        nominal = part.replace('Nominal:', '').trim();
+                           // Remove currency formatting if present and convert to number
+                           let nominalStr = part.replace('Nominal:', '').trim();
+                           // Remove &quot;Rp &quot; and dots, then parse as number
+                           nominalStr = nominalStr.replace(/Rp\s*/g, '').replace(/\./g, '').replace(/,/g, '');
+                           nominal = parseFloat(nominalStr) || 0;
                     }
                 });
                 
@@ -1651,7 +1676,7 @@
 
             // Format detail treatment string
             const detailTreatment = details.map(d => 
-                `No:SR: ${d.noSR}, Treatment: ${d.treatment}, Nominal: ${formatCurrency(d.nominal)}`
+                `No:SR: ${d.noSR}, Treatment: ${d.treatment}, Nominal: ${d.nominal}`
             ).join(' | ');
 
             const nominalLembur = parseNumber(document.getElementById('nominalLembur').value) || 0;
