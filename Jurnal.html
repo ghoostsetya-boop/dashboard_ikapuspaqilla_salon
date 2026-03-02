@@ -465,6 +465,62 @@
             }
         }
 
+        // =====================================================
+        // FUNGSI HELPER UNTUK NORMALISASI TANGGAL (FIXED)
+        // =====================================================
+        
+        /**
+         * Normalisasi tanggal ke format YYYY-MM-DD untuk perbandingan yang konsisten
+         * Menghindari masalah timezone saat membandingkan tanggal
+         */
+        function getNormalizedDateString(dateInput) {
+            let date;
+            if (typeof dateInput === 'string') {
+                // Jika format YYYY-MM-DD, langsung kembalikan
+                if (/^\d{4}-\d{2}-\d{2}$/.test(dateInput)) {
+                    return dateInput;
+                }
+                date = new Date(dateInput);
+            } else {
+                date = new Date(dateInput);
+            }
+            
+            // Gunakan komponen tanggal lokal untuk menghindari timezone issues
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            
+            return `${year}-${month}-${day}`;
+        }
+
+        /**
+         * Bandingkan dua tanggal (format YYYY-MM-DD atau Date object)
+         * Return: -1 jika date1 < date2, 0 jika sama, 1 jika date1 > date2
+         */
+        function compareDates(date1, date2) {
+            const d1 = getNormalizedDateString(date1);
+            const d2 = getNormalizedDateString(date2);
+            
+            if (d1 < d2) return -1;
+            if (d1 > d2) return 1;
+            return 0;
+        }
+
+        /**
+         * Cek apakah tanggal berada dalam rentang (inklusif)
+         */
+        function isDateInRange(dateToCheck, startDate, endDate) {
+            const check = getNormalizedDateString(dateToCheck);
+            const start = startDate ? getNormalizedDateString(startDate) : null;
+            const end = endDate ? getNormalizedDateString(endDate) : null;
+            
+            if (start && check < start) return false;
+            if (end && check > end) return false;
+            return true;
+        }
+
+        // =====================================================
+
         async function loadData() {
             try {
                 showLoading('Memuat data...');
@@ -499,6 +555,9 @@
             renderTable(); updateSummary();
         }
 
+        // =====================================================
+        // FUNGSI FILTER TANGGAL YANG DIPERBAIKI
+        // =====================================================
         function applyAdvancedFilter() {
             const dateStart = document.getElementById('filterDateStart').value;
             const dateEnd = document.getElementById('filterDateEnd').value;
@@ -509,13 +568,19 @@
             document.querySelectorAll('.filter-btn').forEach(btn => { btn.classList.remove('bg-[#E07A5F]', 'text-white'); btn.classList.add('bg-white', 'text-[#8D6E63]'); });
             
             filteredData = allData.filter(item => {
-                let passDate = true; let passKategori = true;
+                let passDate = true; 
+                let passKategori = true;
+                
+                // Gunakan fungsi helper yang sudah diperbaiki untuk filter tanggal
                 if (dateStart || dateEnd) {
-                    const itemDate = new Date(item.Tanggal);
-                    if (dateStart) { const startDate = new Date(dateStart); passDate = passDate && itemDate >= startDate; }
-                    if (dateEnd) { const endDate = new Date(dateEnd + 'T23:59:59'); passDate = passDate && itemDate <= endDate; }
+                    passDate = isDateInRange(item.Tanggal, dateStart, dateEnd);
                 }
-                if (kategoriFilter) { const [jenis, kategori] = kategoriFilter.split('_'); passKategori = item.Jenis === jenis && item.Kategori === kategori; }
+                
+                if (kategoriFilter) { 
+                    const [jenis, kategori] = kategoriFilter.split('_'); 
+                    passKategori = item.Jenis === jenis && item.Kategori === kategori; 
+                }
+                
                 return passDate && passKategori;
             });
             
@@ -651,10 +716,21 @@
         }
         function closeDetailModal() { const modal = document.getElementById('detailModal'); modal.classList.remove('visible'); }
 
+        // =====================================================
+        // FUNGSI FILTER DETAIL YANG DIPERBAIKI
+        // =====================================================
         function filterDetailData() {
-            const startDate = document.getElementById('detailDateStart').value; const endDate = document.getElementById('detailDateEnd').value;
+            const startDate = document.getElementById('detailDateStart').value;
+            const endDate = document.getElementById('detailDateEnd').value;
             let detailData = allData;
-            if (startDate && endDate) { detailData = allData.filter(item => { const itemDate = new Date(item.Tanggal); return itemDate >= new Date(startDate) && itemDate <= new Date(endDate + 'T23:59:59'); }); }
+            
+            // Gunakan fungsi helper yang sudah diperbaiki
+            if (startDate || endDate) { 
+                detailData = allData.filter(item => {
+                    return isDateInRange(item.Tanggal, startDate, endDate);
+                }); 
+            }
+            
             const income = detailData.filter(d => d.Jenis === 'Pemasukan').reduce((sum, d) => sum + (parseFloat(d.Jumlah) || 0), 0);
             const expense = detailData.filter(d => d.Jenis === 'Pengeluaran').reduce((sum, d) => sum + (parseFloat(d.Jumlah) || 0), 0);
             document.getElementById('detailIncome').textContent = formatCurrency(income); document.getElementById('detailExpense').textContent = formatCurrency(expense); document.getElementById('detailBalance').textContent = formatCurrency(income - expense);
@@ -721,13 +797,24 @@
             deleteId = null;
         }
 
+        // =====================================================
+        // FUNGSI EXPORT EXCEL YANG DIPERBAIKI
+        // =====================================================
         function exportToExcel() {
-            const startDate = document.getElementById('detailDateStart').value; const endDate = document.getElementById('detailDateEnd').value;
+            const startDate = document.getElementById('detailDateStart').value;
+            const endDate = document.getElementById('detailDateEnd').value;
             let exportData = allData;
-            if (startDate && endDate) { exportData = allData.filter(item => { const itemDate = new Date(item.Tanggal); return itemDate >= new Date(startDate) && itemDate <= new Date(endDate + 'T23:59:59'); }); }
+            
+            // Gunakan fungsi helper yang sudah diperbaiki
+            if (startDate || endDate) { 
+                exportData = allData.filter(item => {
+                    return isDateInRange(item.Tanggal, startDate, endDate);
+                }); 
+            }
+            
             const wsData = exportData.map(item => ({ 'ID': item.ID, 'Tanggal': item.Tanggal, 'Jenis': item.Jenis, 'Kategori': item.Kategori, 'Jumlah': item.Jumlah, 'Metode Pembayaran': item.MetodePembayaran, 'Deskripsi': item.Deskripsi || '', 'File': item.File || '' }));
             const ws = XLSX.utils.json_to_sheet(wsData); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Jurnal Keuangan');
-            XLSX.writeFile(wb, `Jurnal_Keuangan_${startDate}_${endDate}.xlsx`); showToast('File berhasil diunduh!', 'success');
+            XLSX.writeFile(wb, `Jurnal_Keuangan_${startDate || 'semua'}_${endDate || 'data'}.xlsx`); showToast('File berhasil diunduh!', 'success');
         }
 
         function renderCharts() { renderMonthlyChart(); renderCategoryChart(); renderIncomeCategoryChart(); renderPaymentChart(); renderWeeklyChart(); renderInsights(); }
