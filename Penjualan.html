@@ -1,0 +1,660 @@
+<!doctype html>
+<html lang="id" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daftar Penjualan</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Poppins', sans-serif; }
+    html, body { height: 100%; margin: 0; }
+    .app-wrapper { height: 100%; width: 100%; overflow-y: auto; }
+    
+    /* Animations */
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+    @keyframes barGrow { from { width: 0; } }
+    
+    /* Header Gradient Animation */
+    @keyframes gradientFlow {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    .header-gradient {
+        background: linear-gradient(-45deg, #f9a89c, #f78ca2, #f4845f, #f9a89c, #f78ca2);
+        background-size: 400% 400%;
+        animation: gradientFlow 8s ease infinite;
+    }
+
+    /* Logo Animations */
+    @keyframes logoEntry { 
+        0% { opacity: 0; transform: scale(0.5) translateY(-30px) rotate(-10deg); } 
+        60% { transform: scale(1.1) translateY(5px) rotate(0deg); } 
+        100% { opacity: 1; transform: scale(1) translateY(0) rotate(0deg); } 
+    }
+    @keyframes logoGlow {
+        0%, 100% { box-shadow: 0 0 5px rgba(255, 255, 255, 0.4); }
+        50% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 30px rgba(244, 132, 95, 0.4); }
+    }
+    @keyframes titleSlide {
+        0% { opacity: 0; transform: translateY(15px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-fade { animation: fadeIn 0.4s ease-out; }
+    .animate-slide { animation: slideDown 0.3s ease-out; }
+    .animate-scale { animation: scaleIn 0.3s ease-out; }
+    .animate-bar { animation: barGrow 0.8s ease-out; }
+    
+    .animate-logo { animation: logoEntry 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+    .logo-glow { animation: logoGlow 3s infinite ease-in-out; }
+    .animate-title { animation: titleSlide 0.6s ease-out 0.3s forwards; opacity: 0; }
+
+    .backdrop-blur-bg { backdrop-filter: blur(8px); background: rgba(0,0,0,0.4); }
+    .tab-active { border-bottom: 3px solid #f4845f; color: #f4845f; }
+    .btn-pink { background: linear-gradient(135deg, #f4845f, #f78ca2); }
+    .btn-pink:hover { background: linear-gradient(135deg, #e5734e, #f07090); transform: scale(1.02); }
+    
+    .table-row { transition: all 0.2s ease; }
+    .table-row:hover { background: #fff5f3; }
+    
+    input, select { transition: border-color 0.2s, box-shadow 0.2s; }
+    input:focus, select:focus { border-color: #f4845f; box-shadow: 0 0 0 3px rgba(244,132,95,0.15); }
+    
+    .toast { animation: slideDown 0.3s ease-out; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-thumb { background: #f4845f55; border-radius: 3px; }
+
+    /* Pagination Styles */
+    .page-btn { transition: all 0.2s; }
+    .page-btn:hover:not(:disabled) { background-color: #fff5f3; color: #f4845f; }
+    .page-btn.active { background-color: #f4845f; color: white; border-color: #f4845f; }
+    .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Animasi Ikon Tombol Aksi */
+    .action-icon { transition: transform 0.2s ease; }
+    .action-btn:hover .action-icon { transform: rotate(15deg) scale(1.1); }
+  </style>
+ </head>
+ <body class="h-full bg-gray-50">
+  <div class="app-wrapper flex flex-col" id="app">
+   <div id="toast" class="fixed top-4 right-4 z-[9999] hidden"></div>
+   
+   <!-- HEADER -->
+   <header class="header-gradient mx-3 mt-3 rounded-2xl p-4 shadow-lg z-10 relative overflow-hidden">
+    <div class="flex flex-col items-center">
+     <img src="https://lh3.googleusercontent.com/d/1rTcKE5xcEHCqgLIEK4eoep36Z0ZvRR3s" alt="Logo" class="w-16 h-16 rounded-full object-cover mb-2 border-2 border-white/50 animate-logo logo-glow">
+     <h1 id="appTitle" class="text-white text-xl font-bold tracking-wide drop-shadow animate-title">Daftar Penjualan</h1>
+    </div>
+   </header>
+   
+   <nav class="flex justify-center mt-4 gap-1 px-4">
+     <button onclick="switchTab('list')" id="tabList" class="px-5 py-2 font-semibold text-sm rounded-t-lg tab-active transition-all">Daftar Penjualan</button> 
+     <button onclick="switchTab('info')" id="tabInfo" class="px-5 py-2 font-semibold text-sm rounded-t-lg text-gray-500 transition-all hover:text-[#f4845f]">Infografis</button>
+   </nav>
+   
+   <!-- LIST TAB -->
+   <main id="listTab" class="flex-1 px-3 pb-4">
+    <div class="bg-white rounded-xl p-3 mt-2 shadow-sm animate-slide space-y-2">
+     <div class="flex flex-wrap gap-2 items-end">
+      <div class="flex-1 min-w-[130px]">
+       <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-1">Dari Tanggal</label> 
+       <input type="date" id="filterDateStart" onchange="applyFilter()" class="w-full border border-gray-200 rounded-lg px-3 py-1.5 text-sm outline-none">
+      </div>
+      <div class="flex-1 min-w-[130px]">
+       <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-1">Sampai Tanggal</label> 
+       <input type="date" id="filterDateEnd" onchange="applyFilter()" class="w-full border border-gray-200 rounded-lg px-3 py-1.5 text-sm outline-none">
+      </div>
+      <div class="flex-1 min-w-[120px]">
+       <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-1">Layanan</label> 
+       <select id="filterSale" onchange="applyFilter()" class="w-full border border-gray-200 rounded-lg px-3 py-1.5 text-sm outline-none"> 
+         <option value="">Semua Penjualan</option> 
+         <option>Gunting</option><option>Smoothing</option><option>Keratin</option><option>Warna</option> 
+         <option>Catok/Blow</option><option>Member</option><option>Creambath/mask</option><option>Tambal Gigi</option> 
+         <option>Sulam Alis</option><option>Facial</option><option>Body Spa/Lulur</option><option>Nail Art</option><option>Produk dll</option> 
+       </select>
+      </div>
+      <button onclick="resetListFilter()" class="bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1.5 rounded-lg text-sm font-medium transition-all"><i data-lucide="rotate-ccw" class="w-4 h-4 inline"></i></button>
+     </div>
+    </div>
+    
+    <div class="flex justify-end mt-3">
+      <button onclick="openModal('add')" class="btn-pink text-white px-4 py-2 rounded-xl text-sm font-semibold shadow-md transition-all flex items-center gap-1"> <i data-lucide="plus-circle" class="w-4 h-4"></i> Input Data </button>
+    </div>
+    
+    <div class="bg-white rounded-xl mt-3 shadow-sm overflow-hidden animate-fade">
+     <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+       <thead class="bg-gradient-to-r from-[#f9a89c] to-[#f78ca2] text-white">
+        <tr>
+         <th class="px-3 py-2.5 text-left font-semibold">Tanggal</th>
+         <th class="px-3 py-2.5 text-left font-semibold">Penjualan</th>
+         <th class="px-3 py-2.5 text-right font-semibold">Jumlah</th>
+         <th class="px-3 py-2.5 text-center font-semibold">Aksi</th>
+        </tr>
+       </thead>
+       <tbody id="tableBody"></tbody>
+       <tfoot id="tableFooter" class="bg-gray-50 border-t border-gray-200"></tfoot>
+      </table>
+     </div>
+     <div id="emptyState" class="hidden text-center py-10 text-gray-400"><i data-lucide="inbox" class="w-12 h-12 mx-auto mb-2 opacity-50"></i><p class="text-sm">Memuat data...</p></div>
+     
+     <!-- PAGINATION -->
+     <div id="paginationContainer" class="p-3 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-2 hidden">
+        <div id="paginationInfo" class="text-xs text-gray-500"></div>
+        <div class="flex gap-1">
+            <button id="prevBtn" onclick="changePage('prev')" class="page-btn px-3 py-1 border border-gray-200 rounded-lg text-xs font-medium text-gray-600 disabled:opacity-50"><i data-lucide="chevron-left" class="w-4 h-4 inline"></i> Prev</button>
+            <div id="pageNumbers" class="flex gap-1"></div>
+            <button id="nextBtn" onclick="changePage('next')" class="page-btn px-3 py-1 border border-gray-200 rounded-lg text-xs font-medium text-gray-600 disabled:opacity-50">Next <i data-lucide="chevron-right" class="w-4 h-4 inline"></i></button>
+        </div>
+     </div>
+
+    </div>
+   </main>
+
+   <!-- INFO TAB -->
+   <main id="infoTab" class="flex-1 px-3 pb-4 hidden">
+     <div class="bg-white rounded-xl p-3 mt-2 shadow-sm animate-slide space-y-2">
+      <div class="flex flex-wrap gap-2 items-end">
+       <div class="flex-1 min-w-[130px]">
+        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-1">Dari Tanggal</label> 
+        <input type="date" id="infoFilterDateStart" onchange="renderInfographic()" class="w-full border border-gray-200 rounded-lg px-3 py-1.5 text-sm outline-none">
+       </div>
+       <div class="flex-1 min-w-[130px]">
+        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-1">Sampai Tanggal</label> 
+        <input type="date" id="infoFilterDateEnd" onchange="renderInfographic()" class="w-full border border-gray-200 rounded-lg px-3 py-1.5 text-sm outline-none">
+       </div>
+       <div class="flex-1 min-w-[120px]">
+        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-1">Layanan</label> 
+        <select id="infoFilterSale" onchange="renderInfographic()" class="w-full border border-gray-200 rounded-lg px-3 py-1.5 text-sm outline-none"> 
+          <option value="">Semua Penjualan</option> 
+          <option>Gunting</option><option>Smoothing</option><option>Keratin</option><option>Warna</option> 
+          <option>Catok/Blow</option><option>Member</option><option>Creambath/mask</option><option>Tambal Gigi</option> 
+          <option>Sulam Alis</option><option>Facial</option><option>Body Spa/Lulur</option><option>Nail Art</option><option>Produk dll</option> 
+        </select>
+       </div>
+       <button onclick="resetInfoFilter()" class="bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1.5 rounded-lg text-sm font-medium transition-all"><i data-lucide="rotate-ccw" class="w-4 h-4 inline"></i></button>
+      </div>
+     </div>
+     
+     <div id="infoContent" class="mt-3 space-y-4"></div>
+   </main>
+
+   <!-- FOOTER -->
+   <footer class="text-center py-2 mt-2 flex items-center justify-center gap-2">
+     <img src="https://lh3.googleusercontent.com/d/1AcUPbZdtoKhbAEDhLgg4102LwKpQeRBn" alt="Logo" class="w-5 h-5 rounded-full object-cover">
+     <span class="text-xs text-gray-400 font-medium">IkeBagus 2026</span>
+   </footer>
+
+   <!-- Modal Input -->
+   <div id="modal" class="fixed inset-0 z-50 hidden items-center justify-center backdrop-blur-bg">
+     <div class="bg-white rounded-2xl w-[95%] max-w-md max-h-[85%] overflow-y-auto p-5 shadow-2xl animate-scale">
+      <div class="flex justify-between items-center mb-4">
+       <h2 id="modalTitle" class="text-lg font-bold text-gray-800">Input Data</h2>
+       <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <div class="space-y-3">
+       <div><label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Tanggal</label> <input type="date" id="inputDate" class="w-full border border-gray-200 rounded-lg px-3 py-2 mt-1 text-sm outline-none"></div>
+       <div id="itemsContainer"><label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Penjualan & Jumlah Item</label>
+        <div id="itemsList" class="space-y-2 mt-1"></div>
+        <button onclick="addItemRow()" class="mt-2 text-[#f4845f] text-sm font-semibold flex items-center gap-1 hover:underline"><i data-lucide="plus" class="w-4 h-4"></i> Tambah Item</button>
+       </div>
+      </div>
+      <div class="flex gap-2 mt-5"><button onclick="closeModal()" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-600 py-2.5 rounded-xl font-semibold text-sm transition-all">Batal</button> <button onclick="saveData()" id="saveBtn" class="flex-1 btn-pink text-white py-2.5 rounded-xl font-semibold text-sm transition-all shadow">Simpan</button></div>
+     </div>
+   </div>
+   
+   <!-- Modal Delete -->
+   <div id="deleteModal" class="fixed inset-0 z-50 hidden items-center justify-center backdrop-blur-bg">
+     <div class="bg-white rounded-2xl w-[85%] max-w-sm p-5 shadow-2xl animate-scale text-center">
+      <div class="w-14 h-14 mx-auto mb-3 bg-red-50 rounded-full flex items-center justify-center"><i data-lucide="trash-2" class="w-7 h-7 text-red-500"></i></div>
+      <h3 class="font-bold text-gray-800 text-lg">Hapus Data?</h3>
+      <p class="text-sm text-gray-500 mt-1">Data yang dihapus tidak dapat dikembalikan.</p>
+      <div class="flex gap-2 mt-5"><button onclick="closeDeleteModal()" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-600 py-2.5 rounded-xl font-semibold text-sm transition-all">Batal</button> <button onclick="confirmDelete()" id="deleteBtn" class="flex-1 bg-red-500 hover:bg-red-600 text-white py-2.5 rounded-xl font-semibold text-sm transition-all">Hapus</button></div>
+     </div>
+   </div>
+   
+  </div>
+
+  <script>
+    // ==========================================
+    // KONFIGURASI
+    // ==========================================
+    const API_URL = 'https://script.google.com/macros/s/AKfycbx2XxRcY78GbxqC7bHLS_sZmwhjvd0vNhcyhpVG_g7Gjxi-dzoTStn-FsJ__Cez7IFSmg/exec';
+    
+    let allData = [];
+    let editingRecord = null;
+    let deletingRecord = null;
+    let modalMode = 'add';
+    
+    // State Pagination
+    let currentPage = 1;
+    const itemsPerPage = 10;
+
+    const categories = ['Gunting','Smoothing','Keratin','Warna','Catok/Blow','Member','Creambath/mask','Tambal Gigi','Sulam Alis','Facial','Body Spa/Lulur','Nail Art','Produk dll'];
+
+    // ==========================================
+    // FUNGSI TANGGAL
+    // ==========================================
+    
+    function formatDate(dateStr) {
+        if (!dateStr) return '-';
+        var cleanStr = dateStr.toString().split('T')[0];
+        if (cleanStr.includes('-') && cleanStr.split('-').length === 3) {
+            var parts = cleanStr.split('-');
+            var year = parts[0];
+            var month = parseInt(parts[1], 10);
+            var day = parts[2];
+            var monthNames = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+            var monthName = monthNames[month - 1] || '';
+            return `${day} ${monthName} ${year}`;
+        }
+        return dateStr;
+    }
+
+    // ==========================================
+    // FUNGSI DATA
+    // ==========================================
+
+    async function loadSheetData() {
+      try {
+        const response = await fetch(API_URL);
+        const data = await response.json();
+        allData = data.map(d => ({
+            ...d,
+            jumlah: Number(d.jumlah)
+        }));
+        renderTable();
+        renderInfographic();
+      } catch (err) {
+        console.error("Gagal memuat data:", err);
+        showToast("Gagal terhubung ke Spreadsheet", "error");
+      }
+    }
+
+    async function saveData() {
+      const date = document.getElementById('inputDate').value;
+      const items = document.querySelectorAll('#itemsList > div');
+      const btn = document.getElementById('saveBtn');
+      btn.disabled = true; btn.textContent = 'Menyimpan...';
+
+      if (modalMode === 'edit' && editingRecord) {
+        const sale = items[0]?.querySelector('.item-sale')?.value;
+        const jumlah = items[0]?.querySelector('.item-total')?.value;
+        if (!sale || !jumlah) { btn.disabled = false; btn.textContent = 'Simpan'; showToast('Lengkapi data!','warning'); return; }
+
+        try {
+          await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+              action: 'update',
+              __backendId: editingRecord.__backendId,
+              tanggal: date,
+              penjualan: sale,
+              jumlah: Number(jumlah)
+            })
+          });
+          showToast('Data berhasil diperbarui!','success');
+          closeModal();
+          loadSheetData();
+        } catch (e) {
+          showToast('Gagal memperbarui','error');
+        }
+      } else {
+        let success = 0;
+        for (const item of items) {
+          const sale = item.querySelector('.item-sale')?.value;
+          const jumlah = item.querySelector('.item-total')?.value;
+          if (!sale || !jumlah) continue;
+
+          try {
+            await fetch(API_URL, {
+              method: 'POST',
+              body: JSON.stringify({
+                action: 'create',
+                tanggal: date,
+                penjualan: sale,
+                jumlah: Number(jumlah)
+              })
+            });
+            success++;
+          } catch (e) {
+            console.error(e);
+          }
+        }
+        if (success > 0) {
+          showToast(`${success} data berhasil disimpan!`,'success');
+          closeModal();
+          loadSheetData();
+        } else {
+          showToast('Lengkapi minimal 1 item','warning');
+        }
+      }
+      btn.disabled = false; btn.textContent = 'Simpan';
+    }
+
+    async function confirmDelete() {
+      if (!deletingRecord) return;
+      const btn = document.getElementById('deleteBtn');
+      btn.disabled = true; btn.textContent = 'Menghapus...';
+
+      try {
+        await fetch(API_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'delete',
+            __backendId: deletingRecord.__backendId
+          })
+        });
+        showToast('Data dihapus!','success');
+        closeDeleteModal();
+        loadSheetData();
+      } catch (e) {
+        showToast('Gagal menghapus','error');
+      }
+      btn.disabled = false; btn.textContent = 'Hapus';
+    }
+
+    // ==========================================
+    // FUNGSI UI & PAGINATION
+    // ==========================================
+
+    function switchTab(tab) {
+      document.getElementById('listTab').classList.toggle('hidden', tab !== 'list');
+      document.getElementById('infoTab').classList.toggle('hidden', tab !== 'info');
+      document.getElementById('tabList').classList.toggle('tab-active', tab === 'list');
+      document.getElementById('tabInfo').classList.toggle('tab-active', tab === 'info');
+      document.getElementById('tabList').classList.toggle('text-gray-500', tab !== 'list');
+      document.getElementById('tabInfo').classList.toggle('text-gray-500', tab !== 'info');
+      if (tab === 'info') renderInfographic();
+    }
+
+    function getFilteredData() {
+      let data = [...allData];
+      const fdStart = document.getElementById('filterDateStart').value;
+      const fdEnd = document.getElementById('filterDateEnd').value;
+      const fs = document.getElementById('filterSale').value;
+      if (fdStart) data = data.filter(d => d.tanggal >= fdStart);
+      if (fdEnd) data = data.filter(d => d.tanggal <= fdEnd);
+      if (fs) data = data.filter(d => d.penjualan === fs);
+      return data;
+    }
+
+    function applyFilter() { 
+        currentPage = 1; 
+        renderTable(); 
+        renderInfographic(); 
+    }
+    
+    function resetListFilter() {
+      document.getElementById('filterDateStart').value = '';
+      document.getElementById('filterDateEnd').value = '';
+      document.getElementById('filterSale').value = '';
+      currentPage = 1;
+      renderTable();
+      renderInfographic();
+    }
+
+    function resetInfoFilter() {
+      document.getElementById('infoFilterDateStart').value = '';
+      document.getElementById('infoFilterDateEnd').value = '';
+      document.getElementById('infoFilterSale').value = '';
+      renderInfographic();
+    }
+
+    function changePage(action) {
+        if (action === 'prev') currentPage--;
+        else if (action === 'next') currentPage++;
+        else if (typeof action === 'number') currentPage = action;
+        renderTable();
+        document.getElementById('listTab').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function renderPagination(totalItems) {
+        const totalPages = Math.ceil(totalItems / itemsPerPage);
+        const container = document.getElementById('paginationContainer');
+        const pageNumbers = document.getElementById('pageNumbers');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const info = document.getElementById('paginationInfo');
+
+        if (totalPages <= 1) {
+            container.classList.add('hidden');
+            return;
+        }
+
+        container.classList.remove('hidden');
+        prevBtn.disabled = currentPage === 1;
+        nextBtn.disabled = currentPage === totalPages;
+
+        const startItem = ((currentPage - 1) * itemsPerPage) + 1;
+        const endItem = Math.min(currentPage * itemsPerPage, totalItems);
+        info.textContent = `Menampilkan ${startItem}-${endItem} dari ${totalItems} data`;
+
+        pageNumbers.innerHTML = '';
+        for (let i = 1; i <= totalPages; i++) {
+            if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                const btn = document.createElement('button');
+                btn.textContent = i;
+                btn.className = `page-btn px-3 py-1 border border-gray-200 rounded-lg text-xs font-medium text-gray-600 ${i === currentPage ? 'active' : ''}`;
+                btn.onclick = () => changePage(i);
+                pageNumbers.appendChild(btn);
+            } else if (i === currentPage - 2 || i === currentPage + 2) {
+                const span = document.createElement('span');
+                span.textContent = '...';
+                span.className = 'px-2 text-gray-400 text-xs';
+                pageNumbers.appendChild(span);
+            }
+        }
+    }
+
+    function renderTable() {
+      const filteredData = getFilteredData(); 
+      const totalItems = filteredData.length;
+      
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const paginatedData = filteredData.slice(startIndex, startIndex + itemsPerPage);
+
+      const tbody = document.getElementById('tableBody');
+      const tfoot = document.getElementById('tableFooter'); 
+      const empty = document.getElementById('emptyState');
+      
+      if (filteredData.length === 0) {
+        tbody.innerHTML = '';
+        tfoot.innerHTML = ''; 
+        empty.classList.remove('hidden');
+        document.getElementById('paginationContainer').classList.add('hidden');
+        empty.innerHTML = '<i data-lucide="inbox" class="w-12 h-12 mx-auto mb-2 opacity-50"></i><p class="text-sm">Tidak ada data</p>';
+        lucide.createIcons();
+        return;
+      }
+      
+      empty.classList.add('hidden');
+      
+      const grandTotalItems = filteredData.reduce((sum, d) => sum + Number(d.jumlah || 0), 0);
+
+      // RENDER TABEL DENGAN TOMBOL EDIT YANG DIPERBAIKI
+      tbody.innerHTML = paginatedData.map((d, i) => `
+        <tr class="table-row border-b border-gray-50" style="animation:fadeIn 0.3s ease ${i*0.03}s both">
+          <td class="px-3 py-2.5 text-gray-600">${formatDate(d.tanggal)}</td>
+          <td class="px-3 py-2.5"><span class="bg-pink-50 text-[#f4845f] px-2 py-0.5 rounded-full text-xs font-medium">${d.penjualan}</span></td>
+          <td class="px-3 py-2.5 text-right font-semibold text-gray-700">${d.jumlah} item</td>
+          <td class="px-3 py-2.5 text-center">
+            <div class="flex items-center justify-center gap-2">
+                <!-- Tombol Edit dengan Logo Pencil -->
+                <button onclick="openEdit('${d.__backendId}')" class="action-btn bg-blue-50 text-blue-500 hover:bg-blue-100 p-2.5 rounded-xl transition-all inline-flex items-center justify-center shadow-sm border border-blue-100" title="Edit Data">
+                    <i data-lucide="pencil" class="w-5 h-5 action-icon"></i>
+                </button>
+                <!-- Tombol Hapus -->
+                <button onclick="openDelete('${d.__backendId}')" class="action-btn bg-red-50 text-red-500 hover:bg-red-100 p-2.5 rounded-xl transition-all inline-flex items-center justify-center shadow-sm border border-red-100" title="Hapus Data">
+                    <i data-lucide="trash-2" class="w-5 h-5 action-icon"></i>
+                </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+      
+      tfoot.innerHTML = `
+        <tr class="font-bold text-gray-700 bg-gray-50">
+            <td colspan="2" class="px-3 py-3 text-right uppercase tracking-wide text-xs">Total Item:</td>
+            <td class="px-3 py-3 text-right text-[#f4845f] text-base">${grandTotalItems} item</td>
+            <td class="px-3 py-3"></td>
+        </tr>
+      `;
+
+      renderPagination(totalItems);
+      lucide.createIcons();
+    }
+    
+    function openModal(mode) {
+      modalMode = mode;
+      document.getElementById('modalTitle').textContent = mode === 'add' ? 'Input Data' : 'Edit Data';
+      document.getElementById('inputDate').value = mode === 'add' ? new Date().toISOString().split('T')[0] : editingRecord.tanggal;
+      const list = document.getElementById('itemsList');
+      list.innerHTML = '';
+      if (mode === 'edit' && editingRecord) {
+        addItemRow(editingRecord.penjualan, editingRecord.jumlah);
+      } else {
+        addItemRow();
+      }
+      document.getElementById('modal').classList.remove('hidden');
+      document.getElementById('modal').classList.add('flex');
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.add('hidden');
+      document.getElementById('modal').classList.remove('flex');
+      editingRecord = null;
+    }
+
+    function addItemRow(sale = '', total = '') {
+      const div = document.createElement('div');
+      div.className = 'flex gap-2 items-center animate-slide';
+      div.innerHTML = `
+        <select class="item-sale flex-1 border border-gray-200 rounded-lg px-2 py-2 text-sm outline-none">
+          <option value="">Pilih...</option>
+          ${categories.map(c => `<option ${c===sale?'selected':''}>${c}</option>`).join('')}
+        </select>
+        <input type="number" class="item-total w-28 border border-gray-200 rounded-lg px-2 py-2 text-sm outline-none" placeholder="Total" value="${total}">
+        <button onclick="this.parentElement.remove()" class="text-red-400 hover:text-red-600"><i data-lucide="x" class="w-4 h-4"></i></button>
+      `;
+      document.getElementById('itemsList').appendChild(div);
+      lucide.createIcons();
+    }
+
+    function openEdit(id) {
+      editingRecord = allData.find(d => d.__backendId === id);
+      if (editingRecord) openModal('edit');
+    }
+
+    function openDelete(id) {
+      deletingRecord = allData.find(d => d.__backendId === id);
+      document.getElementById('deleteModal').classList.remove('hidden');
+      document.getElementById('deleteModal').classList.add('flex');
+    }
+
+    function closeDeleteModal() {
+      document.getElementById('deleteModal').classList.add('hidden');
+      document.getElementById('deleteModal').classList.remove('flex');
+      deletingRecord = null;
+    }
+
+    function showToast(msg, type='success') {
+      const colors = { success:'bg-green-500', error:'bg-red-500', warning:'bg-yellow-500' };
+      const el = document.getElementById('toast');
+      el.innerHTML = `<div class="toast ${colors[type]} text-white px-4 py-2.5 rounded-xl shadow-lg text-sm font-medium">${msg}</div>`;
+      el.classList.remove('hidden');
+      setTimeout(() => el.classList.add('hidden'), 2500);
+    }
+
+    function renderInfographic() {
+      const filterDateStart = document.getElementById('infoFilterDateStart')?.value;
+      const filterDateEnd = document.getElementById('infoFilterDateEnd')?.value;
+      const filterSale = document.getElementById('infoFilterSale')?.value;
+      
+      let data = [...allData];
+      
+      if (filterDateStart) data = data.filter(d => d.tanggal >= filterDateStart);
+      if (filterDateEnd) data = data.filter(d => d.tanggal <= filterDateEnd);
+      if (filterSale) data = data.filter(d => d.penjualan === filterSale);
+
+      const totalJumlah = data.reduce((s, d) => s + Number(d.jumlah || 0), 0);
+      const totalTrans = data.length;
+      const avgJumlah = totalTrans ? Math.round(totalJumlah / totalTrans) : 0;
+      const catMap = {};
+      data.forEach(d => { catMap[d.penjualan] = (catMap[d.penjualan] || 0) + Number(d.jumlah || 0); });
+      const sorted = Object.entries(catMap).sort((a, b) => b[1] - a[1]);
+      const maxVal = sorted.length ? sorted[0][1] : 1;
+
+      let insightHtml = '';
+      if (sorted.length > 0) {
+          const topName = sorted[0][0];
+          const topVal = sorted[0][1];
+          const percentage = totalJumlah > 0 ? Math.round((topVal / totalJumlah) * 100) : 0;
+          
+          insightHtml = `
+            <div class="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-4 shadow-sm border border-indigo-100 animate-slide">
+                <div class="flex items-center gap-2 mb-1 text-indigo-600">
+                    <i data-lucide="lightbulb" class="w-4 h-4"></i>
+                    <span class="text-sm font-bold">Insight Penjualan</span>
+                </div>
+                <p class="text-xs text-gray-600 leading-relaxed">
+                    Layanan <strong class="text-indigo-700">${topName}</strong> menjadi kontributor terbesar dengan <strong class="text-indigo-700">${percentage}%</strong> dari total penjualan (${topVal} item).
+                    ${sorted.length > 1 ? `Diikuti oleh <strong>${sorted[1][0]}</strong> di posisi kedua.` : ''}
+                </p>
+            </div>
+          `;
+      }
+
+      const container = document.getElementById('infoContent');
+      container.innerHTML = `
+        <div class="grid grid-cols-3 gap-2 animate-fade">
+          <div class="bg-white rounded-xl p-3 text-center shadow-sm">
+            <div class="text-[#f4845f] text-lg font-bold">${totalJumlah}</div>
+            <div class="text-xs text-gray-400 mt-1">Total Item</div>
+          </div>
+          <div class="bg-white rounded-xl p-3 text-center shadow-sm">
+            <div class="text-[#f78ca2] text-lg font-bold">${totalTrans}</div>
+            <div class="text-xs text-gray-400 mt-1">Transaksi</div>
+          </div>
+          <div class="bg-white rounded-xl p-3 text-center shadow-sm">
+            <div class="text-purple-500 text-lg font-bold">${avgJumlah}</div>
+            <div class="text-xs text-gray-400 mt-1">Rata-rata</div>
+          </div>
+        </div>
+
+        ${insightHtml}
+
+        ${sorted.length ? `
+        <div class="bg-white rounded-xl p-4 shadow-sm animate-fade">
+          <h3 class="text-sm font-bold text-gray-700 mb-3 flex items-center gap-2"><i data-lucide="bar-chart-2" class="w-4 h-4 text-[#f4845f]"></i> Jumlah Item per Layanan</h3>
+          <div class="space-y-2.5">
+            ${sorted.map(([ name, val ], i) => `
+              <div>
+                <div class="flex justify-between text-xs mb-0.5">
+                  <span class="text-gray-600 font-medium">${name}</span>
+                  <span class="text-gray-400">${val} item</span>
+                </div>
+                <div class="h-3 bg-gray-100 rounded-full overflow-hidden">
+                  <div class="h-full rounded-full animate-bar" style="width:${Math.round(val/maxVal*100)}%;background:linear-gradient(90deg,#f4845f,#f78ca2);"></div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+        ` : '<div class="bg-white rounded-xl p-6 text-center text-gray-400 text-sm mt-4">Tidak ada data untuk periode ini</div>'}
+      `;
+      lucide.createIcons();
+    }
+
+    // Initialize
+    lucide.createIcons();
+    loadSheetData();
+
+  </script>
+ </body>
+</html>
