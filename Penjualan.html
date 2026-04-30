@@ -115,7 +115,8 @@
          <option value="">Semua Penjualan</option> 
          <option>Gunting</option><option>Smoothing</option><option>Keratin</option><option>Warna</option> 
          <option>Catok/Blow</option><option>Member</option><option>Creambath/mask</option><option>Tambal Gigi</option> 
-         <option>Sulam Alis</option><option>Facial</option><option>Body Spa/Lulur</option><option>Nail Art</option><option>Produk dll</option> 
+         <option>Sulam Alis</option><option>Eyelash</option><option>Facial</option><option>Body Spa/Lulur</option><option>Nail Art</option> 
+         <option>Minuman 5.000</option><option>Minuman 10.000</option><option>Produk dll</option> 
        </select>
       </div>
       <button onclick="resetListFilter()" class="bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1.5 rounded-lg text-sm font-medium transition-all"><i data-lucide="rotate-ccw" class="w-4 h-4 inline"></i></button>
@@ -174,7 +175,8 @@
           <option value="">Semua Penjualan</option> 
           <option>Gunting</option><option>Smoothing</option><option>Keratin</option><option>Warna</option> 
           <option>Catok/Blow</option><option>Member</option><option>Creambath/mask</option><option>Tambal Gigi</option> 
-          <option>Sulam Alis</option><option>Facial</option><option>Body Spa/Lulur</option><option>Nail Art</option><option>Produk dll</option> 
+          <option>Sulam Alis</option><option>Eyelash</option><option>Facial</option><option>Body Spa/Lulur</option><option>Nail Art</option> 
+          <option>Minuman 5.000</option><option>Minuman 10.000</option><option>Produk dll</option> 
         </select>
        </div>
        <button onclick="resetInfoFilter()" class="bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1.5 rounded-lg text-sm font-medium transition-all"><i data-lucide="rotate-ccw" class="w-4 h-4 inline"></i></button>
@@ -235,23 +237,46 @@
     let currentPage = 1;
     const itemsPerPage = 10;
 
-    const categories = ['Gunting','Smoothing','Keratin','Warna','Catok/Blow','Member','Creambath/mask','Tambal Gigi','Sulam Alis','Facial','Body Spa/Lulur','Nail Art','Produk dll'];
+    const categories = ['Gunting','Smoothing','Keratin','Warna','Catok/Blow','Member','Creambath/mask','Tambal Gigi','Sulam Alis','Eyelash','Facial','Body Spa/Lulur','Nail Art','Minuman 5.000','Minuman 10.000','Produk dll'];
 
     // ==========================================
-    // FUNGSI TANGGAL
+    // FUNGSI TANGGAL (PERBAIKAN BUG)
     // ==========================================
-    
+
+    // Fungsi untuk mendapatkan tanggal hari ini dalam format YYYY-MM-DD (Zona Waktu Lokal)
+    function getLocalToday() {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0'); // Bulan 0-11, jadi +1
+        const day = String(today.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    // Fungsi untuk mengkonversi string/objek tanggal ke format YYYY-MM-DD (Zona Waktu Lokal)
+    function toInputDate(dateInput) {
+        if (!dateInput) return '';
+        let date = new Date(dateInput);
+        if (isNaN(date.getTime())) return ''; // Invalid date
+        
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
     function formatDate(dateStr) {
         if (!dateStr) return '-';
-        var cleanStr = dateStr.toString().split('T')[0];
-        if (cleanStr.includes('-') && cleanStr.split('-').length === 3) {
-            var parts = cleanStr.split('-');
-            var year = parts[0];
-            var month = parseInt(parts[1], 10);
-            var day = parts[2];
-            var monthNames = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
-            var monthName = monthNames[month - 1] || '';
-            return `${day} ${monthName} ${year}`;
+        // Gunakan toInputDate untuk parsing yang konsisten
+        const dateObj = new Date(dateStr);
+        if (isNaN(dateObj.getTime())) return dateStr; // Kembalikan asli jika gagal parse
+
+        const parts = toInputDate(dateObj).split('-');
+        if(parts.length === 3) {
+            const year = parts[0];
+            const month = parseInt(parts[1], 10);
+            const day = parts[2];
+            const monthNames = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+            return `${day} ${monthNames[month - 1]} ${year}`;
         }
         return dateStr;
     }
@@ -477,7 +502,6 @@
       
       const grandTotalItems = filteredData.reduce((sum, d) => sum + Number(d.jumlah || 0), 0);
 
-      // RENDER TABEL DENGAN TOMBOL EDIT YANG DIPERBAIKI
       tbody.innerHTML = paginatedData.map((d, i) => `
         <tr class="table-row border-b border-gray-50" style="animation:fadeIn 0.3s ease ${i*0.03}s both">
           <td class="px-3 py-2.5 text-gray-600">${formatDate(d.tanggal)}</td>
@@ -485,11 +509,9 @@
           <td class="px-3 py-2.5 text-right font-semibold text-gray-700">${d.jumlah} item</td>
           <td class="px-3 py-2.5 text-center">
             <div class="flex items-center justify-center gap-2">
-                <!-- Tombol Edit dengan Logo Pencil -->
                 <button onclick="openEdit('${d.__backendId}')" class="action-btn bg-blue-50 text-blue-500 hover:bg-blue-100 p-2.5 rounded-xl transition-all inline-flex items-center justify-center shadow-sm border border-blue-100" title="Edit Data">
                     <i data-lucide="pencil" class="w-5 h-5 action-icon"></i>
                 </button>
-                <!-- Tombol Hapus -->
                 <button onclick="openDelete('${d.__backendId}')" class="action-btn bg-red-50 text-red-500 hover:bg-red-100 p-2.5 rounded-xl transition-all inline-flex items-center justify-center shadow-sm border border-red-100" title="Hapus Data">
                     <i data-lucide="trash-2" class="w-5 h-5 action-icon"></i>
                 </button>
@@ -513,7 +535,14 @@
     function openModal(mode) {
       modalMode = mode;
       document.getElementById('modalTitle').textContent = mode === 'add' ? 'Input Data' : 'Edit Data';
-      document.getElementById('inputDate').value = mode === 'add' ? new Date().toISOString().split('T')[0] : editingRecord.tanggal;
+      
+      // PERBAIKAN: Gunakan fungsi toInputDate dan getLocalToday
+      const dateValue = mode === 'add' 
+        ? getLocalToday() 
+        : toInputDate(editingRecord.tanggal);
+        
+      document.getElementById('inputDate').value = dateValue;
+      
       const list = document.getElementById('itemsList');
       list.innerHTML = '';
       if (mode === 'edit' && editingRecord) {
