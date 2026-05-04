@@ -187,7 +187,7 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
-  .ctrl-select, .ctrl-btn {
+  .ctrl-select, .ctrl-btn, .ctrl-input {
     padding: 10px 18px;
     border-radius: 14px;
     border: 2px solid var(--secondary);
@@ -200,12 +200,17 @@
     font-weight: 500;
   }
 
-  .ctrl-select:focus, .ctrl-btn:focus {
+  .ctrl-input {
+    cursor: text;
+    min-width: 160px;
+  }
+
+  .ctrl-select:focus, .ctrl-btn:focus, .ctrl-input:focus {
     outline: 3px solid var(--primary);
     outline-offset: 2px;
   }
 
-  .ctrl-select:hover { border-color: var(--primary); }
+  .ctrl-select:hover, .ctrl-input:hover { border-color: var(--primary); }
 
   .ctrl-btn {
     background: linear-gradient(135deg, var(--primary), #e8734f);
@@ -263,6 +268,57 @@
     font-weight: 700;
     color: var(--text);
   }
+
+  /* Summary boxes */
+  .summary-grid {
+    max-width: 900px;
+    width: calc(100% - 32px);
+    margin: 16px auto 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    animation: fadeUp 0.6s 0.35s both;
+  }
+
+  .summary-box {
+    background: var(--surface);
+    border-radius: 18px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+    transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
+    border: 2px solid transparent;
+  }
+
+  .summary-box:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(244,132,95,0.15);
+    border-color: var(--secondary);
+  }
+
+  .summary-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--secondary);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .summary-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .summary-box.target {
+    background: linear-gradient(135deg, #F4845F, #F8B4A0);
+    border: none;
+  }
+
+  .summary-box.target .summary-label { color: rgba(255,255,255,0.8); }
+  .summary-box.target .summary-value { color: #fff; }
 
   /* Table container */
   .table-container {
@@ -376,56 +432,27 @@
     color: var(--primary);
   }
 
-  /* Summary boxes */
-  .summary-grid {
-    max-width: 900px;
-    width: calc(100% - 32px);
-    margin: 16px auto 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-    gap: 14px;
-    animation: fadeUp 0.6s 0.7s both;
-  }
-
-  .summary-box {
-    background: var(--surface);
-    border-radius: 18px;
-    padding: 20px;
-    text-align: center;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.05);
-    transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
-    border: 2px solid transparent;
-  }
-
-  .summary-box:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 30px rgba(244,132,95,0.15);
-    border-color: var(--secondary);
-  }
-
-  .summary-label {
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--secondary);
-    font-weight: 600;
-    margin-bottom: 6px;
-  }
-
-  .summary-value {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.3rem;
+  /* Calculation Rows Style */
+  .calc-row td {
     font-weight: 700;
-    color: var(--text);
+    border-bottom: none;
+    font-size: 0.9rem;
+  }
+  
+  .global-row td {
+     background: linear-gradient(135deg, #fff0eb, #ffe4db);
+     color: #d35400;
   }
 
-  .summary-box.target {
-    background: linear-gradient(135deg, #F4845F, #F8B4A0);
-    border: none;
+  .profit-row td {
+     background: linear-gradient(135deg, #e8f8f5, #d1f2eb);
+     color: #16a085;
   }
-
-  .summary-box.target .summary-label { color: rgba(255,255,255,0.8); }
-  .summary-box.target .summary-value { color: #fff; }
+  
+  .profit-negative td {
+     background: linear-gradient(135deg, #fdedec, #fadbd8);
+     color: #c0392b;
+  }
 
   /* Pagination */
   .pagination {
@@ -664,9 +691,9 @@
     .header-title { font-size: 1.5rem; }
     .header-logo { width: 120px; height: 120px; border: 6px solid rgba(255,255,255,0.7); }
     .controls-bar { gap: 6px; }
-    .ctrl-select, .ctrl-btn { padding: 8px 12px; font-size: 0.8rem; }
+    .ctrl-select, .ctrl-btn, .ctrl-input { padding: 8px 12px; font-size: 0.8rem; }
     .form-grid { grid-template-columns: 1fr; }
-    .summary-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .summary-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
     .summary-value { font-size: 1.05rem; }
     .popup-card { padding: 20px; }
     .tab-btn { font-size: 0.8rem; }
@@ -694,14 +721,44 @@
 
    <main>
     <div id="sectionControls">
-        <nav class="controls-bar" aria-label="Kontrol data"><label for="monthFilter" class="form-label" style="display:none;">Bulan</label> <select class="ctrl-select" id="monthFilter" aria-label="Filter Bulan"> <option value="">🗓️ Semua Bulan</option> <option value="Januari">Januari</option> <option value="Februari">Februari</option> <option value="Maret">Maret</option> <option value="April">April</option> <option value="Mei">Mei</option> <option value="Juni">Juni</option> <option value="Juli">Juli</option> <option value="Agustus">Agustus</option> <option value="September">September</option> <option value="Oktober">Oktober</option> <option value="November">November</option> <option value="Desember">Desember</option> </select> <button class="ctrl-btn" id="btnAdd" type="button">＋ Input Data</button>
-         <div style="margin-left:auto; display:flex; gap:8px; align-items:center;"><label for="exportFormat" class="form-label" style="display:none;">Export</label> <select class="ctrl-select" id="exportFormat" aria-label="Format Export" style="min-width:90px;"> <option value="csv">CSV</option> <option value="xlsx">XLSX</option> </select> <button class="ctrl-btn secondary-btn" id="btnExport" type="button">⬇ Export</button>
-         </div>
+        <nav class="controls-bar" aria-label="Kontrol data">
+          <label for="monthFilter" class="form-label" style="display:none;">Periode</label> 
+          <input type="month" class="ctrl-input" id="monthFilter" aria-label="Filter Periode Bulan-Tahun" placeholder="Pilih Periode">
+          <button class="ctrl-btn" id="btnClearFilter" type="button" title="Tampilkan Semua">🔄 Semua</button>
+          <button class="ctrl-btn" id="btnAdd" type="button">＋ Input Data</button>
+          <div style="margin-left:auto; display:flex; gap:8px; align-items:center;">
+            <label for="exportFormat" class="form-label" style="display:none;">Export</label> 
+            <select class="ctrl-select" id="exportFormat" aria-label="Format Export" style="min-width:90px;"> 
+              <option value="csv">CSV</option> 
+              <option value="xlsx">XLSX</option> 
+            </select> 
+            <button class="ctrl-btn secondary-btn" id="btnExport" type="button">⬇ Export</button>
+          </div>
         </nav>
         <div class="periode-box">
          <p class="periode-label">Periode Bulan</p>
          <p class="periode-value" id="periodeDisplay">-</p>
         </div>
+
+        <!-- Summary boxes -->
+        <section class="summary-grid" id="summaryGrid" aria-label="Ringkasan">
+         <div class="summary-box">
+          <div class="summary-label">Omset Kotor</div>
+          <div class="summary-value" id="sumOmsetKotor">Rp 0</div>
+         </div>
+         <div class="summary-box">
+          <div class="summary-label">Pajak</div>
+          <div class="summary-value" id="sumPajak">Rp 0</div>
+         </div>
+         <div class="summary-box">
+          <div class="summary-label">Omset Bersih</div>
+          <div class="summary-value" id="sumOmsetBersih">Rp 0</div>
+         </div>
+         <div class="summary-box target">
+          <div class="summary-label">Target Omset</div>
+          <div class="summary-value">Rp 55.000.000</div>
+         </div>
+        </section>
     </div>
 
     <div id="viewData">
@@ -751,25 +808,6 @@
             </div>
         </div>
     </div>
-
-    <section class="summary-grid" id="summaryGrid" aria-label="Ringkasan">
-     <div class="summary-box">
-      <div class="summary-label">Omset Kotor</div>
-      <div class="summary-value" id="sumOmsetKotor">Rp 0</div>
-     </div>
-     <div class="summary-box">
-      <div class="summary-label">Pajak</div>
-      <div class="summary-value" id="sumPajak">Rp 0</div>
-     </div>
-     <div class="summary-box">
-      <div class="summary-label">Omset Bersih</div>
-      <div class="summary-value" id="sumOmsetBersih">Rp 0</div>
-     </div>
-     <div class="summary-box target">
-      <div class="summary-label">Target Omset</div>
-      <div class="summary-value">Rp 50.000.000</div>
-     </div>
-    </section>
    </main>
    <footer class="footer-bar"><img src="https://lh3.googleusercontent.com/d/1AcUPbZdtoKhbAEDhLgg4102LwKpQeRBn" alt="Logo Footer" class="footer-logo" loading="lazy" onerror="console.error('Footer img fail:', this.src); this.style.background='#F8B4A0'; this.alt='Logo';"> <span class="footer-text" id="footerText">IkeBagus 2026</span>
    </footer>
@@ -780,34 +818,24 @@
     <h2 class="popup-title" id="popupTitle">Input Data Baru</h2>
     <form id="dataForm" onsubmit="return false;">
      <div class="form-grid">
-      <div class="form-group full-width"><label class="form-label" for="fBulan">Bulan</label> <select class="form-select-input" id="fBulan" required> <option value="">-- Pilih Bulan --</option> <option>Januari</option><option>Februari</option><option>Maret</option> <option>April</option><option>Mei</option><option>Juni</option> <option>Juli</option><option>Agustus</option><option>September</option> <option>Oktober</option><option>November</option><option>Desember</option> </select>
+      <div class="form-group full-width">
+        <label class="form-label" for="fBulan">Bulan dan Tahun</label> 
+        <input type="month" class="form-select-input" id="fBulan" required>
       </div>
-      <div class="form-group"><label class="form-label" for="fKebutuhanRT">Kebutuhan RT</label> <input class="form-input" id="fKebutuhanRT" type="text" inputmode="numeric" placeholder="0">
-      </div>
-      <div class="form-group"><label class="form-label" for="fListrik">Listrik</label> <input class="form-input" id="fListrik" type="text" inputmode="numeric" placeholder="0">
-      </div>
-      <div class="form-group"><label class="form-label" for="fCicilan">Cicilan Bulanan</label> <input class="form-input" id="fCicilan" type="text" inputmode="numeric" placeholder="0">
-      </div>
-      <div class="form-group"><label class="form-label" for="fMaintenance">Maintenance</label> <input class="form-input" id="fMaintenance" type="text" inputmode="numeric" placeholder="0">
-      </div>
-      <div class="form-group"><label class="form-label" for="fOperasional">P.Operasional</label> <input class="form-input" id="fOperasional" type="text" inputmode="numeric" placeholder="0">
-      </div>
-      <div class="form-group"><label class="form-label" for="fKoperasi">Koperasi</label> <input class="form-input" id="fKoperasi" type="text" inputmode="numeric" placeholder="0">
-      </div>
-      <div class="form-group"><label class="form-label" for="fTagihanSales">Tagihan Sales</label> <input class="form-input" id="fTagihanSales" type="text" inputmode="numeric" placeholder="0">
-      </div>
-      <div class="form-group"><label class="form-label" for="fKondisioner">Kondisioner/Hairfood</label> <input class="form-input" id="fKondisioner" type="text" inputmode="numeric" placeholder="0">
-      </div>
-      <div class="form-group"><label class="form-label" for="fPaketModal">Paket Modal</label> <input class="form-input" id="fPaketModal" type="text" inputmode="numeric" placeholder="0">
-      </div>
-      <div class="form-group"><label class="form-label" for="fGaji">Gaji Pegawai</label> <input class="form-input" id="fGaji" type="text" inputmode="numeric" placeholder="0">
-      </div>
-      <div class="form-group"><label class="form-label" for="fOmsetKotor">Omset Kotor</label> <input class="form-input" id="fOmsetKotor" type="text" inputmode="numeric" placeholder="0">
-      </div>
-      <div class="form-group"><label class="form-label" for="fPajak">Pajak</label> <input class="form-input" id="fPajak" type="text" inputmode="numeric" placeholder="0">
-      </div>
-      <div class="form-group"><label class="form-label" for="fOmsetBersih">Omset Bersih</label> <input class="form-input" id="fOmsetBersih" type="text" inputmode="numeric" placeholder="0">
-      </div>
+      <div class="form-group"><label class="form-label" for="fKebutuhanRT">Kebutuhan RT</label> <input class="form-input" id="fKebutuhanRT" type="text" inputmode="numeric" placeholder="0"></div>
+      <div class="form-group"><label class="form-label" for="fListrik">Listrik</label> <input class="form-input" id="fListrik" type="text" inputmode="numeric" placeholder="0"></div>
+      <div class="form-group"><label class="form-label" for="fCicilan">Cicilan Bulanan</label> <input class="form-input" id="fCicilan" type="text" inputmode="numeric" placeholder="0"></div>
+      <div class="form-group"><label class="form-label" for="fMaintenance">Maintenance</label> <input class="form-input" id="fMaintenance" type="text" inputmode="numeric" placeholder="0"></div>
+      <div class="form-group"><label class="form-label" for="fOperasional">P.Operasional</label> <input class="form-input" id="fOperasional" type="text" inputmode="numeric" placeholder="0"></div>
+      <div class="form-group"><label class="form-label" for="fKoperasi">Koperasi</label> <input class="form-input" id="fKoperasi" type="text" inputmode="numeric" placeholder="0"></div>
+      <div class="form-group"><label class="form-label" for="fTagihanSales">Tagihan Sales</label> <input class="form-input" id="fTagihanSales" type="text" inputmode="numeric" placeholder="0"></div>
+      <div class="form-group"><label class="form-label" for="fKondisioner">Kondisioner/Hairfood</label> <input class="form-input" id="fKondisioner" type="text" inputmode="numeric" placeholder="0"></div>
+      <div class="form-group"><label class="form-label" for="fPaketModal">Paket Modal</label> <input class="form-input" id="fPaketModal" type="text" inputmode="numeric" placeholder="0"></div>
+      <div class="form-group"><label class="form-label" for="fGaji">Gaji Pegawai</label> <input class="form-input" id="fGaji" type="text" inputmode="numeric" placeholder="0"></div>
+      <div class="form-group"><label class="form-label" for="fMinuman">Minuman</label> <input class="form-input" id="fMinuman" type="text" inputmode="numeric" placeholder="0"></div>
+      <div class="form-group"><label class="form-label" for="fOmsetKotor">Omset Kotor</label> <input class="form-input" id="fOmsetKotor" type="text" inputmode="numeric" placeholder="0"></div>
+      <div class="form-group"><label class="form-label" for="fPajak">Pajak</label> <input class="form-input" id="fPajak" type="text" inputmode="numeric" placeholder="0"></div>
+      <div class="form-group"><label class="form-label" for="fOmsetBersih">Omset Bersih</label> <input class="form-input" id="fOmsetBersih" type="text" inputmode="numeric" placeholder="0"></div>
      </div>
      <div class="popup-actions"><button type="button" class="ctrl-btn secondary-btn" id="btnCancelPopup">Batal</button> <button type="submit" class="ctrl-btn" id="btnSubmitPopup"> <span id="submitText">Simpan</span> </button>
      </div>
@@ -818,10 +846,11 @@
 (function() {
   const API_URL = 'https://script.google.com/macros/s/AKfycbwQi76YWVZ_v-SzSnU5n7-_o9hZqx_rTv_dMxLKwOsD84_1UoV-90sW8ViG-9-oILpQ/exec';
 
+  // Added 'Minuman' category
   const CATEGORIES = [
     'Kebutuhan RT','Listrik','Cicilan Bulanan','Maintenance',
     'P.Operasional','Koperasi','Tagihan Sales','Kondisioner/Hairfood',
-    'Paket Modal','Gaji Pegawai'
+    'Paket Modal','Gaji Pegawai','Minuman'
   ];
 
   const FIELD_MAP = {
@@ -834,10 +863,12 @@
     'Tagihan Sales': 'fTagihanSales',
     'Kondisioner/Hairfood': 'fKondisioner',
     'Paket Modal': 'fPaketModal',
-    'Gaji Pegawai': 'fGaji'
+    'Gaji Pegawai': 'fGaji',
+    'Minuman': 'fMinuman'
   };
 
-  const MONTHS = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  const MONTH_NAMES = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  const TARGET_OMSET = 55000000;
 
   let allData = [];
   let currentPage = 1;
@@ -863,6 +894,43 @@
   }
 
   function parseNum(v) { return parseInt(v) || 0; }
+
+  // Convert "YYYY-MM" to "Bulan Tahun" format
+  function formatMonthYear(ym) {
+    if (!ym) return '-';
+    const [year, month] = ym.split('-');
+    const monthIdx = parseInt(month) - 1;
+    return `${MONTH_NAMES[monthIdx]} ${year}`;
+  }
+
+  // Convert "Bulan Tahun" or "Bulan" to "YYYY-MM" format
+  // Robust version to handle legacy data
+  function parseMonthYearToISO(str) {
+    if (!str) return '';
+    
+    // Case 1: Already YYYY-MM format
+    if (/^\d{4}-\d{2}$/.test(str)) return str;
+
+    const parts = str.split(' ');
+    let monthName = '';
+    let year = new Date().getFullYear(); // Default to current year if missing
+
+    if (parts.length >= 2) {
+      // Format: "Januari 2024"
+      monthName = parts[0];
+      year = parseInt(parts[1]);
+    } else if (parts.length === 1) {
+      // Format: "Januari" (Legacy data) - use current year
+      monthName = parts[0];
+    }
+
+    const monthIdx = MONTH_NAMES.indexOf(monthName);
+    if (monthIdx !== -1) {
+      return `${year}-${String(monthIdx + 1).padStart(2, '0')}`;
+    }
+    
+    return '';
+  }
 
   function showToast(msg, type) {
     const container = document.getElementById('toastContainer');
@@ -915,13 +983,23 @@
   function getFilteredData() {
     const filter = document.getElementById('monthFilter').value;
     if (!filter) return allData;
-    return allData.filter(d => d.Bulan === filter);
+    
+    return allData.filter(d => {
+      const dataPeriod = parseMonthYearToISO(d.Bulan);
+      return dataPeriod === filter;
+    });
   }
 
   function getUniqueMonths(data) {
     const set = new Set();
-    data.forEach(d => { if (d.Bulan) set.add(d.Bulan); });
-    return MONTHS.filter(m => set.has(m));
+    data.forEach(d => { 
+      if (d.Bulan) {
+        const iso = parseMonthYearToISO(d.Bulan);
+        if (iso) set.add(iso);
+      }
+    });
+    // Sort by date descending (newest first)
+    return Array.from(set).sort((a, b) => b.localeCompare(a));
   }
 
   function renderAll() {
@@ -934,13 +1012,17 @@
 
     const filterVal = document.getElementById('monthFilter').value;
     let pageData;
+    
     if (filterVal) {
       pageData = filtered;
-      document.getElementById('periodeDisplay').textContent = filterVal;
+      document.getElementById('periodeDisplay').textContent = formatMonthYear(filterVal);
     } else {
       const currentMonth = months[currentPage - 1];
-      pageData = currentMonth ? filtered.filter(d => d.Bulan === currentMonth) : [];
-      document.getElementById('periodeDisplay').textContent = currentMonth || '-';
+      pageData = currentMonth ? filtered.filter(d => {
+        const dataPeriod = parseMonthYearToISO(d.Bulan);
+        return dataPeriod === currentMonth;
+      }) : [];
+      document.getElementById('periodeDisplay').textContent = currentMonth ? formatMonthYear(currentMonth) : '-';
     }
 
     renderTable(pageData);
@@ -960,6 +1042,10 @@
     let html = '';
     let totals = {};
     CATEGORIES.forEach(c => totals[c] = 0);
+    
+    // Variables for calculation rows
+    let totalPajak = 0;
+    let totalOmsetBersih = 0;
 
     if (!data || data.length === 0) {
       CATEGORIES.forEach((cat, ci) => {
@@ -972,15 +1058,31 @@
         </tr>`;
       });
       tbody.innerHTML = html;
-      tfoot.innerHTML = `<tr class="total-row">
-        <td></td><td style="font-weight:700;">Total (${CATEGORIES.length} Kategori)</td>
-        <td class="nominal-cell">Rp 0</td><td></td>
-      </tr>`;
+      
+      // Empty state footer with calculations (all zero)
+      tfoot.innerHTML = `
+        <tr class="total-row">
+          <td></td><td style="font-weight:700;">Total (${CATEGORIES.length} Kategori)</td>
+          <td class="nominal-cell">Rp 0</td><td></td>
+        </tr>
+        <tr class="calc-row global-row">
+          <td></td><td>Global Pengeluaran</td>
+          <td class="nominal-cell">Rp 0</td><td></td>
+        </tr>
+        <tr class="calc-row profit-row">
+          <td></td><td>Profit</td>
+          <td class="nominal-cell">Rp 0</td><td></td>
+        </tr>`;
       return;
     }
 
     data.forEach((d, idx) => {
       const rowId = d.row || idx;
+      
+      // Accumulate Pajak and Omset Bersih for footer calculations
+      totalPajak += parseNum(d['Pajak']);
+      totalOmsetBersih += parseNum(d['Omset Bersih']);
+      
       CATEGORIES.forEach((cat, ci) => {
         const val = parseNum(d[cat]);
         totals[cat] += val;
@@ -996,12 +1098,31 @@
     });
 
     tbody.innerHTML = html;
-    let totalSum = 0;
-    Object.values(totals).forEach(v => totalSum += v);
-    tfoot.innerHTML = `<tr class="total-row">
-      <td></td><td style="font-weight:700;">Total (${CATEGORIES.length} Kategori)</td>
-      <td class="nominal-cell">${fmtRp(totalSum)}</td><td></td>
-    </tr>`;
+    
+    // Calculate Totals for Footer
+    let totalSumCategories = 0;
+    Object.values(totals).forEach(v => totalSumCategories += v);
+    
+    // Calculate Global Pengeluaran & Profit
+    const globalPengeluaran = totalSumCategories + totalPajak;
+    const profit = totalOmsetBersih - globalPengeluaran;
+    
+    // Determine profit color class
+    const profitClass = profit >= 0 ? 'profit-row' : 'profit-row profit-negative';
+
+    tfoot.innerHTML = `
+      <tr class="total-row">
+        <td></td><td style="font-weight:700;">Total (${CATEGORIES.length} Kategori)</td>
+        <td class="nominal-cell">${fmtRp(totalSumCategories)}</td><td></td>
+      </tr>
+      <tr class="calc-row global-row">
+        <td></td><td>Global Pengeluaran</td>
+        <td class="nominal-cell">${fmtRp(globalPengeluaran)}</td><td></td>
+      </tr>
+      <tr class="calc-row ${profitClass}">
+        <td></td><td>Profit</td>
+        <td class="nominal-cell">${fmtRp(profit)}</td><td></td>
+      </tr>`;
   }
 
   function renderPagination(totalPages) {
@@ -1041,18 +1162,23 @@
     const ctxBar = document.getElementById('barChart').getContext('2d');
     const ctxDoughnut = document.getElementById('doughnutChart').getContext('2d');
     
-    // Process Data for Bar Chart (Trend per Bulan)
+    // Process Data for Bar Chart (Trend per Month)
     const monthLabels = getUniqueMonths(allData);
     const monthlyOmset = monthLabels.map(m => {
-        const d = allData.find(item => item.Bulan === m);
+        const d = allData.find(item => {
+          const itemPeriod = parseMonthYearToISO(item.Bulan);
+          return itemPeriod === m;
+        });
         return d ? parseNum(d['Omset Bersih']) : 0;
     });
+
+    const displayLabels = monthLabels.map(m => formatMonthYear(m));
 
     if (barChart) barChart.destroy();
     barChart = new Chart(ctxBar, {
         type: 'bar',
         data: {
-            labels: monthLabels,
+            labels: displayLabels,
             datasets: [{
                 label: 'Omset Bersih',
                 data: monthlyOmset,
@@ -1082,7 +1208,8 @@
                     data: categoryValues,
                     backgroundColor: [
                         '#F4845F', '#F8B4A0', '#FFDAB9', '#e8734f', '#f0a090', 
-                        '#ffc8a2', '#ff9e7d', '#d46a4a', '#ffccbb', '#f28e6b'
+                        '#ffc8a2', '#ff9e7d', '#d46a4a', '#ffccbb', '#f28e6b',
+                        '#e0c3a0'
                     ],
                     borderWidth: 2,
                     borderColor: '#ffffff'
@@ -1104,7 +1231,7 @@
     const omsetKotor = parseNum(data['Omset Kotor']);
     const omsetBersih = parseNum(data['Omset Bersih']);
     const pajak = parseNum(data['Pajak']);
-    const target = 50000000;
+    const target = TARGET_OMSET;
     
     const pajakPersen = omsetKotor > 0 ? ((pajak / omsetKotor) * 100).toFixed(1) : 0;
     const bersihPersen = omsetKotor > 0 ? ((omsetBersih / omsetKotor) * 100).toFixed(1) : 0;
@@ -1159,7 +1286,10 @@
   }
 
   function fillForm(d) {
-    document.getElementById('fBulan').value = d.Bulan || '';
+    // Convert Bulan field to YYYY-MM format for input type="month"
+    const isoPeriod = parseMonthYearToISO(d.Bulan);
+    document.getElementById('fBulan').value = isoPeriod || '';
+    
     CATEGORIES.forEach(cat => {
       const fieldId = FIELD_MAP[cat];
       if (fieldId) document.getElementById(fieldId).value = formatRibuan(d[cat]);
@@ -1170,7 +1300,10 @@
   }
 
   function collectFormData() {
-    const obj = { Bulan: document.getElementById('fBulan').value };
+    const bulanISO = document.getElementById('fBulan').value;
+    const bulanFormatted = formatMonthYear(bulanISO);
+    
+    const obj = { Bulan: bulanFormatted };
     CATEGORIES.forEach(cat => {
       const fieldId = FIELD_MAP[cat];
       obj[cat] = cleanNum(document.getElementById(fieldId).value);
@@ -1184,7 +1317,7 @@
   async function submitData(e) {
     e.preventDefault();
     const bulan = document.getElementById('fBulan').value;
-    if (!bulan) { showToast('Pilih bulan terlebih dahulu', 'error'); return; }
+    if (!bulan) { showToast('Pilih periode bulan dan tahun terlebih dahulu', 'error'); return; }
     const formData = collectFormData();
     const btn = document.getElementById('btnSubmitPopup');
     const textEl = document.getElementById('submitText');
@@ -1331,13 +1464,28 @@
   document.getElementById('btnAdd').addEventListener('click', () => {
     editingRow = null;
     document.getElementById('dataForm').reset();
+    // Set default to current month
+    const now = new Date();
+    const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    document.getElementById('fBulan').value = currentMonth;
     openPopup(false);
   });
 
   document.getElementById('btnCancelPopup').addEventListener('click', closePopup);
   document.getElementById('popupOverlay').addEventListener('click', (e) => { if (e.target === e.currentTarget) closePopup(); });
   document.getElementById('dataForm').addEventListener('submit', submitData);
-  document.getElementById('monthFilter').addEventListener('change', () => { currentPage = 1; renderAll(); });
+  
+  document.getElementById('monthFilter').addEventListener('change', () => { 
+    currentPage = 1; 
+    renderAll(); 
+  });
+
+  document.getElementById('btnClearFilter').addEventListener('click', () => {
+    document.getElementById('monthFilter').value = '';
+    currentPage = 1;
+    renderAll();
+  });
+
   document.getElementById('btnExport').addEventListener('click', exportData);
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePopup(); });
 
