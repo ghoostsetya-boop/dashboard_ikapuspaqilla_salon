@@ -1048,36 +1048,40 @@
             <button class="nav-tab" data-tab="infografis">Infografis</button>
         </nav>
 
+        <!-- FILTER SECTION MOVED HERE (GLOBAL) -->
+        <div class="glass-card scroll-reveal">
+            <div class="filter-section">
+                <div class="filter-group">
+                    <label class="filter-label">Dari Tanggal</label>
+                    <input type="date" class="filter-input" id="filterDateFrom">
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Sampai Tanggal</label>
+                    <input type="date" class="filter-input" id="filterDateTo">
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Filter Nama</label>
+                    <select class="filter-select" id="filterName">
+                        <option value="">Semua Karyawan</option>
+                        <option value="Bu Yanti">Bu Yanti</option>
+                        <option value="LeoYanto">LeoYanto</option>
+                        <option value="Ana">Ana</option>
+                        <option value="Tia">Tia</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Cari</label>
+                    <input type="text" class="filter-input" id="searchInput" placeholder="Cari data...">
+                </div>
+                <button class="btn btn-secondary" id="resetFilters">
+                    Reset
+                </button>
+            </div>
+        </div>
+
         <!-- Tab 1: Komisi Karyawan -->
         <div id="komisi-tab" class="tab-content active">
             <div class="glass-card scroll-reveal">
-                <!-- Filter Section -->
-                <div class="filter-section">
-                    <div class="filter-group">
-                        <label class="filter-label">Filter Periode</label>
-                        <select class="filter-select" id="filterPeriod">
-                            <option value="">Semua Periode</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label class="filter-label">Filter Nama</label>
-                        <select class="filter-select" id="filterName">
-                            <option value="">Semua Karyawan</option>
-                            <option value="Bu Yanti">Bu Yanti</option>
-                            <option value="LeoYanto">LeoYanto</option>
-                            <option value="Ana">Ana</option>
-                            <option value="Tia">Tia</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label class="filter-label">Cari</label>
-                        <input type="text" class="filter-input" id="searchInput" placeholder="Cari data...">
-                    </div>
-                    <button class="btn btn-secondary" id="resetFilters">
-                        Reset
-                    </button>
-                </div>
-
                 <!-- Table Header -->
                 <div class="table-header">
                     <h2 class="table-title">Data Komisi</h2>
@@ -1123,9 +1127,9 @@
             <div class="infografis-grid scroll-reveal">
                 <!-- Total Komisi Card -->
                 <div class="stat-card">
-                    <div class="stat-title">Total Komisi Semua Karyawan</div>
+                    <div class="stat-title">Total Komisi (Periode Terpilih)</div>
                     <div class="stat-value" id="totalKomisi">Rp 0</div>
-                    <div class="stat-change">Data Real-time</div>
+                    <div class="stat-change">Data Terfilter</div>
                 </div>
 
                 <!-- Total Lembur Card -->
@@ -1324,8 +1328,9 @@
             // Dynamic Rows
             document.getElementById('addRowBtn').addEventListener('click', addDynamicRow);
 
-            // Filters
-            document.getElementById('filterPeriod').addEventListener('change', applyFilters);
+            // Filters - Updated listeners for date inputs
+            document.getElementById('filterDateFrom').addEventListener('change', applyFilters);
+            document.getElementById('filterDateTo').addEventListener('change', applyFilters);
             document.getElementById('filterName').addEventListener('change', applyFilters);
             document.getElementById('searchInput').addEventListener('input', applyFilters);
             document.getElementById('resetFilters').addEventListener('click', resetFilters);
@@ -1395,11 +1400,13 @@
                 
                 if (result.success) {
                     allData = result.data || [];
+                    // Sort data by date descending initially
+                    allData.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
+                    
                     filteredData = [...allData];
                     currentPage = 1;
                     renderTable();
-                    updateFilterOptions();
-                    updateInfografis();
+                    updateInfografis(); // Update infografis on load
                     updateTotalKomisiTable();
                     showToast('Data berhasil dimuat!', 'success');
                 } else {
@@ -1411,21 +1418,9 @@
                 allData = [];
                 filteredData = [];
                 renderTable();
+                updateInfografis();
             } finally {
                 hideLoading();
-            }
-        }
-
-        /**
-         * Load data by ID
-         */
-        async function loadDataById(id) {
-            try {
-                const result = await fetchAPI('readById', { id });
-                return result;
-            } catch (error) {
-                console.error('Error loading data:', error);
-                return { success: false, message: error.message };
             }
         }
 
@@ -1487,6 +1482,7 @@
 
             document.getElementById(`${tabName}-tab`).classList.add('active');
 
+            // Always update infografis when switching to that tab to ensure charts are correct
             if (tabName === 'infografis') {
                 updateInfografis();
             }
@@ -1891,65 +1887,51 @@
 
         // Filter Functions
         function applyFilters() {
-            const period = document.getElementById('filterPeriod').value;
+            const dateFrom = document.getElementById('filterDateFrom').value;
+            const dateTo = document.getElementById('filterDateTo').value;
             const name = document.getElementById('filterName').value;
             const search = document.getElementById('searchInput').value.toLowerCase();
 
             filteredData = allData.filter(item => {
-                let matchPeriod = true;
-                if (period) {
-                    const itemDate = new Date(item.tanggal);
-                    const itemMonth = String(itemDate.getMonth() + 1).padStart(2, '0');
-                    const itemYear = itemDate.getFullYear();
-                    const itemPeriod = `${itemYear}-${itemMonth}`;
-                    matchPeriod = itemPeriod === period;
-                }
+                // Filter Date Range
+                let matchDate = true;
+                const itemDateStr = item.tanggal; // Assuming YYYY-MM-DD format
                 
+                if (dateFrom) {
+                    matchDate = matchDate && (itemDateStr >= dateFrom);
+                }
+                if (dateTo) {
+                    matchDate = matchDate && (itemDateStr <= dateTo);
+                }
+
+                // Filter Name
                 const matchName = !name || item.namaKaryawan === name;
                 
+                // Search Filter
                 const matchSearch = !search || 
                     (item.namaKaryawan && item.namaKaryawan.toLowerCase().includes(search)) ||
                     (item.detailTreatment && item.detailTreatment.toLowerCase().includes(search)) ||
                     (item.tanggal && item.tanggal.toString().includes(search));
 
-                return matchPeriod && matchName && matchSearch;
+                return matchDate && matchName && matchSearch;
             });
 
             currentPage = 1; // Reset to first page on filter
             renderTable();
+            updateInfografis(); // Update charts with filtered data
             updateTotalKomisiTable();
         }
 
         function resetFilters() {
-            document.getElementById('filterPeriod').value = '';
+            document.getElementById('filterDateFrom').value = '';
+            document.getElementById('filterDateTo').value = '';
             document.getElementById('filterName').value = '';
             document.getElementById('searchInput').value = '';
             filteredData = [...allData];
             currentPage = 1;
             renderTable();
+            updateInfografis();
             updateTotalKomisiTable();
-        }
-
-        function updateFilterOptions() {
-            const periods = new Set();
-            allData.forEach(item => {
-                if (item.tanggal) {
-                    const date = new Date(item.tanggal);
-                    const month = String(date.getMonth() + 1).padStart(2, '0');
-                    const year = date.getFullYear();
-                    periods.add(`${year}-${month}`);
-                }
-            });
-            
-            const periodSelect = document.getElementById('filterPeriod');
-            periodSelect.innerHTML = '<option value="">Semua Periode</option>';
-            
-            Array.from(periods).sort().reverse().forEach(period => {
-                const option = document.createElement('option');
-                option.value = period;
-                option.textContent = formatPeriod(period);
-                periodSelect.appendChild(option);
-            });
         }
 
         // Update Total Komisi Table based on filtered data
@@ -1961,14 +1943,15 @@
             }
         }
 
-        // Infografis Functions
+        // Infografis Functions - Now uses filteredData
         function updateInfografis() {
-            const totalKomisiAll = allData.reduce((sum, item) => sum + (item.total || 0), 0);
-            const totalLemburAll = allData.reduce((sum, item) => sum + (item.nominalLembur || 0), 0);
+            // Use filteredData instead of allData to reflect global filters
+            const totalKomisiFiltered = filteredData.reduce((sum, item) => sum + (item.total || 0), 0);
+            const totalLemburFiltered = filteredData.reduce((sum, item) => sum + (item.nominalLembur || 0), 0);
             
-            document.getElementById('totalKomisi').textContent = formatCurrency(totalKomisiAll);
-            document.getElementById('totalLembur').textContent = formatCurrency(totalLemburAll);
-            document.getElementById('totalTransaksi').textContent = allData.length;
+            document.getElementById('totalKomisi').textContent = formatCurrency(totalKomisiFiltered);
+            document.getElementById('totalLembur').textContent = formatCurrency(totalLemburFiltered);
+            document.getElementById('totalTransaksi').textContent = filteredData.length;
 
             updateRanking();
             updateMonthlyChart();
@@ -1977,7 +1960,7 @@
         function updateRanking() {
             const rankingData = {};
             
-            allData.forEach(item => {
+            filteredData.forEach(item => {
                 if (!rankingData[item.namaKaryawan]) {
                     rankingData[item.namaKaryawan] = 0;
                 }
@@ -2021,7 +2004,7 @@
         function updateMonthlyChart() {
             const monthlyData = {};
             
-            allData.forEach(item => {
+            filteredData.forEach(item => {
                 if (item.tanggal) {
                     const date = new Date(item.tanggal);
                     const month = String(date.getMonth() + 1).padStart(2, '0');
