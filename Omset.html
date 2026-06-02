@@ -964,7 +964,8 @@
   async function fetchData() {
     setTableLoading(true);
     try {
-      const res = await fetch(API_URL + '?action=read');
+      // Tambahkan '&t=' + new Date().getTime() untuk menghindari cache
+      const res = await fetch(API_URL + '?action=read&t=' + new Date().getTime());
       const json = await res.json();
       if (json.status === 'success' && Array.isArray(json.data)) {
         allData = json.data;
